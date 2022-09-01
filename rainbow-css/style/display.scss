@@ -1,0 +1,21 @@
+.inlineFlex {
+  display: inline-flex;
+}
+
+.inlineFlexCentr {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
+
+.flexNowrap {
+  flex-wrap: nowrap;
+}
+
+.flex1 {
+  flex: 1;
+}

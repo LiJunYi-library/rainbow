@@ -1,0 +1,26 @@
+{
+  "name": "@rainbow_ljy/rainbow-ui",
+  "version": "1.0.11",
+  "description": "",
+  "private": false,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "pnpm publish --access=public"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rainbow_ljy/jsapi": "^1.0.17",
+    "echarts": "^5.3.3"
+  }
+}
