@@ -1,7 +1,3 @@
-.spaceNowrap {
-  white-space: nowrap;
-}
-
 .f10 {
   font-size: 10px;
 }
@@ -89,3 +85,30 @@
 .fbold {
   font-weight: bold;
 }
+
+.spaceNowrap {
+  white-space: nowrap;
+}
+
+.spaceWrap {
+  white-space:  pre-wrap;
+}
+
+.tleft {
+  text-align: left;
+}
+
+
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+
+
+
+
+
+

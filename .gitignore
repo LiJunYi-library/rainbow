@@ -7,13 +7,14 @@
 
 
 .DS_Store
-/element-ui-lib/
-/rainbow-js/
-/rainbow-cli/
+/element-ui-lib/node_modules/
+/element-plus-lib/node_modules/
 /firm/
+/rainbow-cli/node_modules/
+/rainbow-css/node_modules/
+/rainbow-js/node_modules/
 /rainbow-ui/node_modules/
-/vue3/element/
-/vue3/base/
+/rainbow-view/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
