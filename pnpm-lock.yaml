@@ -1,0 +1,9 @@
+lockfileVersion: 5.4
+
+importers:
+
+  rainbow-view:
+    specifiers:
+      '@rainbow_ljy/jsapi': workspace:^1.0.21
+    dependencies:
+      '@rainbow_ljy/jsapi': link:../rainbow-js

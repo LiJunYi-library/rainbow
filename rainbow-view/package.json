@@ -1,6 +1,6 @@
 {
   "name": "@rainbow_ljy/rainbow-view",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "",
   "private": false,
   "typings": "index.d.ts",
@@ -9,5 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@rainbow_ljy/jsapi": "workspace:^1.0.21"
+  }
 }

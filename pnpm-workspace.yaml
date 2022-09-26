@@ -1,11 +1,15 @@
 packages:
   # all packages in subdirs of components/
   - 'firm/mmb/*'
-  - 'jsapi/**'
-  - 'rainbow-css/**'
+  - 'element-plus-lib/**'
   - 'element-ui-lib/**'
-  - 'rainbow-ui/**'
   - 'rainbow-cli/**'
+  - 'rainbow-css/**'
+  - 'rainbow-js/**'
+  - 'rainbow-ui/**'
+  - 'rainbow-utils/**'
+  - 'rainbow-view/**'
+  
  
 
 

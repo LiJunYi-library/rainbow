@@ -14,6 +14,7 @@
 /rainbow-css/node_modules/
 /rainbow-js/node_modules/
 /rainbow-ui/node_modules/
+/rainbow-utils/node_modules/
 /rainbow-view/node_modules/
 npm-debug.log*
 yarn-debug.log*
