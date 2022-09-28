@@ -43,7 +43,7 @@ export default {
         <el-pagination
           class="el-lib-pagination"
           page-sizes={[10, 20, 30, 40]}
-          layout={"total, sizes, prev, pager, next, jumper"}
+          layout={"total, prev, pager, next, jumper"}
           total={0}
           {...this.bindPaginationDefaultAttrs()}
           {...paginationAttrs}

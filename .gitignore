@@ -7,8 +7,8 @@
 
 
 .DS_Store
-/element-ui-lib/node_modules/
 /element-plus-lib/node_modules/
+/element-ui-lib/node_modules/
 /firm/
 /rainbow-cli/node_modules/
 /rainbow-css/node_modules/
