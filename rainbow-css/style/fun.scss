@@ -1,0 +1,13 @@
+@charset "utf-8";
+@function px($px) {
+    @if type-of($px)==number {
+        @return $px/40+rem;
+    }
+    @else {
+        @return $px;
+    }
+}
+
+@function rem($px){
+    @return $px/40;
+}

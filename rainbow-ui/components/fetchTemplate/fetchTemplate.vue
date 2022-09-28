@@ -1,7 +1,6 @@
 <template>
   <div v-loading="loading_">
-    <div>{{ responseData_ }}</div>
-    <slot />
+    <slot :data="responseData_" />
   </div>
 </template>
 <script>

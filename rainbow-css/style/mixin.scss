@@ -1,0 +1,76 @@
+@function pm($px) {
+  @if type-of($px) ==number {
+    @return $px/2 + px;
+  } @else {
+    @return $px;
+  }
+}
+
+@mixin bgImg($url) {
+  background-image: $url;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+@mixin bg($url) {
+  @include bgImg(var($url));
+}
+
+@mixin display($val) {
+  display: $val;
+  vertical-align: bottom;
+}
+
+@mixin relativeCenter() {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin absoluteCenter($left: 50%, $top: 50%) {
+  position: absolute;
+  left: $left;
+  top: $top;
+  transform: translateX(-$left) translateY(-$top);
+}
+
+@mixin flex($justify: flex-start, $align: center, $direction: row) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  align-content: $align;
+  flex-direction: $direction;
+}
+
+@mixin absolute($top: auto, $right: auto, $bottom: auto, $left: auto) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin flexBetween($direction: row, $align: center) {
+  @include flex(space-between, $align, $direction);
+}
+
+@mixin flexAround($direction: row, $align: center) {
+  @include flex(space-around, $align, $direction);
+}
+
+@mixin flexEvenly($direction: row, $align: center) {
+  @include flex(space-evenly, $align, $direction);
+}
+
+@mixin flexCenter($direction: row, $align: center) {
+  @include flex(center, $align, $direction);
+}
+
+@mixin ellipsis($line-clamp: 1) {
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line-clamp;
+  overflow: hidden;
+}
