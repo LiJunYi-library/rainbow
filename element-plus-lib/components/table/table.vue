@@ -1,24 +1,47 @@
 <script>
 import { h, createVNode, resolveComponent } from "vue";
 import { objectFilter } from "../../utils/obj";
+import { QueuePromise } from "@rainbow_ljy/jsapi";
 
 export default {
-  emits: ["update:checkList", "select", "selectAll"],
+  emits: [
+    "update:checkList",
+    "update:currentPage",
+    "update:pageSize",
+    "select",
+    "selectAll",
+    "pageChange",
+  ],
   props: {
     checkList: {
       type: Array,
       default: () => [],
     },
     showSelection: Boolean,
+    currentPage: { type: Number, default: 1 },
+    pageSize: { type: Number, default: 10 },
   },
   data() {
     return {
       check_list: this.checkList,
+      mergePageEvent: new QueuePromise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(true);
+        }, 0);
+      }),
+      currentPage_: this.currentPage,
+      pageSize_: this.pageSize,
     };
   },
   watch: {
     checkList() {
       this.check_list = this.checkList;
+    },
+    currentPage() {
+      this.currentPage_ = this.currentPage;
+    },
+    pageSize() {
+      this.pageSize_ = this.pageSize;
     },
   },
   created() {},
@@ -43,12 +66,34 @@ export default {
         <el-pagination
           class="el-lib-pagination"
           page-sizes={[10, 20, 30, 40]}
-          layout={"total, prev, pager, next, jumper"}
+          layout={"total,sizes, prev, pager, next, jumper"}
           total={0}
+          currentPage={this.currentPage_}
+          pageSize={this.pageSize_}
+          onUpdate:currentPage={(page) => (this.currentPage_ = page)}
+          onUpdate:pageSize={(size) => (this.pageSize_ = size)}
+          onSizeChange={(...arg) => this.onSizeChange(...arg)}
+          onCurrentChange={(...arg) => this.onCurrentChange(...arg)}
           {...this.bindPaginationDefaultAttrs()}
           {...paginationAttrs}
         />
       );
+    },
+
+    handlePageEvent() {
+      this.$emit("update:currentPage", this.currentPage_);
+      this.$emit("update:pageSize", this.pageSize_);
+      this.$emit("pageChange", this.currentPage_, this.pageSize_);
+    },
+
+    async onSizeChange(...arg) {
+      await this.mergePageEvent;
+      this.handlePageEvent();
+    },
+
+    async onCurrentChange(...arg) {
+      await this.mergePageEvent;
+      this.handlePageEvent();
     },
 
     bindPaginationDefaultAttrs() {

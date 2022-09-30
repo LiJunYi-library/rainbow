@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rainbow_ljy/jsapi": "workspace:^1.0.23",
     "element-plus": "^2.2.17"
   }
 }

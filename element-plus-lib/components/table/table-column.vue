@@ -58,7 +58,8 @@ export default {
     },
 
     renderDefaultDefault(...arg) {
-      return null;
+      let val = this.getValue(...arg);
+      return <div class="table-column-lib">{val}</div>;
     },
 
     renderHeader(...arg) {
@@ -92,3 +93,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.table-column-lib {
+  text-align: left;
+  display: inline-block;
+}
+</style>
