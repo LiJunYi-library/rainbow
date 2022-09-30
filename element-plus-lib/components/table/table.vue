@@ -8,9 +8,13 @@ export default {
     "update:checkList",
     "update:currentPage",
     "update:pageSize",
+    "update:sortProp",
+    "update:sortOrder",
+    "update:elTable",
     "select",
     "selectAll",
     "pageChange",
+    "sortChange",
   ],
   props: {
     checkList: {
@@ -20,6 +24,9 @@ export default {
     showSelection: Boolean,
     currentPage: { type: Number, default: 1 },
     pageSize: { type: Number, default: 10 },
+    sortProp: String,
+    sortOrder: String,
+    elTable: Object,
   },
   data() {
     return {
@@ -31,6 +38,7 @@ export default {
       }),
       currentPage_: this.currentPage,
       pageSize_: this.pageSize,
+      defaultSort: { order: this.sortOrder, prop: this.sortProp },
     };
   },
   watch: {
@@ -43,9 +51,21 @@ export default {
     pageSize() {
       this.pageSize_ = this.pageSize;
     },
+    sortProp() {
+      if (this.defaultSort.prop === this.sortProp) return;
+      this.defaultSort.prop = this.sortProp;
+      this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+    },
+    sortOrder() {
+      if (this.defaultSort.order === this.sortOrder) return;
+      this.defaultSort.order = this.sortOrder;
+      this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+    },
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$emit("update:elTable", this.$refs.elTable);
+  },
   render(_ctx, _cache, $props, $setup, $data, $options) {
     return (
       <div class="el-lib-table" v-loading={this.bindLoading()}>
@@ -65,7 +85,7 @@ export default {
       return (
         <el-pagination
           class="el-lib-pagination"
-          page-sizes={[10, 20, 30, 40]}
+          page-sizes={[10, 20, 30, 40, 50, 100]}
           layout={"total,sizes, prev, pager, next, jumper"}
           total={0}
           currentPage={this.currentPage_}
@@ -133,9 +153,12 @@ export default {
       return h(
         el_table,
         {
+          ref: "elTable",
           border: true,
           onSelect: (...arg) => this.onSelect(...arg),
           onSelectAll: (...arg) => this.onSelectAll(...arg),
+          defaultSort: this.defaultSort,
+          onSortChange: (...arg) => this.onSortChange(...arg),
           ...this.bindTableDefaultAttrs(),
           ...attrs,
         },
@@ -148,6 +171,15 @@ export default {
 
     bindTableDefaultAttrs() {
       return {};
+    },
+
+    onSortChange(props) {
+      let { column, prop, order } = props;
+      this.defaultSort.prop = prop;
+      this.defaultSort.order = order;
+      this.$emit("update:sortProp", this.defaultSort.prop);
+      this.$emit("update:sortOrder", this.defaultSort.order);
+      this.$emit("sortChange", this.defaultSort.prop, this.defaultSort.order);
     },
 
     onSelect(list, ...arg) {
