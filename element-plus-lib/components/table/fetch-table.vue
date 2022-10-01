@@ -68,15 +68,7 @@ export default {
         this.$attrs.onErrorClick();
         return;
       }
-      if (this.fetchData instanceof Array) {
-        this.fetchData.forEach((fun) => {
-          fun();
-        });
-      }
-
-      if (this.fetchData instanceof Function) {
-        this.fetchData();
-      }
+      this.callFetchData();
     },
 
     bindPaginationDefaultAttrs() {

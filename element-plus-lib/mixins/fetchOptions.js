@@ -58,7 +58,7 @@ class FetchListener {
           vm.$emit('update:responseData', vm.responseData_);
           if (vm.afterFetch) vm.afterFetch();
         })
-        .catch(({data, errorText}={}) => {
+        .catch(({ data, errorText } = {}) => {
           if (!props.isSetResponseData) return;
           vm.responseData_ = data;
           vm.$emit('update:responseData', vm.responseData_);
@@ -172,5 +172,15 @@ export default {
     bindLoading() {
       return this.loading_;
     },
+    callFetchData() {
+      if (this.fetchData instanceof Array) {
+        this.fetchData.forEach((fun) => {
+          fun();
+        });
+      }
+      if (this.fetchData instanceof Function) {
+        this.fetchData();
+      }
+    }
   },
 };
