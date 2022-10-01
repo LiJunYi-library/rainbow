@@ -1,4 +1,3 @@
-
 const element = {};
 const componentsFiles = require.context('../components', true);
 componentsFiles.keys().forEach(path => {

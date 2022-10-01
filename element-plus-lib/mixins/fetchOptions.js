@@ -32,6 +32,8 @@ class FetchListener {
       this.loading = true;
       vm.$emit('update:loading', this.loading_);
       if (vm.beforeFetch) vm.beforeFetch();
+      if (!props.isSetResponseData) return;
+      vm.isFetchError = false;
     };
 
     this.afterApply = res => {
@@ -55,6 +57,14 @@ class FetchListener {
           vm.responseData_ = data;
           vm.$emit('update:responseData', vm.responseData_);
           if (vm.afterFetch) vm.afterFetch();
+        })
+        .catch(({data, errorText}={}) => {
+          if (!props.isSetResponseData) return;
+          vm.responseData_ = data;
+          vm.$emit('update:responseData', vm.responseData_);
+          if (vm.errorFetch) vm.errorFetch(data, errorText);
+          vm.isFetchError = true;
+          if (errorText !== undefined) vm.errorText = errorText;
         })
         .finally(() => {
           this.loading = false;
@@ -123,6 +133,9 @@ export default {
         isSetResponseData: true,
         tag: 'data',
       }),
+
+      isFetchError: false,
+      errorText: "网络开小差了 点击重新加载",
     };
   },
   watch: {

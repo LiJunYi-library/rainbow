@@ -26,6 +26,9 @@ export default {
       },
     },
   },
+  data() {
+    return {};
+  },
 
   watch: {
     responseData_(VAL) {},
@@ -34,6 +37,46 @@ export default {
   methods: {
     bindLoading() {
       return this.loading_;
+    },
+
+    beforeFetch() {},
+
+    errorFetch(data, errorText) {},
+
+    renderDefaultEmpty(...arg) {
+      if (this.isFetchError) return this.renderDefaultError(...arg);
+      return [<div class="empty">暂无数据</div>];
+    },
+
+    renderDefaultError(...arg) {
+      if (this.$slots.error) return this.$slots.error(...arg);
+      const el_button = resolveComponent("el-button");
+      return (
+        <el_button
+          type={"danger"}
+          link={true}
+          onclick={() => this.onErrorClick(...arg)}
+        >
+          {this.errorText}
+        </el_button>
+      );
+    },
+
+    onErrorClick(...arg) {
+      this.$attrs.onErrorClick;
+      if (this.$attrs.onErrorClick) {
+        this.$attrs.onErrorClick();
+        return;
+      }
+      if (this.fetchData instanceof Array) {
+        this.fetchData.forEach((fun) => {
+          fun();
+        });
+      }
+
+      if (this.fetchData instanceof Function) {
+        this.fetchData();
+      }
     },
 
     bindPaginationDefaultAttrs() {

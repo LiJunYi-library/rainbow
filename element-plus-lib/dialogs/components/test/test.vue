@@ -1,16 +1,18 @@
 <template>
-  <el-dialog
-    append-to-body
-    width="800px"
-    @close="visible = false"
-    v-model="visible"
-    @closed="closed"
-  >
-    999999999999999999999999
-  </el-dialog>
+  <div>
+    <el-dialog
+      append-to-body
+      width="800px"
+      @close="visible = false"
+      v-model="visible"
+      @closed="closed"
+    >
+      999999999999999999999999
+    </el-dialog>
+  </div>
 </template>
 
-<script lang="ts">
+<script >
 export default {
   data() {
     return {

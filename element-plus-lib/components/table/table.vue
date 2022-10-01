@@ -139,7 +139,7 @@ export default {
     },
 
     renderEmpty(...arg) {
-      if (this.$slots.empty) return this.$slots.empty();
+      if (this.$slots.empty) return this.$slots.empty(...arg);
       return this.renderDefaultEmpty(...arg);
     },
 
@@ -203,6 +203,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.el-lib-table .fetchError {
+  color: red;
 }
 
 .el-lib-table .el-table th.el-table__cell {
