@@ -7,7 +7,8 @@
       v-model="visible"
       @closed="closed"
     >
-      999999999999999999999999
+      <div>999999999999999999999999</div>
+      <div><el-button>点击</el-button></div>
     </el-dialog>
   </div>
 </template>

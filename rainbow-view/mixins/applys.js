@@ -1,4 +1,4 @@
-import { applay } from '@rainbow_ljy/jsapi'
+import { apply } from '@rainbow_ljy/jsapi'
 
 export default {
   beforeCreate() {
@@ -7,7 +7,7 @@ export default {
     // 
     for (const key in applys) {
       if (Object.hasOwnProperty.call(applys, key)) {
-        this[key] = applay(applys[key], this)
+        this[key] = apply(applys[key], this)
       }
     }
   },

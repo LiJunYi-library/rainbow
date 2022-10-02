@@ -29,10 +29,10 @@ export function createDialog(com, context) {
 
   const dialog = function (data = {}) {
     console.log('*************dialog', context);
-    // return new Promise((resolve, reject) => {
-    //   if (!dialogNode) createDialogNode();
-    //   handleProxy(data, resolve, reject)
-    // })
+    return new Promise((resolve, reject) => {
+      if (!dialogNode) createDialogNode();
+      handleProxy(data, resolve, reject)
+    })
 
   };
 

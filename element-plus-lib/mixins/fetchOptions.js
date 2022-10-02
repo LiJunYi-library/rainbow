@@ -36,7 +36,8 @@ class FetchListener {
       vm.isFetchError = false;
     };
 
-    this.afterApply = res => {
+    this.afterApply = (res, thisTarget) => {
+      if (props.isSetResponseData && vm.isAwait) thisTarget.lock = true;
       const isPromise = res instanceof Promise;
       if (!isPromise) {
         this.loading = false;
@@ -54,12 +55,14 @@ class FetchListener {
       this.queuePromise
         .then(data => {
           if (!props.isSetResponseData) return;
+          thisTarget.lock = false;
           vm.responseData_ = data;
           vm.$emit('update:responseData', vm.responseData_);
           if (vm.afterFetch) vm.afterFetch();
         })
         .catch(({ data, errorText } = {}) => {
           if (!props.isSetResponseData) return;
+          thisTarget.lock = false;
           vm.responseData_ = data;
           vm.$emit('update:responseData', vm.responseData_);
           if (vm.errorFetch) vm.errorFetch(data, errorText);
