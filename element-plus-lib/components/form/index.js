@@ -1,8 +1,8 @@
 
-import formDialog from './form-dialog.vue';
+import fetchFormDialog from './fetch-form-dialog.vue';
 
 
 export default {
-  'form-dialog': formDialog,
+  'fetch-form-dialog': fetchFormDialog,
 }
 

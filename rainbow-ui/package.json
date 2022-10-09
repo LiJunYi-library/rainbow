@@ -1,12 +1,13 @@
 {
   "name": "@rainbow_ljy/rainbow-ui",
-  "version": "1.0.14",
+  "version": "1.0.18",
   "description": "",
   "private": false,
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "pnpm publish --access=public"
+    "publish": "pnpm publish --access=public --no-git-checks"
   },
   "postcss": {
     "plugins": {
@@ -20,7 +21,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rainbow_ljy/jsapi": "^1.0.17",
-    "echarts": "^5.3.3"
+    "@rainbow_ljy/jsapi": "workspace:^1.0.23",
+    "echarts": "^5.3.3",
+    "vue-class-component": "^7.2.6"
   }
 }

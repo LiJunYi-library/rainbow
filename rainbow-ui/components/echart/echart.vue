@@ -20,7 +20,7 @@
       />
       <slot :responseData="responseData_ || []" />
       <div v-show="isEmpty" class="tips">
-        <img src="@/assets/none.png" v-if="showEmptyIcon" />
+        <img src="./imgs/none.png" v-if="showEmptyIcon" />
         <div class="emptyText"><slot name="empty">暂无数据</slot></div>
       </div>
     </div>

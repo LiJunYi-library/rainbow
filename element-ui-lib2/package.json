@@ -1,0 +1,18 @@
+{
+  "name": "@rainbow_ljy/element-ui-lib2",
+  "version": "1.0.3",
+  "description": "",
+  "private": false,
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rainbow_ljy/jsapi": "workspace:^1.0.24",
+    "@rainbow_ljy/rainbow-ui": "workspace:^1.0.17",
+    "element-ui": "2.15.7"
+  }
+}

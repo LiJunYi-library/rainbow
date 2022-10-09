@@ -54,7 +54,9 @@ export default {
     },
   },
   created() {
-    this.indexList = this.responseData_.splitIndex(this.columnCount);
+    if (this.responseData_ instanceof Array) {
+      this.indexList = this.responseData_.splitIndex(this.columnCount);
+    }
   },
 };
 </script>

@@ -1,18 +1,14 @@
+import { createDecorator } from 'vue-class-component';
 
-
-export function apply(...arg): any {
-  // return function (
-  //   target: BaseVue,
-  //   key: string,
-  //   descriptor: PropertyDescriptor
-  // ) {
-  //   const method = descriptor.value;
-  //   descriptor.value = async function (data: AnyObject) {
-  //     const params = this[dataKey] || data;
-  //     const res = await request({ method: 'get', url: url, params }, config);
-  //     const rest = method.call(this, res);
-  //     if (rest) return rest;
-  //     return res;
-  //   };
-  // }
+export function Apply(): any {
+  return createDecorator((componentOptions, key) => {
+    const options = componentOptions as any;
+    if (!options.applys) {
+      options.applys = {}
+    }
+    const method = options.methods[key];
+    options.applys[key] = method;
+    delete options.methods[key];
+  });
 }
+

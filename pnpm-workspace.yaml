@@ -3,6 +3,7 @@ packages:
   - 'firm/mmb/*'
   - 'element-plus-lib/**'
   - 'element-ui-lib/**'
+  - 'element-ui-lib2/**'
   - 'rainbow-cli/**'
   - 'rainbow-css/**'
   - 'rainbow-js/**'

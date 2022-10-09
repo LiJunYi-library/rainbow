@@ -1,5 +1,5 @@
 <template>
-  <div>button</div>
+  <div>rainbow-ui</div>
 </template>
 
 
