@@ -3,5 +3,13 @@
 declare type Element = {
   install(vue: any): void
 }
+
+declare type FetchOptions = {
+  props: {}
+}
+
 declare const rainbowUi: Element;
-export { rainbowUi };
+
+declare const fetchOptions: FetchOptions;
+
+export { rainbowUi, fetchOptions };

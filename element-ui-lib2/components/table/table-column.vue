@@ -1,101 +1,102 @@
 <script>
-// import element from "element-ui";
+import { objectFilter } from "@rainbow_ljy/jsapi";
 
-// export default {
-//   provide() {
-//     return {
-//       tableColumn: this,
-//     };
-//   },
-//   props: {
-//     ...element.TableColumn.props,
-//     emptyText: { type: String, default: "-" },
-//     align: { type: String, default: "center" },
-//     tipContent: String,
-//   },
-//   data() {
-//     return {
-//       slot_scope: {},
-//     };
-//   },
-//   methods: {
-//     renderTooltip(h) {
-//       const vm = this;
-//       if (!vm.tipContent) return null;
-//       return h(
-//         "el-tooltip",
-//         {
-//           attrs: {
-//             effect: "dark",
-//             "raw-content": true,
-//             content: vm.tipContent,
-//             placement: "top",
-//           },
-//         },
-//         [
-//           h("i", {
-//             style: {
-//               "padding-left": "5px",
-//             },
-//             staticClass: "el-icon-question",
-//           }),
-//         ]
-//       );
-//     },
-//     _fomatter(row) {
-//       return row[this.prop];
-//     },
-//     getValue(group) {
-//       let { row } = group;
-//       let val = row[this.prop];
-//       if (this.$props.formatter) val = this.$props.formatter(row);
-//       return val;
-//     },
-//     renderDefault(h) {
-//       if (!this.$scopedSlots.default) return undefined;
-//       return (props) => {
-//         return this.$scopedSlots.default({ ...props });
-//       };
-//     },
-//     renderHeader(h) {
-//       const vm = this;
-//       if (this.$slot.header) return this.$slot.header;
-//       return h(
-//         "div",
-//         {
-//           staticClass: "table-column-header",
-//         },
-//         [
-//           h(
-//             "span",
-//             {
-//               staticClass: "table-column-header-span",
-//             },
-//             vm.label
-//           ),
-//           vm.renderTooltip(h),
-//         ]
-//       );
-//     },
-//   },
-//   render(h) {
-//     const vm = this;
-//     return h("el-table-column", {
-//       attrs: {
-//         formatter(row) {
-//           return vm._fomatter(row);
-//         },
-//         ...vm.$props,
-//       },
-//       scopedSlots: {
-//         default: vm.renderDefault(h),
-//         header: vm.renderHeader(h),
-//       },
-//     });
-//   },
-// };
+export default {
+  provide() {
+    return {
+      tableColumn: this,
+    };
+  },
+  props: {
+    label: String,
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    handleSolt(name) {
+      if (this.$slot[name]) return this.$slot[name];
+      if (this.$scopedSlots[name]) {
+        return (props) => {
+          return this.$scopedSlots[name]({ ...props });
+        };
+      }
+    },
+    bindDefaultAttrs() {
+      return {};
+    },
+
+    getValue(group) {
+      let { row, column, $index } = group;
+      let val = row[this.$attrs.prop];
+      if (column.formatter) val = column.formatter(row, column, val, $index);
+      return val;
+    },
+
+    renderDefaultSlot() {
+      if (this.$scopedSlots.default) {
+        return (props) => {
+          return this.$scopedSlots.default(props);
+        };
+      }
+      return (props) => this.renderDefault(props);
+    },
+
+    renderDefault(props) {
+      let val = this.getValue(props);
+      return <div class="table-column-lib">{val}</div>;
+    },
+
+    renderHeaderSlot() {
+      if (this.$scopedSlots.header) {
+        return (props) => {
+          return this.$scopedSlots.header(props);
+        };
+      }
+      return (props) => this.renderHeader(props);
+    },
+
+    renderHeader(props) {
+      return [<span>{this.label}</span>, this.renderTooltip()].filter(Boolean);
+    },
+
+    renderTooltip() {
+      let tooltipAttrs = objectFilter(this.$attrs, /_tooltip/) || {};
+      if (!tooltipAttrs.content) return null;
+      return this.$createElement(
+        "el-tooltip",
+        {
+          attrs: {
+            effect: "dark",
+            "raw-content": true,
+            content: tooltipAttrs.content,
+            placement: "top",
+          },
+        },
+        [<i class="el-icon-question mL5"></i>]
+      );
+    },
+  },
+  render() {
+    return this.$createElement("el-table-column", {
+      attrs: {
+        align: "center",
+        ...this.bindDefaultAttrs(),
+        ...this.$attrs,
+      },
+      scopedSlots: {
+        default: this.renderDefaultSlot(),
+        header: this.renderHeaderSlot(),
+      },
+    });
+  },
+};
 </script>
 <style>
+.table-column-lib {
+  display: inline-block;
+  text-align: left;
+}
 .table-column-header {
   display: inline-block;
 }

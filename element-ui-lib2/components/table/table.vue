@@ -17,7 +17,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    console.log("table", this);
+    // console.log("table", this);
   },
   methods: {
     bindLoading() {
