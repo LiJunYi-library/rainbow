@@ -1,8 +1,9 @@
 <script>
-import Select from "./select.vue";
 import dataOptions from "../../mixins/dataOptions";
+import checkboxGroup from "./checkbox-group.vue";
+
 export default {
-  extends: Select,
+  extends: checkboxGroup,
   mixins: [dataOptions],
   props: {
     formatterLabel: {
@@ -22,13 +23,6 @@ export default {
         return item;
       },
     },
-
-    formatterContent: {
-      type: Function,
-      default: (item) => {
-        return null;
-      },
-    },
   },
   methods: {
     bindDefaultAttrs() {
@@ -38,18 +32,37 @@ export default {
       if (!this.data_) return null;
       return (props) =>
         this.data_.map((el) => (
-          <el-option
-            label={this.formatterLabel(el)}
-            value={this.formatterValue(el)}
-          >
+          <el-checkbox label={this.formatterLabel(el)}>
             {this.renderItem(el)}
-          </el-option>
+          </el-checkbox>
         ));
     },
     renderItem(item) {
       if (this.$scopedSlots.default) return this.$scopedSlots.default({ item });
-      return this.formatterContent(item);
+      return this.formatterValue(item);
     },
   },
 };
 </script>
+<style>
+.el-checkbox-list {
+  display: flex;
+}
+.el-checkbox-list .title {
+  padding-top: 8px;
+  padding-right: 10px;
+}
+.el-checkbox-list .checkbox {
+  flex: 1;
+  display: flex;
+}
+.el-checkbox-list .all {
+  padding-right: 10px;
+}
+.el-checkbox-list .groups {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>
+

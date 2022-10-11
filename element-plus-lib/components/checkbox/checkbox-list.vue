@@ -142,6 +142,7 @@ export default {
       if (!this.title) return null;
       return this.renderDefaultTitle(...arg);
     },
+    
     renderDefaultTitle(...arg) {
       return <div class="title">{this.title}</div>;
     },
