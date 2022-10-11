@@ -5,7 +5,9 @@ export default {
       checkboxGroup: this,
     };
   },
-  props: {},
+  props: {
+    value: Array,
+  },
   data() {
     return {};
   },
@@ -36,13 +38,18 @@ export default {
     },
 
     renderGroup() {
+      let vm = this;
       return this.$createElement("el-checkbox-group", {
         attrs: {
           ...this.bindDefaultAttrs(),
           ...this.$attrs,
+          value: this.value,
         },
         on: {
           ...this.$listeners,
+          input: (value) => {
+            vm.$emit("input", value);
+          },
         },
         scopedSlots: {
           default: this.renderDefaultSlot(),

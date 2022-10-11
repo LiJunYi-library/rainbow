@@ -4,11 +4,16 @@ import fetchOptions from "../../mixins/fetchOptions.js";
 export default {
   extends: checkboxList,
   mixins: [fetchOptions],
-  watch: {
-    responseData_(val) {
-      this.arrayList = val;
-      this.handleCheckAllChange(this.checkAll);
+  methods: {
+    bindLoading() {
+      return this.loading_;
+    },
+
+    afterFetch() {
+      this.data_ = this.responseData_;
+      this.handleState();
     },
   },
 };
 </script>
+
