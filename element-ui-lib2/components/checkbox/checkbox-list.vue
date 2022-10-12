@@ -27,6 +27,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showCheckAll: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -65,6 +69,7 @@ export default {
       if (!vm.value.length) vm.isIndeterminate = false;
     },
     renderAllCheckbox() {
+      if(!this.showCheckAll) return null;
       let vm = this;
       return this.$createElement(
         "el-checkbox",
