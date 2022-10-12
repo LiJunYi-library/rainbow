@@ -17,19 +17,6 @@ export default {
         let str = this.getValue(props);
         let tooltipAttrs = objectFilter(this.$attrs, /_tooltip/g);
         let attrs = { placement: "top", ...tooltipAttrs };
-        // return 99999999
-
-        // return (
-        //   <el-tooltip {...attrs}>
-        //     <div slot="content">
-        //       多行信息
-        //       <br />
-        //       第二行信息
-        //     </div>
-        //     <div class="table-column-lib">{str}</div>
-        //   </el-tooltip>
-        // );
-
         return this.$createElement(
           "el-tooltip",
           {
