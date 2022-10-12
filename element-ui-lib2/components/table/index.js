@@ -5,6 +5,8 @@ import tableColumnBut from './table-column-but.vue';
 import tableColumnImg from './table-column-img.vue';
 import tableColumnList from './table-column-list.vue';
 import tableColumnOperation from './table-column-operation.vue';
+import tableColumnTooltip from './table-column-tooltip.vue';
+
 
 export default {
   table,
@@ -14,5 +16,6 @@ export default {
   'table-column-img': tableColumnImg,
   'table-column-list': tableColumnList,
   'table-column-operation': tableColumnOperation,
+  'table-column-tooltip': tableColumnTooltip,
 }
 
