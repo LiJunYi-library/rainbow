@@ -9,9 +9,12 @@ export default {
     currentPage: { type: Number, default: 1 },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
+    calcHeight: Number,
   },
   data() {
-    return {};
+    return {
+      winHeight: window.innerHeight,
+    };
   },
   computed: {},
   watch: {},
@@ -27,9 +30,11 @@ export default {
       let tableAttrs = objectFilter(this.$attrs, /_table/);
       let tableEvent = objectFilter(this.$listeners, /_table/);
       // console.log("tableAttrs", tableAttrs);
+      let  calcHeight =  this.winHeight - this.calcHeight
       return this.$createElement("el-table", {
         attrs: {
           border: true,
+          "max-height": calcHeight || '',
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
@@ -69,7 +74,7 @@ export default {
 
     renderSelection(...arg) {
       if (!this.showSelection) return null;
-      return <el-table-column type="selection" width="55" />;
+      return <el-table-column type="selection" width="55" fixed="left" />;
     },
 
     bindTableDefaultAttrs() {
@@ -84,7 +89,8 @@ export default {
       // console.log("paginationAttrs", paginationAttrs);
       return this.$createElement("el-pagination", {
         attrs: {
-          total: 500,
+          total: 0,
+          class: "el-lib-pagination",
           "current-page": this.currentPage,
           "page-size": this.pageSize,
           layout: "total, sizes, prev, pager, next, jumper",
@@ -120,7 +126,7 @@ export default {
   },
   render() {
     return (
-      <div v-loading={this.bindLoading()}>
+      <div v-loading={this.bindLoading()} class="el-lib-table">
         {this.renderTable()}
         {this.renderPagination()}
       </div>
@@ -129,49 +135,11 @@ export default {
 };
 </script>
 <style lang="scss">
-.mmb-table {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  .mmb-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-    height: 62px;
-    background: white;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    overflow: hidden;
-  }
-  .mmb-table-content {
-    background: white;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    overflow: hidden;
-  }
-  .el-table__header-wrapper {
-    border: 1px solid #dddddd;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: none;
-    box-sizing: border-box;
-  }
-  .el-table__header {
-    colgroup {
-      display: table-column-group;
-      background: #eeeeee;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      border-color: #dddddd;
-      border-bottom: none;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-  }
-  .el-table th,
-  .el-table tr {
-    background-color: #ffffff00;
-  }
+.el-lib-table {
+}
+.el-lib-pagination {
+  text-align: center;
+  padding: 10px 0;
 }
 </style>
+

@@ -8,7 +8,8 @@ export default {
   methods: {
     bindDefaultAttrs() {
       return {
-        width: '100',
+        width: "100",
+        fixed: "right",
       };
     },
   },
