@@ -10,8 +10,7 @@ export default {
       return {
         formatter: (row) => {
           let index = row[this.$attrs.prop] * 1;
-          if (typeof index === "number") return this.status[index];
-          return undefined;
+          return this.status[index];
         },
       };
     },
