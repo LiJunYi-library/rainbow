@@ -10,14 +10,28 @@ export default {
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
     calcHeight: Number,
+    sortProp: String,
+    sortOrder: String,
   },
   data() {
     return {
       winHeight: window.innerHeight,
+      defaultSort: { order: this.sortOrder, prop: this.sortProp },
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    sortProp() {
+      if (this.defaultSort.prop === this.sortProp) return;
+      this.defaultSort.prop = this.sortProp;
+      this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+    },
+    sortOrder() {
+      if (this.defaultSort.order === this.sortOrder) return;
+      this.defaultSort.order = this.sortOrder;
+      this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+    },
+  },
   created() {},
   mounted() {
     // console.log("table", this);
@@ -30,17 +44,20 @@ export default {
       let tableAttrs = objectFilter(this.$attrs, /_table/);
       let tableEvent = objectFilter(this.$listeners, /_table/);
       // console.log("tableAttrs", tableAttrs);
-      let  calcHeight =  this.winHeight - this.calcHeight
+      let calcHeight = this.winHeight - this.calcHeight;
       return this.$createElement("el-table", {
+        ref: "elTable",
         attrs: {
           border: true,
-          "max-height": calcHeight || '',
+          "max-height": calcHeight || "",
+          defaultSort: this.defaultSort,
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
         on: {
           select: (...arg) => this.onSelect(...arg),
           "select-all": (...arg) => this.onSelectAll(...arg),
+          "sort-change": (...arg) => this.onSortChange(...arg),
           ...tableEvent,
         },
         props: {},
@@ -48,6 +65,15 @@ export default {
           default: (...arg) => this.renderTableDefault(...arg),
         },
       });
+    },
+
+    onSortChange(props) {
+      let { prop, order } = props;
+      this.defaultSort.prop = prop;
+      this.defaultSort.order = order;
+      this.$emit("update:sortProp", this.defaultSort.prop);
+      this.$emit("update:sortOrder", this.defaultSort.order);
+      this.$emit("sortChange", this.defaultSort.prop, this.defaultSort.order);
     },
 
     onSelect(list, ...arg) {

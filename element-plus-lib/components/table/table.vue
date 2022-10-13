@@ -174,7 +174,7 @@ export default {
     },
 
     onSortChange(props) {
-      let { column, prop, order } = props;
+      let { prop, order } = props;
       this.defaultSort.prop = prop;
       this.defaultSort.order = order;
       this.$emit("update:sortProp", this.defaultSort.prop);
