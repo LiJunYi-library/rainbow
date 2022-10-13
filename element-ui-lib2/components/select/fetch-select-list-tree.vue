@@ -16,6 +16,12 @@ export default {
     },
     afterFetch() {
       this.data_ = this.responseData_;
+      if (this.selectIndex < 0) return;
+      let current = this.data_[this.selectIndex];
+      let val = this.formatterValue(current);
+      this.$emit("input", val);
+      this.$emit("update:currentItem", current);
+      this.child.callFetchData();
     },
     afterUpdateInput(value) {
       if (!this.lazyLoad) return;

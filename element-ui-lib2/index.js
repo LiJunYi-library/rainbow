@@ -8,8 +8,8 @@ import { useArray } from '@rainbow_ljy/jsapi'
 useArray()
 
 components.install = function install(app) {
-  app.use(ElementUI, { locale })
-  app.use(rainbowUi)
+  if (config.useElementUI) app.use(ElementUI, { locale })
+  if (config.useRainbowUi) app.use(rainbowUi)
 
   for (const key in components) {
     if (Object.hasOwnProperty.call(components, key)) {

@@ -27,6 +27,7 @@ export default {
       },
     },
     currentItem: [String, Number, Object, Array],
+    selectIndex: { type: Number, default: -1 },
   },
   methods: {
     emitInput(value) {
@@ -51,7 +52,20 @@ export default {
       if (!this.child) return;
       if (!this.child.updateInput) return;
       this.child.data_ = this.formatterChild(currentItem);
-      this.child.updateInput("");
+      if (
+        !(
+          this.child.selectIndex >= 0 &&
+          this.child.data_ &&
+          this.child.data_.length
+        )
+      ) {
+        this.child.updateInput("");
+        return;
+      }
+      // console.log("更新 默认值");
+      let current = this.child.data_[this.child.selectIndex];
+      let val = this.formatterValue(current);
+      this.child.updateInput(val);
     },
   },
   created() {
