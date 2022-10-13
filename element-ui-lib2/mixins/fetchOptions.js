@@ -151,5 +151,19 @@ export default {
     this.listenerL.unbindListener();
     this.dataL.unbindListener();
   },
-  methods: {},
+  methods: {
+    bindLoading() {
+      return this.loading_;
+    },
+    callFetchData() {
+      if (this.fetchData instanceof Array) {
+        this.fetchData.forEach((fun) => {
+          fun();
+        });
+      }
+      if (this.fetchData instanceof Function) {
+        this.fetchData();
+      }
+    }
+  },
 };
