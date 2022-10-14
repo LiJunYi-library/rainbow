@@ -29,6 +29,13 @@ export default {
         return null;
       },
     },
+
+    formatterDisabled: {
+      type: Function,
+      default: (item) => {
+        return false;
+      },
+    },
   },
   methods: {
     bindDefaultAttrs() {
@@ -41,6 +48,7 @@ export default {
           <el-option
             label={this.formatterLabel(el)}
             value={this.formatterValue(el)}
+            disabled={this.formatterDisabled(el)}
           >
             {this.renderItem(el)}
           </el-option>

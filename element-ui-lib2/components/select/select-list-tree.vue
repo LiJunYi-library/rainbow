@@ -58,9 +58,22 @@ export default {
       },
     },
 
+    formatterDisabled: {
+      type: Function,
+      default(item) {
+        if (this.parent) return this.parent.formatterDisabled(item);
+        return false;
+      },
+    },
+
     currentItem: [String, Number, Object, Array],
     selectIndex: { type: Number, default: -1 },
     triggerSelectIndex: Boolean,
+  },
+  watch: {
+    value(newV) {
+      this.emitInput(newV);
+    },
   },
   methods: {
     emitInput(value) {
