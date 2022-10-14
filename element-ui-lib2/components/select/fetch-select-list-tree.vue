@@ -15,6 +15,7 @@ export default {
       };
     },
     afterFetch() {
+      // console.log(' afterFetch >>>>>>');
       this.data_ = this.responseData_;
       if (this.selectIndex < 0) return;
       let current = this.data_[this.selectIndex];
