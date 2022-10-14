@@ -21,4 +21,4 @@ components.install = function install(app) {
 const elementUiLib = components;
 
 export * from './dialogs/createDialog';
-export { elementUiLib };
+export { elementUiLib, config };
