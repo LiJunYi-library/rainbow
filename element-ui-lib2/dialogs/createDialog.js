@@ -1,7 +1,7 @@
 
 import Vue from 'vue';
-export function createDialog(template, defaultOptions = {}) {
-  const LogConstructor = Vue.extend(template);
+export function createDialog(template, defaultOptions = {}, app = Vue) {
+  const LogConstructor = app.extend(template);
 
   let instance;
 
