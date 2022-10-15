@@ -3,6 +3,11 @@ import { objectFilter } from "@rainbow_ljy/jsapi";
 
 export default {
   name: "Table",
+  provide() {
+    return {
+      table: this,
+    };
+  },
   props: {
     showPagination: { type: Boolean, default: true },
     showSelection: Boolean,
@@ -15,6 +20,7 @@ export default {
   },
   data() {
     return {
+      columnChildren: [],
       winHeight: window.innerHeight,
       defaultSort: { order: this.sortOrder, prop: this.sortProp },
     };
@@ -51,6 +57,7 @@ export default {
           border: true,
           "max-height": calcHeight || "",
           defaultSort: this.defaultSort,
+          "cell-class-name": (...arg) => this.cell_class_name(...arg),
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
@@ -65,6 +72,10 @@ export default {
           default: (...arg) => this.renderTableDefault(...arg),
         },
       });
+    },
+
+    cell_class_name(props) {
+      return `el-column-${props.column.property}  el-column-${props.columnIndex}`;
     },
 
     onSortChange(props) {

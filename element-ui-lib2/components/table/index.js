@@ -7,6 +7,7 @@ import tableColumnList from './table-column-list.vue';
 import tableColumnOperation from './table-column-operation.vue';
 import tableColumnTooltip from './table-column-tooltip.vue';
 import tableColumnStatus from './table-column-status.vue';
+import tableColumnTable from './table-column-table.vue';
 
 
 export default {
@@ -18,6 +19,7 @@ export default {
   'table-column-list': tableColumnList,
   'table-column-operation': tableColumnOperation,
   'table-column-tooltip': tableColumnTooltip,
-  'table-column-status': tableColumnStatus
+  'table-column-status': tableColumnStatus,
+  'table-column-table': tableColumnTable,
 }
 

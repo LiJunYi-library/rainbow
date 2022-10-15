@@ -7,13 +7,42 @@ export default {
       tableColumn: this,
     };
   },
+  inject: {
+    table: { default: null },
+    tableColumn: { default: null },
+  },
   props: {
     label: String,
   },
   data() {
-    return {};
+    return {
+      columnChildren: [],
+    };
+  },
+  created() {
+    this.addChain("table");
+    this.addChain("tableColumn");
+  },
+  beforeDestroy() {
+    this.removeChain("table");
+    this.removeChain("tableColumn");
   },
   methods: {
+    addChain(key) {
+      let parent = this[key];
+      if (!parent) return;
+      if (!parent.columnChildren) return;
+      if (parent.columnChildren.includes(this)) return;
+      parent.columnChildren.push(this);
+    },
+    removeChain(key) {
+      let parent = this[key];
+      if (!parent) return;
+      if (!parent.columnChildren) return;
+      let index = parent.columnChildren.findIndex((el) => el === this);
+      if (index === -1) return;
+      parent.columnChildren.splice(index, 1);
+    },
     handleSolt(name) {
       if (this.$slot[name]) return this.$slot[name];
       if (this.$scopedSlots[name]) {

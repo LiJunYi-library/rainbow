@@ -4,6 +4,9 @@ import { objectFilter } from "@rainbow_ljy/jsapi";
 export default {
   extends: tableColumn,
   methods: {
+    bindDefaultAttrs() {
+      return { width: 100 };
+    },
     renderDefault(props) {
       let src = this.getValue(props);
       let previewSrcList = [src];
