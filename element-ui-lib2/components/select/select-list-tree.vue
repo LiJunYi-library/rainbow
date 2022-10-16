@@ -12,13 +12,6 @@ export default {
   inject: {
     selectListTree: { default: null },
   },
-  data() {
-    return {
-      root: null,
-      parent: null,
-      child: null,
-    };
-  },
   props: {
     formatterChild: {
       type: Function,
@@ -70,46 +63,122 @@ export default {
     selectIndex: { type: Number, default: -1 },
     triggerSelectIndex: Boolean,
   },
+  data() {
+    return {
+      root: null,
+      parent: null,
+      child: null,
+      layer: 0,
+      isWatch: true,
+      watchTime: null,
+      currentData: undefined,
+    };
+  },
   watch: {
     value(newV) {
+      if (!this.isWatch) return;
+      // console.log("触发了  watch ");
       this.emitInput(newV);
     },
   },
   methods: {
-    emitInput(value) {
-      this.updateInput(value);
-      this.afterUpdateInput(value);
+    shieldWatch() {
+      // console.log("屏蔽  watch ");
+      this.isWatch = false;
+      this.watchTime = setTimeout(() => {
+        this.isWatch = true;
+        // console.log("不屏蔽  watch ");
+      }, 0);
     },
 
-    updateInput(value) {
-      this.$emit("input", value);
-      let current;
-      if (!this.data_) current = undefined;
-      else {
-        current = this.data_.find((el) => value === this.formatterValue(el));
-      }
-      this.$emit("update:currentItem", current);
-      this.handleChild(current);
+    async emitInput(value) {
+      this.shieldWatch();
+      // console.log("emitInput", value);
+      await this.$emit("input", value);
+      // console.log("emitInput", this.value);
+      await this.onValueChange(value);
+      if (this.child) await this.child.handChild();
+      this.$emit("changeTree");
     },
 
-    handleChild(currentItem) {
-      if (!this.child) return;
-      if (!this.child.updateInput) return;
-      this.child.data_ = this.formatterChild(currentItem);
-      if (
-        !(
-          this.child.selectIndex >= 0 &&
-          this.child.data_ &&
-          this.child.data_.length
-        )
-      ) {
-        this.child.updateInput("");
-        return;
+    async handChild() {
+      await this.initCurrentTree();
+      if (this.child) await this.child.handChild();
+    },
+
+    async initCurrentTree() {
+      let isCanSetData = (() => {
+        if (this.layer === 0 && this.selectIndex >= 0) return true;
+        if (!this.parent) return false;
+        if (this.parent.currentData) return true;
+        return false;
+      })();
+
+      if (isCanSetData) await this.setData();
+      else this.data_ = [];
+
+      let isReset = (() => {
+        if (!this.data_) return true;
+        if (!this.data_.length) return true;
+        if (!isCanSetData) return true;
+        return this.selectIndex < 0;
+      })();
+      if (isReset) await this.resetPropsAndData();
+      else await this.onSelectIndexChange();
+    },
+
+    async resetPropsAndData() {
+      // console.log(">>>>>>> 重置 input currentItem data_ ---" + this.layer);
+      this.shieldWatch();
+      await this.$emit("input", "");
+      this.currentData = undefined;
+      await this.$emit("update:currentItem", this.currentData);
+      // console.log("");
+    },
+
+    async onSelectIndexChange() {
+      // console.log("用index设置 currentItem input ---" + this.layer);
+      this.shieldWatch();
+      this.currentData = this.data_[this.selectIndex];
+      let val = this.formatterValue(this.currentData);
+      await this.$emit("input", val);
+      await this.$emit("update:currentItem", this.currentData);
+      // console.log("");
+    },
+
+    async onValueChange(value) {
+      // console.log(">>>>>>> onValueChange  ---" + this.layer);
+      this.currentData = undefined;
+      if (this.data_) {
+        this.currentData = this.data_.find(
+          (el) => value === this.formatterValue(el)
+        );
       }
-      // console.log("更新 默认值");
-      let current = this.child.data_[this.child.selectIndex];
-      let val = this.formatterValue(current);
-      this.child.updateInput(val);
+      await this.$emit("update:currentItem", this.currentData);
+      // console.log("");
+    },
+
+    async setData() {
+      if (!this.parent) return;
+      // console.log(".... setData ****** " + this.layer);
+      this.data_ = this.parent.formatterChild(this.parent.currentData);
+    },
+
+    async setTreeData() {
+      if (this.value) {
+        await this.setData();
+        await this.onValueChange(this.value);
+      } else {
+        await this.initCurrentTree();
+      }
+      if (this.child) await this.child.setTreeData();
+    },
+
+    onTreeMounted() {
+      // console.log("当树创建完成");
+      this.shieldWatch();
+      this.setTreeData();
+      this.$emit("treeMounted");
     },
 
     handleChain() {
@@ -117,31 +186,10 @@ export default {
         this.selectListTree.child = this;
         this.parent = this.selectListTree;
         this.root = this.parent.root;
+        this.layer = this.parent.layer + 1;
       } else {
         this.root = this;
         this.parent = null;
-      }
-    },
-
-    afterUpdateInput(value) {},
-
-    onTreeMounted() {
-      // console.log("当树创建完成");
-      this.setSelectIndex();
-      this.$emit("treeMounted");
-    },
-
-    setSelectIndex() {
-      if (!this.triggerSelectIndex) return;
-      if (this.selectIndex < 0) return;
-      // console.log('setSelectIndex');
-      let current = this.data_[this.selectIndex];
-      let val = this.formatterValue(current);
-      this.$emit("input", val);
-      this.$emit("update:currentItem", current);
-      if (this.child) {
-        this.child.data_ = this.formatterChild(current);
-        this.child.setSelectIndex();
       }
     },
   },

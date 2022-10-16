@@ -55,7 +55,7 @@ export default {
         ref: "elTable",
         attrs: {
           border: true,
-          "max-height": calcHeight || "",
+          "max-height": `${calcHeight || 0}px`,
           defaultSort: this.defaultSort,
           "cell-class-name": (...arg) => this.cell_class_name(...arg),
           ...this.bindTableDefaultAttrs(),

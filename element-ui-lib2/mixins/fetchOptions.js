@@ -155,14 +155,15 @@ export default {
     bindLoading() {
       return this.loading_;
     },
-    callFetchData() {
+    async callFetchData() {
       if (this.fetchData instanceof Array) {
-        this.fetchData.forEach((fun) => {
-          fun();
+        await this.fetchData.forEach(async (fun) => {
+          await fun();
         });
       }
       if (this.fetchData instanceof Function) {
-        this.fetchData();
+        let res = await this.fetchData();
+        return res
       }
     }
   },

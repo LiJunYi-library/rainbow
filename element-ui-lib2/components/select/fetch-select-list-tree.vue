@@ -15,21 +15,16 @@ export default {
       };
     },
     afterFetch() {
-      // console.log(' afterFetch >>>>>>');
       this.data_ = this.responseData_;
-      if (this.selectIndex < 0) return;
-      let current = this.data_[this.selectIndex];
-      let val = this.formatterValue(current);
-      this.$emit("input", val);
-      this.$emit("update:currentItem", current);
-      this.child.callFetchData();
     },
-    afterUpdateInput(value) {
+
+    async setData(current) {
       if (!this.lazyLoad) return;
-      if (!this.child) return;
-      if (!this.child.callFetchData) return;
-      if (!value) return;
-      this.child.callFetchData();
+      if (!this.callFetchData) return;
+      // console.log("Fetch  setData ******** " + this.layer, this.value);
+      let res = await this.callFetchData();
+      // console.log("Fetch  setData **** " + this.layer);
+      return res;
     },
   },
 };
