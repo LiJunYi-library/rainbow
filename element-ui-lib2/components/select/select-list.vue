@@ -37,7 +37,25 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      currentData: undefined,
+    };
+  },
+  created() {
+    if (this.value && this.trigger) this.emitInput(this.value);
+  },
   methods: {
+    emitInput(value) {
+      this.$emit("input", value);
+      this.currentData = undefined;
+      if (this.data_) {
+        this.currentData = this.data_.find(
+          (el) => value === this.formatterValue(el)
+        );
+      }
+      this.$emit("update:currentItem", this.currentData);
+    },
     bindDefaultAttrs() {
       return {};
     },

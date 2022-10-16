@@ -2,6 +2,7 @@
 export default {
   props: {
     value: [String, Number, Object, Array],
+    trigger: Boolean,
   },
   data() {
     return {};
