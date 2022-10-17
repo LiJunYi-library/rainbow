@@ -144,6 +144,7 @@ export default {
       let val = this.formatterValue(this.currentData);
       await this.$emit("input", val);
       await this.$emit("update:currentItem", this.currentData);
+      this.$emit("selectIndex");
       // console.log("");
     },
 
@@ -156,6 +157,7 @@ export default {
         );
       }
       await this.$emit("update:currentItem", this.currentData);
+      this.$emit("valueChange");
       // console.log("");
     },
 
