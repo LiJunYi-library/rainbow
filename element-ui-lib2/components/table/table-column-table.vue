@@ -39,22 +39,35 @@ export default {
             ...EVENTS,
           },
           scopedSlots: {
-            default: (...arg) => this.renderTableDefault(...arg),
+            default: (group) => {
+              // group.parent = props;
+              // console.log(";;;;;;;;;;;;;;;;;", group);
+              return this.renderTableDefault(props);
+            },
+            empty: () => this.renderTableEmpty(props),
           },
         });
       };
     },
 
     renderTableDefault(props) {
-      //  console.log(">>>>>>>>>>>", this);
+      // console.log(">>>>>>>>>>>", this);
       // console.log(">>>>>>>>>>>", this.columnChildren);
       if (this.$slots.default) return this.$slots.default;
       if (this.$scopedSlots.default) return this.$scopedSlots.default(props);
       return null;
     },
 
+    renderTableEmpty(props) {
+      //  console.log(">>>>>>>>>>>", this);
+      // console.log(">>>>>>>>>>>", this.columnChildren);
+      if (this.$slots.empty) return this.$slots.empty;
+      if (this.$scopedSlots.empty) return this.$scopedSlots.empty(props);
+      return null;
+    },
+
     mounted() {
-      console.log(">>>>>>>>>>>", this.$refs);
+      // console.log(">>>>>>>>>>>", this.$refs);
     },
   },
 };

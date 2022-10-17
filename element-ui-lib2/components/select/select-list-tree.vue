@@ -133,6 +133,7 @@ export default {
       await this.$emit("input", "");
       this.currentData = undefined;
       await this.$emit("update:currentItem", this.currentData);
+      this.$emit("empty");
       // console.log("");
     },
 
