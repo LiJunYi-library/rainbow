@@ -1,6 +1,8 @@
 <script>
 import SelectList from "./select-list.vue";
 import dataOptions from "../../mixins/dataOptions";
+import { Queue, QueuePromise } from "@rainbow_ljy/jsapi";
+
 export default {
   extends: SelectList,
   mixins: [dataOptions],
@@ -72,16 +74,27 @@ export default {
       isWatch: true,
       watchTime: null,
       currentData: undefined,
+      mergeWatchEvent: new QueuePromise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(true);
+        }, 0);
+      }),
     };
   },
   watch: {
     value(newV) {
       if (!this.isWatch) return;
       // console.log("触发了  watch ");
-      this.emitInput(newV);
+      this.root.margeEvents(newV);
     },
   },
   methods: {
+    async margeEvents(newV) {
+      await this.mergeWatchEvent;
+      // console.log("合并  事件 ");
+      this.shieldWatch();
+      this.setTreeData();
+    },
     shieldWatch() {
       // console.log("屏蔽  watch ");
       this.isWatch = false;
