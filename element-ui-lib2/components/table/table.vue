@@ -51,13 +51,16 @@ export default {
       let tableEvent = objectFilter(this.$listeners, /_table/);
       // console.log("tableAttrs", tableAttrs);
       let calcHeight = this.winHeight - this.calcHeight;
+      let attrs = {
+        border: true,
+        defaultSort: this.defaultSort,
+        "cell-class-name": (...arg) => this.cell_class_name(...arg),
+      };
+      if (this.calcHeight) attrs["max-height"] = `${calcHeight || 0}px`;
       return this.$createElement("el-table", {
         ref: "elTable",
         attrs: {
-          border: true,
-          "max-height": `${calcHeight || 0}px`,
-          defaultSort: this.defaultSort,
-          "cell-class-name": (...arg) => this.cell_class_name(...arg),
+          ...attrs,
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
