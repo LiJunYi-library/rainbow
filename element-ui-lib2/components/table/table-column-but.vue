@@ -25,6 +25,10 @@ export default {
     },
 
     renderDefault(props) {
+      return this.renderButton(props);
+    },
+
+    renderButton(props) {
       let style = {
         "white-space": "pre-wrap",
         "text-align": "left",
