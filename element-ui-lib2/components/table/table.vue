@@ -23,6 +23,7 @@ export default {
       columnChildren: [],
       winHeight: window.innerHeight,
       defaultSort: { order: this.sortOrder, prop: this.sortProp },
+      emitSortChange: true,
     };
   },
   computed: {},
@@ -30,12 +31,16 @@ export default {
     sortProp() {
       if (this.defaultSort.prop === this.sortProp) return;
       this.defaultSort.prop = this.sortProp;
+      this.emitSortChange = false;
       this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+      this.emitSortChange = true;
     },
     sortOrder() {
       if (this.defaultSort.order === this.sortOrder) return;
       this.defaultSort.order = this.sortOrder;
+      this.emitSortChange = false;
       this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+      this.emitSortChange = true;
     },
   },
   created() {},
@@ -82,12 +87,14 @@ export default {
     },
 
     onSortChange(props) {
+      if (!this.emitSortChange) return;
       let { prop, order } = props;
       this.defaultSort.prop = prop;
       this.defaultSort.order = order;
       this.$emit("update:sortProp", this.defaultSort.prop);
       this.$emit("update:sortOrder", this.defaultSort.order);
       this.$emit("sortChange", this.defaultSort.prop, this.defaultSort.order);
+      this.emitSortChange = true;
     },
 
     onSelect(list, ...arg) {
