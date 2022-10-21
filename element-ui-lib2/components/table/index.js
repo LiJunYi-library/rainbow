@@ -9,6 +9,8 @@ import tableColumnTooltip from './table-column-tooltip.vue';
 import tableColumnStatus from './table-column-status.vue';
 import tableColumnTable from './table-column-table.vue';
 import tableColumnSelectList from './table-column-select-list.vue';
+import tableColumnFixed from './table-column-fixed.vue';
+
 
 export default {
   table,
@@ -22,5 +24,6 @@ export default {
   'table-column-status': tableColumnStatus,
   'table-column-table': tableColumnTable,
   'table-column-select-list': tableColumnSelectList,
+  'table-column-fixed': tableColumnFixed,
 }
 

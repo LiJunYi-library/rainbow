@@ -3,6 +3,7 @@ export default {
   props: {
     value: [String, Number, Object, Array],
     trigger: Boolean,
+    label: String,
   },
   data() {
     return {};
@@ -105,6 +106,7 @@ export default {
   render() {
     return (
       <div class="el-lib-select">
+        {this.label && <div>{this.label}</div>}
         {this.renderStrat()}
         {this.renderElement()}
         {this.renderEnd()}
@@ -116,5 +118,6 @@ export default {
 <style>
 .el-lib-select {
   display: inline-flex;
+  align-items: center;
 }
 </style>
