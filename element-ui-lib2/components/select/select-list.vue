@@ -47,17 +47,20 @@ export default {
   },
   methods: {
     emitInput(value) {
-      this.$emit("input", value);
       this.currentData = undefined;
       if (this.data_) {
         this.currentData = this.data_.find(
           (el) => value === this.formatterValue(el)
         );
       }
+      this.$emit("input", value);
       this.$emit("update:currentItem", this.currentData);
     },
     bindDefaultAttrs() {
       return {};
+    },
+    onChange(val) {
+      this.$emit("change", val, this.currentData);
     },
     renderDefaultSlot(props) {
       if (!this.data_) return null;

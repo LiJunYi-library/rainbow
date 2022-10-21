@@ -55,6 +55,15 @@ export default {
       this.$emit("input", value);
     },
 
+    bindDefaultEvents() {
+      return {};
+    },
+
+    onChange(val) {
+      console.log(">>>>>>", val);
+      this.$emit("change", val);
+    },
+
     renderElement() {
       return this.$createElement("el-select", {
         attrs: {
@@ -64,8 +73,10 @@ export default {
           value: this.value,
         },
         on: {
+          ...this.bindDefaultEvents(),
           ...this.$listeners,
           input: (value) => this.emitInput(value),
+          change: (value) => this.onChange(value),
         },
         scopedSlots: {
           default: this.renderDefaultSlot(),

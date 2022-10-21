@@ -40,6 +40,10 @@ export default {
       };
     },
 
+    afterFetch() {
+      this.$refs.elTable.doLayout();
+    },
+
     // renderDefaultEmpty(...arg) {
     //   if (this.isFetchError) return this.renderDefaultError(...arg);
     //   return [<div class="empty">暂无数据</div>];

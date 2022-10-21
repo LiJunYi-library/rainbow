@@ -79,6 +79,7 @@ export default {
           resolve(true);
         }, 0);
       }),
+      node: null,
     };
   },
   watch: {
@@ -106,10 +107,10 @@ export default {
 
     async emitInput(value) {
       this.shieldWatch();
-      // console.log("emitInput", value);
+      this.changeCurrentData(value);
+      await this.$emit("update:currentItem", this.currentData);
       await this.$emit("input", value);
-      // console.log("emitInput", this.value);
-      await this.onValueChange(value);
+      this.$emit("valueChange");
       if (this.child) await this.child.handChild();
       this.$emit("changeTree");
     },
@@ -161,14 +162,18 @@ export default {
       // console.log("");
     },
 
-    async onValueChange(value) {
-      // console.log(">>>>>>> onValueChange  ---" + this.layer);
+    changeCurrentData(value) {
       this.currentData = undefined;
       if (this.data_) {
         this.currentData = this.data_.find(
           (el) => value === this.formatterValue(el)
         );
       }
+    },
+
+    async onValueChange(value) {
+      // console.log(">>>>>>> onValueChange  ---" + this.layer);
+      this.changeCurrentData(value);
       await this.$emit("update:currentItem", this.currentData);
       this.$emit("valueChange");
       // console.log("");
@@ -176,7 +181,7 @@ export default {
 
     async setData() {
       if (!this.parent) return;
-      // console.log(".... setData ****** " + this.layer);
+      console.log(".... setData ****** " + this.layer);
       this.data_ = this.parent.formatterChild(this.parent.currentData);
     },
 
@@ -190,11 +195,16 @@ export default {
       if (this.child) await this.child.setTreeData();
     },
 
-    onTreeMounted() {
+    async onTreeMounted() {
       // console.log("当树创建完成");
-      this.shieldWatch();
-      this.setTreeData();
       this.$emit("treeMounted");
+      this.shieldWatch();
+      await this.setTreeData();
+      this.$emit("treeDataMounted");
+    },
+
+    onParentDataSet(){
+
     },
 
     handleChain() {
