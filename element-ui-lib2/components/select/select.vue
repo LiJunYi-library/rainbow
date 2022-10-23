@@ -68,6 +68,7 @@ export default {
     renderElement() {
       return this.$createElement("el-select", {
         attrs: {
+          class:"el-lib-select",
           clearable: true,
           ...this.bindDefaultAttrs(),
           ...this.$attrs,
@@ -106,7 +107,7 @@ export default {
   render() {
     return (
       <div class="el-lib-select">
-        {this.label && <div>{this.label}</div>}
+        {this.label && <div class="label">{this.label}</div>}
         {this.renderStrat()}
         {this.renderElement()}
         {this.renderEnd()}
@@ -119,5 +120,12 @@ export default {
 .el-lib-select {
   display: inline-flex;
   align-items: center;
+}
+
+.el-lib-select .label{
+  white-space: nowrap;
+}
+.el-lib-select{
+  min-width: 100px;
 }
 </style>
