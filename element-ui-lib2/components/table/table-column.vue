@@ -13,6 +13,7 @@ export default {
   },
   props: {
     label: String,
+    showOverflowTooltip: Boolean,
   },
   data() {
     return {
@@ -73,10 +74,7 @@ export default {
 
     renderDefault(props) {
       let val = this.getValue(props);
-      let els = this.$attrs["show-overflow-tooltip"];
-      let els2 = this.$attrs["showOverflowTooltip"];
-      let ellls = els || els2;
-      if (ellls) return val;
+      if (this.showOverflowTooltip) return val;
       return <div class="table-column-lib">{val}</div>;
     },
 
