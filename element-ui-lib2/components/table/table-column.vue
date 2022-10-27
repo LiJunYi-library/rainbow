@@ -112,6 +112,7 @@ export default {
     return this.$createElement("el-table-column", {
       attrs: {
         align: "center",
+        showOverflowTooltip:this.showOverflowTooltip,
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
       },

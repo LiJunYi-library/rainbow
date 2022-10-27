@@ -10,4 +10,10 @@ export default {
       }
     }
   },
+  created() {
+
+  },
+  beforeDestroy() {
+
+  },
 };

@@ -1,12 +1,13 @@
 {
   "name": "@rainbow_ljy/element-ui-lib2",
-  "version": "1.0.22",
+  "version": "1.0.29",
   "description": "",
   "private": false,
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "pnpm publish --access=public --no-git-checks"
   },
   "author": "",
   "license": "ISC",
