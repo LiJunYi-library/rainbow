@@ -1,5 +1,7 @@
 <script>
+import base from "../../mixins/base";
 export default {
+  mixins: [base],
   methods: {
     bindDefaultAttrs() {
       return {};
@@ -13,9 +15,10 @@ export default {
           ...this.bindDefaultAttrs(),
           ...this.$attrs,
         },
-        on:{
+        on: {
           ...this.$listeners,
-        }
+        },
+        ...this.bindDefaultProperty(),
       },
       this.$slots.default
     );

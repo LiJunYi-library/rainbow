@@ -1,5 +1,7 @@
 <script>
+import base from "../../mixins/base";
 export default {
+  mixins: [base],
   provide() {
     return {
       checkboxGroup: this,
@@ -54,6 +56,7 @@ export default {
         scopedSlots: {
           default: this.renderDefaultSlot(),
         },
+        ...this.bindDefaultProperty(),
       });
     },
   },

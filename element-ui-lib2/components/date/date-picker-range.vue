@@ -1,9 +1,11 @@
 <script>
-import {useDate} from '@rainbow_ljy/jsapi';
+import { useDate } from "@rainbow_ljy/jsapi";
 useDate();
+import base from "../../mixins/base";
 
 export default {
   // inheritAttrs: false,
+  mixins: [base],
   props: {
     type: String,
     trigger: Boolean,
@@ -17,8 +19,8 @@ export default {
     disabledDateEnd: Date,
     defaultStartValue: Date,
     defaultEndValue: Date,
-    startValue: {type: [String, Number, Object, Array, Date], default: ''},
-    endValue: {type: [String, Number, Object, Array, Date], default: ''},
+    startValue: { type: [String, Number, Object, Array, Date], default: "" },
+    endValue: { type: [String, Number, Object, Array, Date], default: "" },
 
     fromEndDateAgo: {
       type: Object,
@@ -39,7 +41,7 @@ export default {
       startValueData: this.startValue,
       endValueData: this.endValue,
       pickerOptions: {
-        disabledDate: time => {
+        disabledDate: (time) => {
           return (
             time.getTime() > this.disabledDateEnd ||
             time.getTime() < this.disabledDateStart
@@ -83,8 +85,8 @@ export default {
       if (!verdict) return;
       this.startValueData = arr[0];
       this.endValueData = arr[1];
-      this.$emit('update:startValue', arr[0]);
-      this.$emit('update:endValue', arr[1]);
+      this.$emit("update:startValue", arr[0]);
+      this.$emit("update:endValue", arr[1]);
       // console.log("emitInput :::", this.startValueData, this.endValueData);
     },
     bindDefaultAttrs() {
@@ -95,9 +97,9 @@ export default {
     },
   },
   render() {
-    return this.$createElement('el-date-picker', {
+    return this.$createElement("el-date-picker", {
       attrs: {
-        'picker-options': this.pickerOptions,
+        "picker-options": this.pickerOptions,
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
         type: this.type,
@@ -106,8 +108,9 @@ export default {
       on: {
         ...this.bindDefaultEvents(),
         ...this.$listeners,
-        input: arr => this.emitInput(arr),
+        input: (arr) => this.emitInput(arr),
       },
+      ...this.bindDefaultProperty(),
     });
   },
 };

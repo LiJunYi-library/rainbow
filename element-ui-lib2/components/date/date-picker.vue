@@ -1,9 +1,10 @@
 <script>
-import {useDate} from '@rainbow_ljy/jsapi';
+import { useDate } from "@rainbow_ljy/jsapi";
 useDate();
+import base from "../../mixins/base";
 
 export default {
-  // inheritAttrs: false,
+  mixins: [base],
   props: {
     type: String,
     trigger: Boolean,
@@ -15,7 +16,7 @@ export default {
     },
     disabledDateStart: Date,
     disabledDateEnd: Date,
-    value: {type: [String, Number, Object, Array, Date], default: ''},
+    value: { type: [String, Number, Object, Array, Date], default: "" },
     defaultValue: Date,
 
     dateAgo: {
@@ -37,7 +38,7 @@ export default {
     return {
       valueData: this.value,
       pickerOptions: {
-        disabledDate: time => {
+        disabledDate: (time) => {
           return (
             time.getTime() > this.disabledDateEnd ||
             time.getTime() < this.disabledDateStart
@@ -67,12 +68,12 @@ export default {
     },
     initMount() {},
     async emitInput(value) {
-    //  console.log('emitInput :::      bbbbb', value);
+      //  console.log('emitInput :::      bbbbb', value);
       const verdict = this.verdict(value);
       if (!verdict) return;
-      console.log('emitInput :::', value);
+      console.log("emitInput :::", value);
       this.valueData = value;
-      this.$emit('input', value);
+      this.$emit("input", value);
     },
     bindDefaultAttrs() {
       return {};
@@ -82,9 +83,9 @@ export default {
     },
   },
   render() {
-    return this.$createElement('el-date-picker', {
+    return this.$createElement("el-date-picker", {
       attrs: {
-        'picker-options': this.pickerOptions,
+        "picker-options": this.pickerOptions,
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
         type: this.type,
@@ -93,8 +94,9 @@ export default {
       on: {
         ...this.bindDefaultEvents(),
         ...this.$listeners,
-        input: value => this.emitInput(value),
+        input: (value) => this.emitInput(value),
       },
+      ...this.bindDefaultProperty(),
     });
   },
 };
