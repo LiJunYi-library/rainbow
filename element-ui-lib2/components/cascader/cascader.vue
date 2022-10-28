@@ -4,7 +4,7 @@ import dataOptions from "../../mixins/dataOptions";
 import base from "../../mixins/base";
 
 export default {
-  mixins: [dataOptions],
+  mixins: [dataOptions,base],
   props: {
     trigger: Boolean,
     label: String,
