@@ -12,6 +12,7 @@ export default {
   },
   methods: {
     renderDefault(props) {
+      console.log(this.responseData_);
       return (
         <div class="fetch-upload-img" v-loading={this.loading_}>
           {this.loading_ && <img src={this.base64_} class="chooseImg" />}
