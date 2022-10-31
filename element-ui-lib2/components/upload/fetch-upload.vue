@@ -26,6 +26,7 @@ export default {
   methods: {
     handleChange(e) {
       this.file_ = e.target.files[0];
+      console.log("handleChange", e.target.files);
       if (!this.file_) return;
       var reader = new FileReader();
       reader.readAsDataURL(this.file_);
@@ -33,9 +34,12 @@ export default {
         this.base64_ = reader.result;
         this.$emit("update:base64", this.base64_);
         this.$emit("update:file", this.file_);
+        this.afterTransitionFile();
         this.$emit("choose", this.file_, this.base64_);
       };
     },
+
+    afterTransitionFile() {},
 
     bindDefaultAttrs() {
       return {};
@@ -114,5 +118,6 @@ export default {
   left: 0;
   top: 0;
   opacity: 0;
+  z-index: 100;
 }
 </style>

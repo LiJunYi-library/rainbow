@@ -69,11 +69,12 @@ export default {
       if (!vm.value.length) vm.isIndeterminate = false;
     },
     renderAllCheckbox() {
-      if(!this.showCheckAll) return null;
+      if (!this.showCheckAll) return null;
       let vm = this;
       return this.$createElement(
         "el-checkbox",
         {
+          class: "checkbox-all",
           attrs: {
             indeterminate: this.isIndeterminate,
             value: this.checkAll,

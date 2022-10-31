@@ -25,7 +25,7 @@ export default {
       this.$el.remove();
     },
     renderContent() {
-      return <div>快速表单提交</div>;
+      return <div></div>;
     },
     renderfromItems() {
       let formItemsNode = [];
@@ -66,7 +66,17 @@ export default {
       // console.log("child", child);
       // console.log("child", child instanceof Function);
       if (child instanceof Function) return child(this.fromData, formItem, key);
-      return <el-input v-model={this.fromData[key]}></el-input>;
+      return this.$createElement("el-input", {
+        attrs: {
+          size: "mini",
+          value: this.fromData[key],
+          ...child,
+        },
+        on: {
+          input: (a) => (this.fromData[key] = a),
+        },
+      });
+      // <el-input  v-model={this.fromData[key]}></el-input>;
     },
     hiddle() {
       this.visible = false;
@@ -109,7 +119,9 @@ export default {
     },
 
     renderDefaultSlot() {
+      // console.log(this.$data);
       let attrs = {
+        ...this.$data,
         model: this.fromData,
       };
       if (this.rules) attrs.rules = this.rules;

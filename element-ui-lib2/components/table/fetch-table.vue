@@ -30,13 +30,19 @@ export default {
       return this.loading_;
     },
     bindPaginationDefaultAttrs() {
-      let total = this.setTotal(this.responseData_) || 0;
+      let total = 0;
+      try {
+        total = this.setTotal(this.responseData_) || 0;
+      } catch (error) {}
       return { total };
     },
     bindTableDefaultAttrs() {
-      let vm = this;
+      let data = [];
+      try {
+        data = this.setList(this.responseData_) || [];
+      } catch (error) {}
       return {
-        data: vm.setList(vm.responseData_) || [],
+        data,
       };
     },
 

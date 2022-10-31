@@ -111,7 +111,7 @@ export default {
     isAwait: { type: Boolean, default: false }, // 是否等待请求完成
     filterBlur: { type: Boolean, default: false }, // 是否是模糊
     loading: { type: Boolean, default: false }, // 是否在加载
-    responseData: [Array, Object, Boolean, String, Number], // 请求数据
+    responseData: [Array, Object, String, Number], // 请求数据
     fetchData: [Function, Object, Promise, Array], // 请求函数
     fetchListener: [Function, Object, Promise, Array], // 监听请求
   },
