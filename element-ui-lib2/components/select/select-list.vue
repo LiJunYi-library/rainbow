@@ -36,16 +36,29 @@ export default {
         return false;
       },
     },
+    currentItem: [String, Number, Object, Array],
+    selectIndex: { type: Number, default: -1 },
+    triggerSelectIndex: Boolean,
   },
   data() {
     return {
-      currentData: undefined,
+      currentData: this.currentItem,
     };
   },
   created() {
-    if (this.value && this.trigger) this.emitInput(this.value);
+    this.initcreated();
   },
   methods: {
+    initcreated() {
+      if (this.value && this.trigger) this.emitInput(this.value);
+      if (this.triggerSelectIndex && this.selectIndex >= 0) {
+        this.currentData = this.data_[this.selectIndex];
+        let value = this.formatterValue(this.currentData);
+        this.$emit("input", value);
+        this.$emit("update:currentItem", this.currentData);
+      }
+    },
+
     emitInput(value) {
       this.currentData = undefined;
       if (this.data_) {
