@@ -1,5 +1,6 @@
 <script>
 import { objectFilter } from "@rainbow_ljy/jsapi";
+import { renderSlot, renderScopedSlots } from "../../utils";
 
 export default {
   provide() {
@@ -69,7 +70,19 @@ export default {
           return this.$scopedSlots.default(props);
         };
       }
-      return (props) => this.renderDefault(props);
+      return (props) => [
+        renderSlot.call(this, "start", props, this.renderStart),
+        this.renderDefault(props),
+        renderSlot.call(this, "end", props, this.renderEnd),
+      ];
+    },
+
+    renderStart(props) {
+      return null;
+    },
+
+    renderEnd(props) {
+      return null;
     },
 
     renderDefault(props) {
@@ -112,7 +125,7 @@ export default {
     return this.$createElement("el-table-column", {
       attrs: {
         align: "center",
-        showOverflowTooltip:this.showOverflowTooltip,
+        showOverflowTooltip: this.showOverflowTooltip,
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
       },

@@ -9,7 +9,7 @@ export default {
   extends: tableColumn,
   props: {
     linkProp: String,
-    buttonText: String,
+    text: String,
   },
   methods: {
     onClick(scope) {
@@ -34,16 +34,16 @@ export default {
         "text-align": "left",
         "line-height": "18px",
       };
-      let buttonAttrs = objectFilter(this.$attrs, /_link/g);
-      let buttonEvent = this.$listeners;
-      let str = this.buttonText || this.getValue(props);
+      let ATTRS = objectFilter(this.$attrs, /_link/g);
+      let EVENTS = this.$listeners;
+      let str = this.text || this.getValue(props);
       return this.$createElement(
         "el-link",
         {
           style,
           attrs: {
             type: "primary",
-            ...buttonAttrs,
+            ...ATTRS,
           },
           on: {
             click: () => this.onClick(props),
