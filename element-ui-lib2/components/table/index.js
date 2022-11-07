@@ -10,7 +10,7 @@ import tableColumnStatus from './table-column-status.vue';
 import tableColumnTable from './table-column-table.vue';
 import tableColumnSelectList from './table-column-select-list.vue';
 import tableColumnFixed from './table-column-fixed.vue';
-
+import tableColumnLink from './table-column-link.vue';
 
 export default {
   table,
@@ -25,5 +25,6 @@ export default {
   'table-column-table': tableColumnTable,
   'table-column-select-list': tableColumnSelectList,
   'table-column-fixed': tableColumnFixed,
+  'table-column-link': tableColumnLink,
 }
 

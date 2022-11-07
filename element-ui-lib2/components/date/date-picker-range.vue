@@ -79,8 +79,9 @@ export default {
       this.emitInput(dates);
     },
     initMount() {},
-    async emitInput(arr) {
-      // console.log('emitInput :::      bbbbb', arr);
+    async emitInput(arr = ["", ""]) {
+      if (!arr) arr = ["", ""];
+      // console.log("emitInput :::      bbbbb", arr);
       const verdict = this.verdict(arr);
       if (!verdict) return;
       this.startValueData = arr[0];

@@ -48,6 +48,12 @@ export default {
   created() {
     this.initcreated();
   },
+  watch: {
+    data() {
+      this.data_ = this.data;
+      this.initcreated();
+    },
+  },
   methods: {
     initcreated() {
       if (this.value && this.trigger) this.emitInput(this.value);
