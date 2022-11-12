@@ -70,6 +70,7 @@ class FetchListener {
           );
 
           vm.$emit('update:loading', vm.loading_);
+          vm.$emit('afterFetch', vm.responseData_);
         });
     };
 

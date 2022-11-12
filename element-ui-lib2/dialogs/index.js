@@ -52,8 +52,10 @@ export let fromDialog = extend(
         for (const key in fromItems) {
           if (Object.hasOwnProperty.call(fromItems, key)) {
             const ele = fromItems[key];
-            from_data[key] = ele.value || '';
-            if (datas.fromData && ele.value) datas.fromData[key] = ele.value;
+            let v = ele.value;
+            if (v === undefined) v = '';
+            from_data[key] = v;
+            if (datas.fromData && v) datas.fromData[key] = v;
           }
         }
 

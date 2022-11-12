@@ -18,9 +18,15 @@ export default {
   },
   watch: {},
   mounted() {
-    /** */
+    this._initMounted();
   },
   methods: {
+    async _initMounted() {
+      this.loading = true;
+      await this.initMounted(this);
+      this.loading = false;
+    },
+    initMounted(vm) {},
     closed() {
       this.$el.remove();
     },

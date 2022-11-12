@@ -15,6 +15,7 @@ export default {
       type: String,
       default: "上传",
     },
+    showLink: Boolean,
   },
   data() {
     return { file_: this.file, base64_: this.base64 };
@@ -84,6 +85,14 @@ export default {
     renderEnd(props) {
       return null;
     },
+
+    remove() {
+      if (this.$listeners.remove) {
+        this.$listeners.remove(this.responseData_);
+        return;
+      }
+      this.$emit("update:responseData", "");
+    },
   },
   render() {
     return (
@@ -98,6 +107,20 @@ export default {
           />
           {this.renderDefaultSlot()}
         </div>
+
+        {this.responseData_ && this.showLink && (
+          <div class="r-upload-link-item">
+            <el-link type="primary" onClick={() => open(this.responseData_)}>
+              {this.responseData_}
+            </el-link>
+            <i
+              class="el-icon-circle-close"
+              style={"color:red"}
+              onClick={() => this.remove()}
+            ></i>
+          </div>
+        )}
+
         {this.renderEndSlot()}
       </div>
     );
@@ -119,5 +142,31 @@ export default {
   top: 0;
   opacity: 0;
   z-index: 100;
+}
+
+.r-upload-link-item {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+.r-upload-link-item a {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.r-upload-link-item span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.r-upload-link-item i {
+  width: 20px;
+  margin-top: 10px;
+  text-align: right;
+  cursor: pointer;
 }
 </style>
