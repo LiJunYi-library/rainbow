@@ -4,8 +4,8 @@ import Dialog from './dialog.vue'
 
 export type ExtendConfig = {
   tem: any,
-  beforeInstance?: () => void,
-  afterInstance?: () => void,
+  beforeInstance?: (datas?: any, methods?: any) => void,
+  afterInstance?: (datas?: any, methods?: any, instance?: any) => void,
   app?: any,
 }
 
@@ -18,3 +18,4 @@ export declare function fromDialog(datas?: any, funs?: any);
 export declare function dialog(datas?: any, funs?: any);
 
 export { FromDialog, Dialog };
+
