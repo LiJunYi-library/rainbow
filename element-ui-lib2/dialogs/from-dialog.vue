@@ -10,6 +10,7 @@ export default {
       cancelText: "",
       title: "提 交bd",
       confirmText: "提 交",
+      showErrorMessage: true,
 
       fromData: {},
       rules: null,
@@ -69,7 +70,7 @@ export default {
       return formItemsNode;
     },
     renderfromItemChild(formItem, key, child) {
-      // console.log("child", child);
+      // console.log("renderfromItemChild", this.fromData);
       // console.log("child", child instanceof Function);
       if (child instanceof Function) return child(this.fromData, formItem, key);
       return this.$createElement("el-input", {
@@ -90,8 +91,23 @@ export default {
     confirm() {
       //
     },
-    onErrorSubmit() {
-      console.log("error submit!!");
+    onErrorSubmit(unPass) {
+      this.errorMessage(unPass);
+    },
+
+    errorMessage(unPass = {}) {
+      if (!this.showErrorMessage) return;
+      let content = [];
+      for (const key in unPass) {
+        if (Object.hasOwnProperty.call(unPass, key)) {
+          const element = unPass[key][0] || {};
+          content.push(<div>{element.message}</div>);
+        }
+      }
+      this.$message({
+        message: this.$createElement("div", { style: "color:red" }, content),
+        type: "error",
+      });
     },
 
     async onSubmit() {
@@ -100,7 +116,7 @@ export default {
 
     async confirmClick() {
       if (this.loading) return;
-      await this.$refs.ruleForm.validate(async (valid) => {
+      await this.$refs.ruleForm.validate(async (valid, unPass) => {
         if (valid) {
           this.loading = true;
           let res = await this.onSubmit(this);
@@ -110,7 +126,7 @@ export default {
             this.hiddle();
           }
         } else {
-          this.onErrorSubmit(this);
+          this.onErrorSubmit(unPass, this);
           return false;
         }
       });

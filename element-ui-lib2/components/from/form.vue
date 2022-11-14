@@ -6,6 +6,7 @@ export default {
   props: {
     submit: Function,
     reset: Function,
+    showErrorMessage: { type: Boolean, default: true },
   },
   render() {
     return this.$createElement("el-form", {
@@ -29,17 +30,33 @@ export default {
     //
   },
   methods: {
+    errorMessage(unPass) {
+      if (!this.showErrorMessage) return;
+      let content = [];
+      for (const key in unPass) {
+        if (Object.hasOwnProperty.call(unPass, key)) {
+          const element = unPass[key][0] || {};
+          content.push(<div>{element.message}</div>);
+        }
+      }
+      this.$message({
+        message: this.$createElement("div", { style: "color:red" }, content),
+        type: "error",
+      });
+    },
     setSubmit() {
       if (!this.submit) return;
       this.submit.onApply = () => {
-        this.$refs["el-form"].validate((valid) => {
+        this.$refs["el-form"].validate((valid, unPass) => {
+          // console.log(unPass);
           if (valid) {
             // console.log("success submit!!");
             this.submit.lock = false;
           } else {
             // console.log("error submit!!");
             this.submit.lock = true;
-            this.$emit("onErrorSubmit", this);
+            this.errorMessage(unPass);
+            this.$emit("onErrorSubmit", unPass, this);
             return false;
           }
         });
