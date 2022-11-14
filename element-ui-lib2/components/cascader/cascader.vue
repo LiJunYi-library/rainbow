@@ -4,7 +4,7 @@ import dataOptions from "../../mixins/dataOptions";
 import base from "../../mixins/base";
 
 export default {
-  mixins: [dataOptions,base],
+  mixins: [dataOptions, base],
   props: {
     trigger: Boolean,
     label: String,
@@ -20,6 +20,7 @@ export default {
     currentItem: [Object, Array],
     currentTree: [Object, Array],
     value: { type: [String, Number, Object, Array], default: () => [] },
+    multiple: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -46,13 +47,14 @@ export default {
   },
   methods: {
     renderElement() {
+      let props = { multiple: this.multiple, ...this.props };
       return this.$createElement("el-cascader", {
         ref: "elCascader",
+        class: "lib-el-cascader",
         attrs: {
-          class: "lib-el-cascader",
           clearable: true,
           options: this.data_ || [],
-          props: this.props,
+          props,
           ...this.bindDefaultAttrs(),
           ...this.$attrs,
           value: this.valueData,
