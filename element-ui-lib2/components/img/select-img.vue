@@ -1,7 +1,5 @@
 
 <script>
-import { watch } from "fs";
-
 import dataOptions from "../../mixins/dataOptions";
 export default {
   mixins: [dataOptions],

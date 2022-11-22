@@ -95,7 +95,7 @@ export default {
       this.errorMessage(unPass);
     },
 
-    errorMessage(unPass = {}) {
+    errorMessage(unPass) {
       if (!this.showErrorMessage) return;
       let content = [];
       for (const key in unPass) {
@@ -140,11 +140,16 @@ export default {
       return null;
     },
 
+    bindElFormAttrs() {
+      return {};
+    },
+
     renderDefaultSlot() {
       // console.log(this.$data);
       let attrs = {
         ...this.$data,
         model: this.fromData,
+        ...this.bindElFormAttrs(),
       };
       if (this.rules) attrs.rules = this.rules;
       return (
@@ -188,6 +193,10 @@ export default {
         </div>
       );
     },
+
+    bindElDialogAttrs() {
+      return {};
+    },
   },
   render() {
     return this.$createElement(
@@ -200,6 +209,7 @@ export default {
           width: "500px",
           top: "0px",
           "custom-class": "mmb-log",
+          ...this.bindElDialogAttrs(),
           ...this.$attrs,
         },
         class: "mmb-log-wrapper",

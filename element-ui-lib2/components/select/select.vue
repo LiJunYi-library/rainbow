@@ -1,7 +1,7 @@
 <script>
 export default {
   props: {
-    value: [String, Number, Object, Array],
+    value: [String, Number, Object, Array, Boolean],
     trigger: Boolean,
     label: String,
   },
