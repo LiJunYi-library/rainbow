@@ -7,12 +7,12 @@ export default {
   props: {
     accept: {
       type: String,
-      default: "image/png",
+      default: "image/png,image/jpg,image/jpeg,image/gif",
     },
   },
   methods: {
     renderDefault(props) {
-      console.log(this.responseData_);
+      
       return (
         <div class="fetch-upload-img" v-loading={this.loading_}>
           {this.loading_ && <img src={this.base64_} class="chooseImg" />}

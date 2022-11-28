@@ -7,15 +7,15 @@ export default {
   props: {
     accept: {
       type: String,
-      default: "image/png",
+      default: "image/png,image/jpg,image/jpeg,image/gif",
     },
     url: String,
   },
   methods: {
     renderDefault(props) {
-     let isHaveImg = this.url || this.base64_;
+      let isHaveImg = this.url || this.base64_;
       return (
-        <div class="fetch-upload-img" >
+        <div class="fetch-upload-img">
           {isHaveImg && <img src={isHaveImg} />}
           {!isHaveImg && <i class="icon el-icon-plus"></i>}
         </div>

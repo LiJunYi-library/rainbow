@@ -140,6 +140,7 @@ export default {
           class: "el-lib-pagination",
           "current-page": this.currentPage,
           "page-size": this.pageSize,
+          "page-sizes": [10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
           layout: "total, sizes, prev, pager, next, jumper",
           ...this.bindPaginationDefaultAttrs(),
           ...paginationAttrs,
