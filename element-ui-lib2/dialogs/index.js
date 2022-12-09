@@ -1,9 +1,9 @@
-import Vue from 'vue';
+
 import FromDialog from './from-dialog.vue'
 import Dialog from './dialog.vue'
+import config from '../config'
 
-
-let App = Vue;
+let App = config.APP;
 
 export function useDialog(app) {
   App = app;
@@ -18,6 +18,8 @@ export function extend({ tem, beforeInstance, afterInstance, app = App }) {
       if (beforeInstance) beforeInstance(datas, methods)
       instance = new LogConstructor({
         el: document.createElement('div'),
+        router: config.router,
+        store: config.store,
         data() {
           return {
             ...datas,
@@ -66,6 +68,50 @@ export let fromDialog = extend(
   });
 
 export let dialog = extend({ tem: Dialog })
+
+export function transformDialog(props = {}) {
+  let tem = props.tem;
+  let dialogAttrs = props.dialogAttrs || {};
+  let app = props.app || App;
+
+  return function transform(options = {}) {
+    return new Promise((resolve, reject) => {
+      const dialogConstructor = app.extend(Dialog);
+      let options_dialogAttrs = options.dialogAttrs || {}
+      let dialogInstance = new dialogConstructor({
+        el: document.createElement('div'),
+        router: config.router,
+        store: config.store,
+        data() {
+          return {
+            diaAttrs: {
+              'close-on-click-modal': false,
+              title: "",
+              width: 'auto',
+              ...dialogAttrs,
+              ...options_dialogAttrs,
+            }
+          }
+        }
+      });
+
+      if (!tem) return;
+      dialogInstance.renderContent = (vm) => {
+        let options_props = options.props || {}
+        return vm.$createElement(tem, {
+          ...options,
+          props: {
+            myProp: 'bar',
+            resolve,
+            reject,
+            close: () => vm.visible = false,
+            ...options_props
+          },
+        })
+      }
+    })
+  }
+}
 
 export { FromDialog, Dialog };
 

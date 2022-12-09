@@ -9,6 +9,18 @@ export type ExtendConfig = {
   app?: any,
 }
 
+export type TransformDialogProps = {
+  tem: any,
+  dialogAttrs?: any,
+  app?: any,
+}
+
+export type transformDialogAlert = {
+  (options?: any,): Promise<any>;
+}
+
+
+
 export declare function useDialog(app: any): void;
 
 export declare function extend(config: ExtendConfig)
@@ -16,6 +28,8 @@ export declare function extend(config: ExtendConfig)
 export declare function fromDialog(datas?: any, funs?: any);
 
 export declare function dialog(datas?: any, funs?: any);
+
+export declare function transformDialog(props: TransformDialogProps): transformDialogAlert;
 
 export { FromDialog, Dialog };
 

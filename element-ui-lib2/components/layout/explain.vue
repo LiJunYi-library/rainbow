@@ -7,10 +7,14 @@ export default {
       type: String,
       default: ":",
     },
+    type: {
+      type: String,
+      default: ":",
+    },
   },
   render() {
     return (
-      <div class="el-lib-explain">
+      <div class={"el-lib-explain " + this.type}>
         {this.label && <span class="label">{this.label}</span>}
         {this.label && <span class="symbol">{this.symbol}</span>}
         {renderSlot.call(this)}
@@ -20,14 +24,33 @@ export default {
 };
 </script>
 <style lang="scss">
+@import "~element-ui/packages/theme-chalk/src/common/var.scss";
+
 .el-lib-explain {
   display: inline-flex;
   align-items: flex-start;
+
+  &.primary {
+    color: $--color-primary;
+  }
+  &.success {
+   color: $--color-success;
+  }
+  &.info {
+   color: $--color-info;
+  }
+  &.warning {
+   color: $--color-warning;
+  }
+  &.danger {
+    color: $--color-danger;
+  }
+
   .symbol {
     margin: 0 3px;
   }
-  .label{
-    white-space:nowrap;
+  .label {
+    white-space: nowrap;
   }
 }
 </style>

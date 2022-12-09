@@ -7,13 +7,15 @@ import { rainbowUi } from '@rainbow_ljy/rainbow-ui'
 import { useArray } from '@rainbow_ljy/jsapi'
 useArray()
 
-components.install = function install(app) {
-  if (config.useElementUI) app.use(ElementUI, { locale })
-  if (config.useRainbowUi) app.use(rainbowUi)
+components.install = function install(APP) {
+  config.setAPP(APP)
+
+  if (config.useElementUI) APP.use(ElementUI, { locale })
+  if (config.useRainbowUi) APP.use(rainbowUi)
 
   for (const key in components) {
     if (Object.hasOwnProperty.call(components, key)) {
-      app.component(`${config.name}-${key}`, components[key]);
+      APP.component(`${config.name}-${key}`, components[key]);
     }
   }
 };

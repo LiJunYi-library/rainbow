@@ -1,13 +1,12 @@
 {
   "name": "@rainbow_ljy/rainbow-ui",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "",
   "private": false,
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "pnpm publish --access=public --no-git-checks"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "postcss": {
     "plugins": {

@@ -1,23 +1,39 @@
 <script>
 import { renderSlot, renderScopedSlots } from "../../utils";
-import { dialog } from "../../dialogs";
+import { dialog } from "../../dialogs/index";
 
 export default {
   props: {
     href: String,
     hrefs: [Array],
+    target: {
+      type: String,
+      default: "_blank",
+    },
   },
   data() {
     return {
-      href_: this.href || this.hrefs[0],
+      href_: this.setHref(),
     };
+  },
+  watch: {
+    href() {
+      this.href_ = this.setHref();
+    },
+    hrefs() {
+      this.href_ = this.setHref();
+    },
   },
   created() {},
   methods: {
+    setHref() {
+      if (this.href) return this.href;
+      if (this.hrefs) return this.hrefs[0];
+      return "";
+    },
     async copy(arg) {
       if (!navigator) {
-        return this.$message.error();
-        ("复制失败 当前浏览器不支持 navigator");
+        return this.$message.error("复制失败 当前浏览器不支持 navigator");
       }
 
       if (!navigator.clipboard) {
@@ -58,7 +74,7 @@ export default {
                 {vm.hrefs.map((el) => (
                   <div>
                     <el-popover placement="right-end" trigger="hover">
-                      <el-link slot="reference" href={el}>
+                      <el-link slot="reference" href={el} target={this.target}>
                         {el}
                       </el-link>
                       <el-button type="text" onClick={() => vm.copy(el)}>
@@ -98,11 +114,13 @@ export default {
         {this.$createElement(
           "el-link",
           {
+            class: "el-lib-link",
             slot: "reference",
             attrs: {
               type: "primary",
               ...this.$attrs,
               href: this.href_,
+              target: this.target,
             },
           },
           renderSlot.call(this, "default", null, null, this.href_)
@@ -116,5 +134,8 @@ export default {
 .linkDialog {
   max-height: 500px;
   overflow: auto;
+}
+.el-lib-link {
+  text-align: left;
 }
 </style>

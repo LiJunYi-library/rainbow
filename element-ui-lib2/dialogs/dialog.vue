@@ -10,6 +10,9 @@ export default {
       cancelText: "",
       title: "提 交bd",
       confirmText: "提 交",
+      diaAttrs: {},
+      diaOn: {},
+      diaClass: "",
     };
   },
   watch: {},
@@ -21,7 +24,7 @@ export default {
       this.$el.remove();
     },
     renderContent() {
-      return <div>快速弹窗</div>;
+      return <div></div>;
     },
     hiddle() {
       this.visible = false;
@@ -56,16 +59,22 @@ export default {
           width: "500px",
           top: "0px",
           "custom-class": "mmb-log",
+          ...this.diaAttrs,
           ...this.$attrs,
         },
-        class: "mmb-log-wrapper",
+        class: "mmb-log-wrapper " + this.diaClass,
         on: {
           closed: () => this.closed(),
           "update:visible": (a) => (this.visible = a),
+          ...this.diaOn,
         },
         scopedSlots: {
           default: (...arg) => {
-            return [this.renderDefaultSlot()];
+            return (
+              <div class="el-lib-dialog-body" ref="el-lib-dialog-body">
+                {this.renderDefaultSlot()}
+              </div>
+            );
           },
         },
       },

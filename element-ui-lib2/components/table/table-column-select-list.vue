@@ -28,6 +28,7 @@ export default {
       let EVENTS = this.$listeners;
       let VALUE = this.getValue(props) || "";
       let currentItem = undefined;
+      if(!VALUE) return ''
       return this.$createElement(SelectList, {
         attrs: {
           trigger: true,
