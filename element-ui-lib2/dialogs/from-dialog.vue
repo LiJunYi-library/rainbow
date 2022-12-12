@@ -15,6 +15,7 @@ export default {
       fromData: {},
       rules: null,
       fromItems: {},
+      className: "",
     };
   },
   watch: {},
@@ -153,7 +154,7 @@ export default {
       };
       if (this.rules) attrs.rules = this.rules;
       return (
-        <div class="fromContent" v-loading={this.loading}>
+        <div class={"fromContent " + this.className } v-loading={this.loading}>
           {this.$createElement(
             "el-form",
             {

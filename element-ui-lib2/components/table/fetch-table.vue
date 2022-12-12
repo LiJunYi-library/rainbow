@@ -48,6 +48,7 @@ export default {
 
     afterFetch() {
       this.$refs.elTable.doLayout();
+      this.$emit("update:checkList", []);
     },
 
     // renderDefaultEmpty(...arg) {

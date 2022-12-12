@@ -70,17 +70,16 @@ export default {
 
     let click = () => {
       if (!this.silent) return;
-      if (this.target === "_blank") {
-        window.open(_href);
+      if (this.target === "_self") {
+        let _query = this.query;
+        if (this.query instanceof Function) _query = this.query();
+        this.$router.push({
+          path: this.path,
+          query: { id: this.id, ..._query },
+        });
         return;
       }
-
-      let _query = this.query;
-      if (this.query instanceof Function) _query = this.query();
-      this.$router.push({
-        path: this.path,
-        query: { id: this.id, ..._query },
-      });
+      window.open(_href);
     };
 
     return (
@@ -105,7 +104,7 @@ export default {
 };
 </script>
 <style  lang="scss">
-.r-link-primary {
+a.r-link-primary {
   &:link {
     color: var(--primary-color);
   }
@@ -121,7 +120,7 @@ export default {
   }
 }
 
-.r-link-primary-fill {
+a.r-link-primary-fill {
   background-color: var(--primary-color);
   &:link {
     background-color: var(--primary-color);
@@ -136,7 +135,7 @@ export default {
   }
 }
 
-.r-link-primary-plain {
+a.r-link-primary-plain {
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
   background: var(--primary-color-plain);
@@ -160,27 +159,32 @@ export default {
   }
 }
 
-.r-link {
+a.r-link {
   cursor: pointer;
   text-align: left;
   text-decoration: underline;
+  font-size: var(--link-font-size);
 }
 
-.r-link-fill {
+a.r-link-fill {
   color: white;
   text-decoration: none;
   border-radius: 3px;
   cursor: pointer;
   text-align: left;
-  padding: 3px 10px;
+  padding: 6px 15px;
+  font-size: var(--button-font-size);
+  white-space: nowrap;
 }
 
-.r-link-plain {
+a.r-link-plain {
   text-decoration: none;
   border-radius: 3px;
   cursor: pointer;
   text-align: left;
-  padding: 3px 10px;
+  padding: 5px 15px;
+  font-size: var(--button-font-size);
+  white-space: nowrap;
 }
 
 .r-link-content {
@@ -189,9 +193,11 @@ export default {
 
 .r-link-a {
   display: inline-block;
+  padding: 3px 0;
+  text-align: left;
 }
 
-.r-link-success-fill {
+a.r-link-success-fill {
   &:link {
     background-color: var(--success-color);
   }
@@ -206,7 +212,7 @@ export default {
   }
 }
 
-.r-link-success {
+a.r-link-success {
   &:link {
     color: var(--success-color);
   }
@@ -219,6 +225,30 @@ export default {
 
   &:hover {
     color: var(--success-color-hover);
+  }
+}
+
+a.r-link-success-plain {
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+  background: var(--success-color-plain);
+
+  &:link {
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+    background: var(--success-color-plain);
+  }
+
+  &:visited {
+    color: white;
+    border: 1px solid var(--success-color);
+    background: var(--success-color);
+  }
+
+  &:hover {
+    color: white;
+    border: 1px solid var(--success-color-hover);
+    background: var(--success-color-hover);
   }
 }
 </style>

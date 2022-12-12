@@ -96,7 +96,7 @@ export default {
   },
   render() {
     return (
-      <div class="r-upload">
+      <div class="r-upload" v-loading={this.loading_}>
         {this.renderStartSlot()}
         <div class="r-upload-content">
           <input

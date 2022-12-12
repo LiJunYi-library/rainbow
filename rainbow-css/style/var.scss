@@ -1,4 +1,8 @@
 body {
+  --button-font-size: 13px;
+  --link-font-size: 15px;
+
+
   --primary-color: #ff4000;
   --primary-color-hover: #ffa688;
   --primary-color-visited: #cf3400;
@@ -7,4 +11,5 @@ body {
   --success-color: #aeff00;
   --success-color-hover: #dfff9b;
   --success-color-visited: #73a704;
+  --success-color-plain: #e6f3c9;
 }
