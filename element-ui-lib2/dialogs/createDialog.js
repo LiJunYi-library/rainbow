@@ -1,13 +1,15 @@
 
-import config from '../config'
+import AppConfig from '../config'
 
-export function createDialog(template, defaultOptions = {}, app = config.APP) {
+export function createDialog(template, defaultOptions = {}, app = AppConfig.APP) {
   const LogConstructor = app.extend(template);
 
   let instance;
 
   const initInstance = () => {
     instance = new LogConstructor({
+      router: AppConfig.router,
+      store: AppConfig.store,
       el: document.createElement('div'),
     });
   };
