@@ -44,6 +44,21 @@ export default {
         type: "error",
       });
     },
+    validate() {
+      return new Promise((resolve, reject) => {
+        this.$refs["el-form"].validate((valid, unPass) => {
+          if (valid) resolve({valid, unPass});
+          else {
+            this.errorMessage(unPass);
+            this.$emit("onErrorSubmit", unPass, this);
+            reject({valid, unPass});
+          }
+        });
+      });
+    },
+    resetFields() {
+      this.$refs["el-form"].resetFields();
+    },
     setSubmit() {
       if (!this.submit) return;
       this.submit.onApply = () => {
