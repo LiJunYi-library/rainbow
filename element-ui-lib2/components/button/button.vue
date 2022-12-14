@@ -6,6 +6,9 @@ export default {
     bindDefaultAttrs() {
       return {};
     },
+    bindDefaultEvents() {
+      return {};
+    },
   },
   render() {
     return this.$createElement(
@@ -16,6 +19,7 @@ export default {
           ...this.$attrs,
         },
         on: {
+          ...this.bindDefaultEvents(),
           ...this.$listeners,
         },
         ...this.bindDefaultProperty(),
