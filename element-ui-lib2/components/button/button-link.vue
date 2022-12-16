@@ -7,6 +7,7 @@ export default {
     id: [String, Number],
     path: String,
     type: String,
+    visitedType: String,
     fill: Boolean,
     query: {
       type: [Object, Function],
@@ -95,12 +96,12 @@ export default {
     },
     bindDefaultAttrs() {
       let history = this.getHistory();
-      let plain = history.includes(this.link_);
+      let visited = history.includes(this.link_);
+      let visitedType = this.visitedType || this.type;
       return {
-        // type: plain ? "info" : "primary",
-        type: "primary",
+        type: visited ? visitedType : this.type,
         size: "mini",
-        plain: !plain,
+        plain: this.plain,
       };
     },
   },

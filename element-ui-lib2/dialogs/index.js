@@ -9,6 +9,33 @@ export function useDialog(app) {
   App = app;
 }
 
+export function translate({ tem, app = App }) {
+  return function transform(options = {}) {
+    return new Promise((resolve, reject) => {
+      const LogConstructor = app.extend(tem);
+      let instance;
+      let optionsData = {};
+      if (options.data) optionsData = options.data()
+      instance = new LogConstructor({
+        el: document.createElement('div'),
+        router: config.router,
+        store: config.store,
+        ...options,
+        data() {
+          return {
+            ...optionsData,
+            resolve,
+            reject
+          }
+        }
+
+      });
+
+    })
+  }
+}
+
+
 export function extend({ tem, beforeInstance, afterInstance, app = App }) {
   return function transform(datas = {}, methods = {},) {
     return new Promise((resolve, reject) => {

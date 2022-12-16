@@ -10,10 +10,16 @@ export default {
       type: String,
       default: "_blank",
     },
+    lineClamp: {
+      type: String,
+      default: "1",
+    },
+    simple: Boolean,
   },
   data() {
     return {
       href_: this.setHref(),
+      ellipsisClass: `el-lib-link-ellipsis${this.lineClamp}`,
     };
   },
   watch: {
@@ -66,21 +72,22 @@ export default {
     lookMore() {
       let vm = this;
       dialog(
-        { title: "更多链接" },
+        { title: "更多链接", diaAttrs: { width: "1200px" } },
         {
           renderContent() {
             return (
               <div class="linkDialog">
                 {vm.hrefs.map((el) => (
-                  <div>
-                    <el-popover placement="right-end" trigger="hover">
-                      <el-link slot="reference" href={el} target={this.target}>
-                        {el}
-                      </el-link>
-                      <el-button type="text" onClick={() => vm.copy(el)}>
-                        复制
-                      </el-button>
-                    </el-popover>
+                  <div class="mB15 el-lib-links">
+                    <el-link
+                      type="primary"
+                      slot="reference"
+                      class={`el-lib-link ${vm.ellipsisClass}`}
+                      href={el}
+                      target={vm.target}
+                    >
+                      {el}
+                    </el-link>
                   </div>
                 ))}
               </div>
@@ -91,42 +98,57 @@ export default {
     },
   },
   render() {
-    return (
-      <el-popover placement="top-start" trigger="hover">
-        <div>
-          {this.hasContent() && (
-            <el-button type="text" onClick={this.copyContent}>
-              复制内容
-            </el-button>
-          )}
+    // let simple
 
-          <el-button type="text" onClick={this.copyLink}>
-            复制链接
-          </el-button>
-
-          {this.hrefs && (
-            <el-button type="text" onClick={this.lookMore}>
-              查看更多
-            </el-button>
-          )}
-        </div>
-
-        {this.$createElement(
-          "el-link",
-          {
-            class: "el-lib-link",
-            slot: "reference",
-            attrs: {
-              type: "primary",
-              ...this.$attrs,
-              href: this.href_,
-              target: this.target,
-            },
-          },
-          renderSlot.call(this, "default", null, null, this.href_)
-        )}
-      </el-popover>
+    let renderLink = this.$createElement(
+      "el-link",
+      {
+        class: `el-lib-link ${this.ellipsisClass}`,
+        slot: "reference",
+        attrs: {
+          type: "primary",
+          ...this.$attrs,
+          href: this.href_,
+          target: this.target,
+        },
+      },
+      renderSlot.call(this, "default", null, null, this.href_)
     );
+
+    if (!this.simple) {
+      return (
+        <el-popover placement="top-start" trigger="hover">
+          <div>
+            {this.hasContent() && (
+              <el-button type="text" onClick={this.copyContent}>
+                复制内容
+              </el-button>
+            )}
+
+            <el-button type="text" onClick={this.copyLink}>
+              复制链接
+            </el-button>
+
+            {this.hrefs && this.hrefs.length > 1 && (
+              <el-button type="text" onClick={this.lookMore}>
+                查看更多
+              </el-button>
+            )}
+          </div>
+          {renderLink}
+        </el-popover>
+      );
+    }
+
+    if (this.hrefs && this.hrefs.length > 1) {
+      return (
+        <el-button type="text" onClick={this.lookMore}>
+          查看更多
+        </el-button>
+      );
+    }
+
+    return renderLink;
   },
 };
 </script>
@@ -137,5 +159,48 @@ export default {
 }
 .el-lib-link {
   text-align: left;
+}
+.el-lib-links {
+  margin-bottom: 25px;
+}
+
+.el-lib-link-ellipsis1 span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+.el-lib-link-ellipsis2 span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+.el-lib-link-ellipsis3 span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+.el-lib-link-ellipsis4 span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
 }
 </style>

@@ -33,7 +33,11 @@ export default {
                 src={this.img}
                 previewSrcList={[this.img]}
                 fit={this.imgFit}
-              ></el-image>
+              >
+                <div slot="error" class="image-slot-error">
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </el-image>
             )}
           </div>
           <div class="c">{renderSlot.call(this)}</div>
@@ -47,6 +51,13 @@ export default {
 
 <style lang="scss">
 .info-detail {
+  .image-slot-error {
+    background: rgb(227, 227, 227);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .title {
     padding: 5px 0;
     text-align: left;

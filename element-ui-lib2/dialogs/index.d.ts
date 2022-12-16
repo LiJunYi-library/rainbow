@@ -23,7 +23,9 @@ export type transformDialogAlert = {
 
 export declare function useDialog(app: any): void;
 
-export declare function extend(config: ExtendConfig)
+export declare function extend(config: ExtendConfig);
+
+export declare function translate(config: ExtendConfig)
 
 export declare function fromDialog(datas?: any, funs?: any);
 

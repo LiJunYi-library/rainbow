@@ -12,6 +12,8 @@ export default {
     showPagination: { type: Boolean, default: true },
     showSelection: Boolean,
     currentPage: { type: Number, default: 1 },
+    updateCurrentPage: { type: Function, default: () => {} },
+    updatePageSize: { type: Function, default: () => {} },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
     calcHeight: Number,
@@ -148,8 +150,14 @@ export default {
         on: {
           "size-change": this.onSizeChange,
           "current-change": this.onCurrentChange,
-          "update:currentPage": (a) => this.$emit("update:currentPage", a),
-          "update:pageSize": (a) => this.$emit("update:pageSize", a),
+          "update:currentPage": (a) => {
+            this.$emit("update:currentPage", a);
+            this.updateCurrentPage(a);
+          },
+          "update:pageSize": (a) => {
+            this.$emit("update:pageSize", a);
+            this.updatePageSize(a);
+          },
           ...this.bindPaginationDefaultEvents(),
           ...paginationEvent,
         },

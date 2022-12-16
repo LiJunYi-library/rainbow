@@ -54,7 +54,7 @@ export default {
     let _href = this.href;
     (() => {
       if (!this.path) return;
-      let _query = this.query;
+      let _query = this.query;                                                        
       if (this.query instanceof Function) _query = this.query();
       const task = this.$router.resolve({
         path: this.path,
@@ -79,7 +79,7 @@ export default {
         });
         return;
       }
-      window.open(_href);
+      window.open(_href, this.target);
     };
 
     return (
