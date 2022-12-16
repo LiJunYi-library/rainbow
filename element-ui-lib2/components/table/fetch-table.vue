@@ -1,6 +1,7 @@
 <script>
 import Table from "./table.vue";
 import fetchOptions from "../../mixins/fetchOptions";
+import { renderSlot, renderScopedSlots } from "../../utils";
 
 export default {
   extends: Table,
@@ -51,34 +52,37 @@ export default {
       this.$emit("update:checkList", []);
     },
 
-    // renderDefaultEmpty(...arg) {
-    //   if (this.isFetchError) return this.renderDefaultError(...arg);
-    //   return [<div class="empty">暂无数据</div>];
-    // },
+    renderDefaultEmpty(...arg) {
+      if (this.isFetchError)
+        return renderSlot.call(this, "error", null, this.renderDefaultError);
+      return this.renderEmpty(...arg);
+    },
 
-    // renderDefaultError(...arg) {
-    //   if (this.$slots.error) return this.$slots.error;
-    //   return (
-    //     <el-button
-    //       type={"danger"}
-    //       link={true}
-    //       onclick={() => this.onErrorClick(...arg)}
-    //     >
-    //       {this.errorText}
-    //     </el-button>
-    //   );
-    // },
+    renderEmpty(...arg) {
+      return [<div class="empty">暂无数据</div>];
+    },
 
-    // onErrorClick(...arg) {
-    //   this.$attrs.onErrorClick;
-    //   if (this.$attrs.onErrorClick) {
-    //     this.$attrs.onErrorClick();
-    //     return;
-    //   }
-    //   this.callFetchData();
-    // },
+    renderDefaultError(...arg) {
+      return (
+        <div class="fetchError">
+          <el-button
+            type={"danger"}
+            link={true}
+            onclick={() => this.onErrorClick(...arg)}
+          >
+            {this.errorText}
+          </el-button>
+        </div>
+      );
+    },
 
-    //
+    onErrorClick(...arg) {
+      if (this.$listeners.onErrorClick) {
+        this.$listeners.onErrorClick();
+        return;
+      }
+      this.callFetchData();
+    },
   },
 };
 </script>

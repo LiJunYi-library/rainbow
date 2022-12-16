@@ -1,5 +1,6 @@
 <script>
 import { objectFilter } from "@rainbow_ljy/jsapi";
+import { renderSlot, renderScopedSlots } from "../../utils";
 
 export default {
   name: "Table",
@@ -80,8 +81,13 @@ export default {
         props: {},
         scopedSlots: {
           default: (...arg) => this.renderTableDefault(...arg),
+          empty: renderScopedSlots.call(this, "empty", this.renderDefaultEmpty),
         },
       });
+    },
+
+    renderDefaultEmpty(){
+      return null
     },
 
     cell_class_name(props) {
