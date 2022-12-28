@@ -1,6 +1,5 @@
 <script>
 import { objectFilter } from "@rainbow_ljy/jsapi";
-import { renderSlot, renderScopedSlots } from "../../utils";
 
 export default {
   name: "Table",
@@ -20,6 +19,8 @@ export default {
     calcHeight: Number,
     sortProp: String,
     sortOrder: String,
+    data: { type: Array, default: () => [] },
+    selectAll: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -27,6 +28,8 @@ export default {
       winHeight: window.innerHeight,
       defaultSort: { order: this.sortOrder, prop: this.sortProp },
       emitSortChange: true,
+      isSelectAll: this.selectAll,
+      checkList_: this.checkList,
     };
   },
   computed: {},
@@ -69,25 +72,22 @@ export default {
         ref: "elTable",
         attrs: {
           ...attrs,
+          data: this.data,
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
         on: {
           select: (...arg) => this.onSelect(...arg),
           "select-all": (...arg) => this.onSelectAll(...arg),
+          "selection-change": (...arg) => this.onSelectionChange(...arg),
           "sort-change": (...arg) => this.onSortChange(...arg),
           ...tableEvent,
         },
         props: {},
         scopedSlots: {
           default: (...arg) => this.renderTableDefault(...arg),
-          empty: renderScopedSlots.call(this, "empty", this.renderDefaultEmpty),
         },
       });
-    },
-
-    renderDefaultEmpty(){
-      return null
     },
 
     cell_class_name(props) {
@@ -106,13 +106,25 @@ export default {
     },
 
     onSelect(list, ...arg) {
+      this.checkList_ = list;
+      this.isSelectAll = list.length === this.data.length;
       this.$emit("update:checkList", list);
       this.$emit("select", list, ...arg);
     },
 
     onSelectAll(list, ...arg) {
+      this.checkList_ = list;
+      this.isSelectAll = list.length === this.data.length;
       this.$emit("update:checkList", list);
       this.$emit("selectAll", list, ...arg);
+    },
+
+    onSelectionChange(list, ...arg) {
+      this.checkList_ = list;
+      this.isSelectAll = list.length === this.data.length;
+      this.$emit("update:checkList", list);
+      this.$emit("update:selectAll", this.isSelectAll);
+      this.$emit("selection-change", list, this.isSelectAll);
     },
 
     renderTableDefault(...arg) {

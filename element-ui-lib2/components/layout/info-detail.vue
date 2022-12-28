@@ -4,6 +4,7 @@ export default {
   props: {
     title: [String, Number],
     img: String,
+    size: { type: Number, default: 120 },
     imgFit: {
       type: String,
       default: "contain",
@@ -30,6 +31,7 @@ export default {
               null,
               <el-image
                 class="img"
+                style={`width: ${this.size}px; height: ${this.size}px`}
                 src={this.img}
                 previewSrcList={[this.img]}
                 fit={this.imgFit}
