@@ -40,6 +40,7 @@ export default {
   props: {
     space: { type: Number, default: 10 },
     columnCount: { type: Number, default: 2 },
+    columnNum: { type: Number, default: 2 },
   },
   mixins: [fetchOptions],
   data() {

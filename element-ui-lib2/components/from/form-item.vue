@@ -2,6 +2,9 @@
 import { renderSlot, renderScopedSlots } from "../../utils";
 import base from "../../mixins/base";
 export default {
+  inject: {
+    elLibForm: { default: () => ({}) },
+  },
   mixins: [base],
   props: {
     required: Boolean,
@@ -35,9 +38,13 @@ export default {
     },
     validator: Function,
     regExp: RegExp,
+    "margin-bottom": String,
   },
   render() {
     return this.$createElement("el-form-item", {
+      style: {
+        marginBottom: this.marginBottom || this.elLibForm.marginBottom,
+      },
       attrs: {
         ...this.bindRules(),
         ...this.bindDefaultAttrs(),

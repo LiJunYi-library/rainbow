@@ -2,11 +2,17 @@
 import { renderSlot, renderScopedSlots } from "../../utils";
 import base from "../../mixins/base";
 export default {
+  provide() {
+    return {
+      elLibForm: this,
+    };
+  },
   mixins: [base],
   props: {
     submit: Function,
     reset: Function,
     showErrorMessage: { type: Boolean, default: true },
+    "margin-bottom": String,
   },
   render() {
     return this.$createElement("el-form", {
@@ -47,11 +53,11 @@ export default {
     validate() {
       return new Promise((resolve, reject) => {
         this.$refs["el-form"].validate((valid, unPass) => {
-          if (valid) resolve({valid, unPass});
+          if (valid) resolve({ valid, unPass });
           else {
             this.errorMessage(unPass);
             this.$emit("onErrorSubmit", unPass, this);
-            reject({valid, unPass});
+            reject({ valid, unPass });
           }
         });
       });
