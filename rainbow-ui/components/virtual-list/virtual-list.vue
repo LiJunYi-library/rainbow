@@ -220,11 +220,18 @@ export default {
     renderItem(item, index, list) {
       return (
         <div class="r-virtual-list-item">
+          <div class="--"> 默认item </div>
           <div class="--"> {item.a}</div>
           <div class="--"> {item.b} </div>
           <div class="--"> {item.c} </div>
         </div>
       );
+    },
+    renderHeader() {
+      return <div class="--"> 默认头 </div>;
+    },
+    renderFooter() {
+      return <div class="--"> 默认尾 </div>;
     },
     onScroll(event) {
       let scrollTop = event.target.scrollTop;
@@ -278,6 +285,7 @@ export default {
         onScroll={this.onScroll}
       >
         <VirtualListMeasure />
+        {renderSlot.call(this, "header", {}, this.renderHeader)}
         <div
           ref="ref-virtual-frame"
           class="r-virtual-frame"
@@ -292,11 +300,17 @@ export default {
                 itemNode={item.__save__}
                 index={index}
               >
-                {this.renderItem(item, index)}
+                {renderSlot.call(
+                  this,
+                  "item",
+                  { item, index },
+                  this.renderItem
+                )}
               </VirtualListItem>
             );
           })}
         </div>
+        {renderSlot.call(this, "footer", {}, this.renderFooter)}
       </div>
     );
   },
