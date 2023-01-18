@@ -62,7 +62,7 @@ let VirtualListItem = {
 
     return (
       <div class="r-virtual-frame-item" style={style}>
-        <div style="overflow: hidden;">{renderSlot.call(this, "default")}</div>
+        <div class="r-over-hidden">{renderSlot.call(this, "default")}</div>
       </div>
     );
   },
@@ -154,7 +154,11 @@ let VirtualListMeasure = {
 
 let VirtualListHeader = {
   render() {
-    return <div>{renderSlot.call(this, "default")}</div>;
+    return (
+      <div class="r-virtual-list-header">
+        {renderSlot.call(this, "default")}
+      </div>
+    );
   },
   mounted() {
     let offset = this.$el.getBoundingClientRect();
@@ -240,7 +244,7 @@ export default {
       );
     },
     renderHeader() {
-      // return null;
+      return null;
       return (
         <div class="--">
           <div class="--"> 默认头 </div>
@@ -358,19 +362,26 @@ export default {
   height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
-  background: rgb(247, 226, 254);
   position: relative;
-  padding: 10px;
+  /* background: rgb(247, 226, 254); */
   box-sizing: border-box;
 }
 .r-virtual-measure {
   width: 100%;
 }
 
+.r-virtual-list-header {
+  overflow: hidden;
+}
+
+.r-over-hidden {
+  overflow: hidden;
+}
+
 .r-virtual-frame {
   overflow: hidden;
   position: relative;
-  background: rgba(144, 0, 255, 0.521);
+  /* background: rgba(144, 0, 255, 0.521); */
 }
 
 .r-virtual-list::-webkit-scrollbar {
