@@ -189,7 +189,7 @@ export default {
 
       width: 0,
       height: 0,
-      windowHeight: 500,
+      windowHeight: window.innerHeight,
       columns,
       columnWidth: 0,
 

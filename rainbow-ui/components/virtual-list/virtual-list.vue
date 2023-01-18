@@ -152,10 +152,21 @@ let VirtualListMeasure = {
   },
 };
 
+let VirtualListHeader = {
+  render() {
+    return <div>{renderSlot.call(this, "default")}</div>;
+  },
+  mounted() {
+    let offset = this.$el.getBoundingClientRect();
+    this.$parent.headerHeight = offset.height;
+  },
+};
+
 export default {
   components: {
     VirtualListItem,
     VirtualListMeasure,
+    VirtualListHeader,
   },
   props: {
     space: { type: Number, default: 10 },
@@ -189,9 +200,10 @@ export default {
 
       width: 0,
       height: 0,
-      windowHeight: 500,
+      windowHeight: window.innerHeight,
       columns,
       columnWidth: 0,
+      headerHeight: 0,
 
       isMeasure: false,
     };
@@ -228,14 +240,35 @@ export default {
       );
     },
     renderHeader() {
-      return <div class="--"> 默认头 </div>;
+      // return null;
+      return (
+        <div class="--">
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+        </div>
+      );
     },
     renderFooter() {
-      return <div class="--"> 默认尾 </div>;
+      return null;
+      return (
+        <div class="--">
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+        </div>
+      );
     },
     onScroll(event) {
-      let scrollTop = event.target.scrollTop;
-      let scrollBottom = event.target.scrollTop + this.windowHeight;
+      let scrollTop = event.target.scrollTop - this.headerHeight - this.space;
+      let scrollBottom = scrollTop + this.windowHeight;
 
       this.listItems.forEach((item) => {
         item.__save__.onScroll(scrollTop, scrollBottom, event);
@@ -285,7 +318,9 @@ export default {
         onScroll={this.onScroll}
       >
         <VirtualListMeasure />
-        {renderSlot.call(this, "header", {}, this.renderHeader)}
+        <VirtualListHeader>
+          {renderSlot.call(this, "header", {}, this.renderHeader)}
+        </VirtualListHeader>
         <div
           ref="ref-virtual-frame"
           class="r-virtual-frame"
