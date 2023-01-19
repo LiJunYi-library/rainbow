@@ -1,7 +1,32 @@
+<!--  板栗
+   双向绑定  page 
+   参数 data数据 scrollType滑倒类型`column`|`auto`
+   事件 scrollToEnd当滑倒底部 minColumnScrollToEnd最短一列滑倒最底部
+   
+  <r-virtual-list-falls
+      :page.sync="req.page"
+      :data="listData"
+      @scrollToEnd="getList"
+    >
+      <template slot="item" slot-scope="{ item, index }">
+        <div class="r-virtual-list-item">
+          <div>
+            <img v-if="index !== 1" style="width: 100%" :src="item.p" alt="" />
+          </div>
+          <div class="--">www:{{ index }}</div>
+          <div class="--">{{ item.a }}</div>
+          <div class="--">{{ item.b }}</div>
+          <div class="--">{{ item.c }}</div>
+        </div>
+     </template>
+  </r-virtual-list-falls>
+ -->
 
 <script>
 import { renderSlot, getSlotVnode } from "../../utils/index";
 import {
+  mergeEvent,
+  r_resizeObserver,
   r_mergeResizeObserver,
   r_onceResizeObserver,
 } from "@rainbow_ljy/jsapi";
@@ -21,35 +46,57 @@ let VirtualListItem = {
         width: 0,
         right: 0,
       },
+      resizeObserver: null,
     };
   },
   methods: {
-    setItemNode() {
-      if (this.itemNode.isCache) return;
-      let offset = this.$el.firstChild.getBoundingClientRect();
-      let column = this.$parent.findMinHeightColumn();
+    setItemNode(rect) {
+      if (this.itemNode.isCache) {
+        if (this.itemNode.height !== rect.height) {
+          // console.log("高度不同", this.itemNode.height, rect.height);
+          let celcH = rect.height - this.itemNode.height;
+          this.itemNode.height = rect.height;
+          this.itemNode.bottom += celcH;
+          this.itemNode.layout(this.index);
+        }
+        return;
+      }
+
+      let minCol = this.$parent.findMinHeightColumn();
       let space = this.index < this.$parent.columnNum ? 0 : this.$parent.space;
 
-      this.itemNode.top = column.height + space;
-      column.height += offset.height + space;
-      this.itemNode.height = offset.height;
-      this.itemNode.bottom = column.height;
+      this.itemNode.top = minCol.height + space;
+      minCol.height += rect.height + space;
+      this.itemNode.height = rect.height;
+      this.itemNode.bottom = minCol.height;
 
-      this.itemNode.left = column.left;
-      this.itemNode.width = column.width;
-      this.itemNode.right = column.right;
-      this.itemNode.isCache = true;
+      this.itemNode.left = minCol.left;
+      this.itemNode.width = minCol.width;
+      this.itemNode.right = minCol.right;
 
       let maxColumn = this.$parent.columns.obtainMax((el) => el.height);
-      this.$parent.height = maxColumn.height;
+      this.$parent.contentHeight = maxColumn.height;
+      this.itemNode.parent = minCol;
+
+      this.itemNode.isCache = true;
+      this.$parent.$forceUpdate();
+    },
+    creatResizeObserver() {
+      this.resizeObserver = r_resizeObserver(this.$el.firstChild, (event) => {
+        let contentRect = event[0].contentRect;
+        // console.log(contentRect);
+        this.setItemNode(contentRect);
+      });
+    },
+    destroyResizeObserver() {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
     },
   },
   render() {
-    let { top, height, width, left } = this.itemNode;
-    let column = this.$parent.findMinHeightColumn();
-    if (width === null) width = column.width;
-    if (left === null) left = column.left;
-    if (top === null) top = column.height;
+    this.itemNode.width = this.$parent.columnWidth;
+
+    let { top, height, width, left, parent } = this.itemNode;
 
     let style = {
       width: width + "px",
@@ -58,11 +105,9 @@ let VirtualListItem = {
       top: top + "px",
     };
 
-    // console.log(top, height, width, left);
-
     return (
       <div class="r-virtual-frame-item" style={style}>
-        <div style="overflow: hidden;">{renderSlot.call(this, "default")}</div>
+        <div class="r-over-hidden">{renderSlot.call(this, "default")}</div>
       </div>
     );
   },
@@ -76,17 +121,19 @@ let VirtualListItem = {
     // console.log(this.index, "updated  VirtualListItem", this.$el);
   },
   beforeDestroy() {
-    // console.log('beforeDestroy');
+    this.destroyResizeObserver();
+    // console.log('VirtualListItem beforeDestroy');
   },
   mounted() {
     // console.log("VirtualListItem  mounted");
-    this.setItemNode();
+    this.creatResizeObserver();
   },
 };
 
 class NodeCache {
   vm = null; //vue
   prveNode = null; //上一个
+  nextNode = null; //下一个
   show = true; //是否render
   isCache = false; //是否缓存
   top = null; //top
@@ -95,6 +142,7 @@ class NodeCache {
   left = null; //left
   width = null; //width
   right = null; //right
+  parent = null; //parent
 
   constructor(props) {
     Object.assign(this, props);
@@ -108,6 +156,10 @@ class NodeCache {
   set isShow(value) {
     if (this.show !== value) this.onWatchShow(value);
     this.show = value;
+  }
+
+  async layout(index) {
+    this.vm.layout(index);
   }
 
   onWatchShow() {
@@ -152,23 +204,35 @@ let VirtualListMeasure = {
   },
 };
 
+let VirtualListHeader = {
+  render() {
+    return (
+      <div class="r-virtual-list-header">
+        {renderSlot.call(this, "default")}
+      </div>
+    );
+  },
+  mounted() {
+    let offset = this.$el.getBoundingClientRect();
+    this.$parent.headerHeight = offset.height;
+  },
+};
+
 export default {
   components: {
     VirtualListItem,
     VirtualListMeasure,
+    VirtualListHeader,
   },
   props: {
     space: { type: Number, default: 10 },
-    page: { type: Number, default: 1 },
-    data: { type: Array, default: [] },
     columnNum: { type: Number, default: 3 },
     triggerScrollToEndDistance: { type: Number, default: 10 },
-    keyExtractor: {
-      type: Function,
-      default(item, index) {
-        return index;
-      },
-    },
+    keyExtractor: { type: Function, default: (item, index) => index },
+    scrollType: { type: String, default: `column` }, //滑倒类型`column`|`auto`
+
+    page: { type: Number, default: 1 },
+    data: { type: Array, default: [] },
   },
   data() {
     let columns = [];
@@ -180,21 +244,20 @@ export default {
           height: 0,
           top: 0,
           bottom: 0,
+          tag: "column",
         })
       );
     }
 
-    return {
-      page_: this.page,
-
-      width: 0,
-      height: 0,
-      windowHeight: window.innerHeight,
-      columns,
-      columnWidth: 0,
-
-      isMeasure: false,
-    };
+    this.contentWidth = 0;
+    this.contentHeight = 0;
+    this.columns = columns;
+    this.page_ = this.page;
+    this.windowHeight = window.innerHeight;
+    this.columnWidth = 0;
+    this.headerHeight = 0;
+    this.isMount = false;
+    return {};
   },
   watch: {
     page() {
@@ -217,6 +280,77 @@ export default {
     },
   },
   methods: {
+    setColumns() {
+      let offset = this.$el.getBoundingClientRect();
+      this.contentWidth = offset.width;
+      let { columnNum, space, columns } = this;
+      this.columnWidth = (offset.width - (columnNum - 1) * space) / columnNum;
+      let left = 0;
+      columns.forEach((column, index) => {
+        column.left = left;
+        column.width = this.columnWidth;
+        column.right = left + this.columnWidth;
+        if (index < columns.length - 1) left = column.right + space;
+      });
+
+      // console.log(columns);
+    },
+    layout($index) {
+      // console.log(",,,,,,,,,,,,layout", $index);
+
+      /** 局部更新 */
+      let task = [];
+      let nth = $index;
+      while (nth >= 0 && task.length < 3) {
+        let mCatch = this.listItems[nth].__save__;
+        let mColumn = mCatch.parent;
+        if (!task.some((el) => el.parent === mColumn)) task.push(mCatch);
+        nth--;
+      }
+
+      this.columns.forEach((col) => (col.height = 0));
+      task.forEach((ca) => {
+        ca.parent.height = ca.bottom;
+      });
+
+      for (let index = $index + 1; index < this.listItems.length; index++) {
+        const cacheData = this.listItems[index].__save__;
+        let minCol = this.findMinHeightColumn();
+        let space = index < this.columnNum ? 0 : this.space;
+        cacheData.top = minCol.height + space;
+        minCol.height += cacheData.height + space;
+        cacheData.bottom = minCol.height;
+        cacheData.left = minCol.left;
+        cacheData.width = minCol.width;
+        cacheData.right = minCol.right;
+        cacheData.parent = minCol;
+      }
+
+      let maxColumn = this.columns.obtainMax((el) => el.height);
+      this.contentHeight = maxColumn.height;
+      this.$forceUpdate();
+
+      // ↓↓↓↓↓  全部更新
+      // this.listItems.forEach((item, index) => {
+      //   let cacheData = item.__save__;
+      //   let minCol = this.findMinHeightColumn();
+      //   let space = index < this.columnNum ? 0 : this.space;
+
+      //   cacheData.top = minCol.height + space;
+      //   minCol.height += cacheData.height + space;
+      //   cacheData.bottom = minCol.height;
+
+      //   cacheData.left = minCol.left;
+      //   cacheData.width = minCol.width;
+      //   cacheData.right = minCol.right;
+      //   cacheData.parent = minCol;
+      // });
+
+      // let maxColumn = this.columns.obtainMax((el) => el.height);
+      // this.contentHeight = maxColumn.height;
+
+      // this.$forceUpdate();
+    },
     renderItem(item, index, list) {
       return (
         <div class="r-virtual-list-item">
@@ -228,25 +362,62 @@ export default {
       );
     },
     renderHeader() {
-      return <div class="--"> 默认头 </div>;
+      return null;
+      return (
+        <div class="--">
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+          <div class="--"> 默认头 </div>
+        </div>
+      );
     },
     renderFooter() {
-      return <div class="--"> 默认尾 </div>;
+      return null;
+      return (
+        <div class="--">
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+          <div class="--"> 默认尾 </div>
+        </div>
+      );
     },
     onScroll(event) {
-      let scrollTop = event.target.scrollTop;
-      let scrollBottom = event.target.scrollTop + this.windowHeight;
+      let scrollTop = event.target.scrollTop - this.headerHeight - this.space;
+      let scrollBottom = scrollTop + this.windowHeight;
 
       this.listItems.forEach((item) => {
         item.__save__.onScroll(scrollTop, scrollBottom, event);
       });
 
       // console.log("scrollTop", scrollBottom);
-      if (scrollBottom >= this.height - this.triggerScrollToEndDistance) {
+      if (
+        scrollBottom >=
+        this.contentHeight - this.triggerScrollToEndDistance
+      ) {
         this.onScrollToEnd();
       }
+
+      let minColumn = this.findMinHeightColumn();
+
+      if (scrollBottom >= minColumn.height - this.triggerScrollToEndDistance) {
+        this.onMinColumnScrollToEnd();
+      }
+    },
+    onMinColumnScrollToEnd() {
+      if (this.scrollType !== "column") return;
+      this.page_++;
+      this.$emit("minColumnScrollToEnd");
+      this.$emit("update:page", this.page_);
     },
     onScrollToEnd() {
+      if (this.scrollType !== "auto") return;
       this.page_++;
       this.$emit("scrollToEnd");
       this.$emit("update:page", this.page_);
@@ -261,6 +432,7 @@ export default {
     findMinHeightColumn() {
       return this.columns.obtainMin((el) => el.height);
     },
+    onClick() {},
   },
   created() {
     // console.log("virtual-list  created", this);
@@ -270,47 +442,51 @@ export default {
   },
   mounted() {
     // console.log("virtual-list  mounted", this);
+    this.setColumns();
+    this.isMount = true;
+    if (this.listItems.length) this.$forceUpdate();
   },
   beforeUpdate() {
-    // console.log( "beforeUpdate  ", this.height);
+    // console.log( "beforeUpdate  ", this);
   },
-  updated() {
-    // console.log("virtual-list updated 更新更新更新更新更新 ");
-  },
+  updated() {},
   render() {
+    // console.log("virtual-list-falls          render");
+
     return (
       <div
         ref="ref-virtual-list"
         class="r-virtual-list"
         onScroll={this.onScroll}
       >
-        <VirtualListMeasure />
-        {renderSlot.call(this, "header", {}, this.renderHeader)}
+        <VirtualListHeader>
+          {renderSlot.call(this, "header", {}, this.renderHeader)}
+        </VirtualListHeader>
         <div
           ref="ref-virtual-frame"
           class="r-virtual-frame"
-          style={`height: ${this.height}px;`}
+          style={`height: ${this.contentHeight}px;`}
         >
-          {this.listItems.map((item, index) => {
-            if (!item.__save__) return null;
-            if (!item.__save__.isShow) return null;
-            return (
-              <VirtualListItem
-                key={this.keyExtractor(item, index)}
-                itemNode={item.__save__}
-                index={index}
-              >
-                {renderSlot.call(
-                  this,
-                  "item",
-                  { item, index },
-                  this.renderItem
-                )}
-              </VirtualListItem>
-            );
-          })}
+          {this.isMount &&
+            this.listItems.map((item, index) => {
+              if (!item.__save__) return null;
+              if (!item.__save__.isShow) return null;
+              return (
+                <VirtualListItem
+                  key={this.keyExtractor(item, index)}
+                  itemNode={item.__save__}
+                  index={index}
+                >
+                  {renderSlot.call(
+                    this,
+                    "item",
+                    { item, index },
+                    this.renderItem
+                  )}
+                </VirtualListItem>
+              );
+            })}
         </div>
-        {renderSlot.call(this, "footer", {}, this.renderFooter)}
       </div>
     );
   },
@@ -323,19 +499,26 @@ export default {
   height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
-  background: rgb(247, 226, 254);
   position: relative;
-  padding: 10px;
+  /* background: rgb(247, 226, 254); */
   box-sizing: border-box;
 }
 .r-virtual-measure {
   width: 100%;
 }
 
+.r-virtual-list-header {
+  overflow: hidden;
+}
+
+.r-over-hidden {
+  overflow: hidden;
+}
+
 .r-virtual-frame {
   overflow: hidden;
   position: relative;
-  background: rgba(144, 0, 255, 0.521);
+  /* background: rgba(144, 0, 255, 0.521); */
 }
 
 .r-virtual-list::-webkit-scrollbar {

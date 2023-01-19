@@ -2,6 +2,8 @@
 <script>
 import { renderSlot, getSlotVnode } from "../../utils/index";
 import {
+  mergeEvent,
+  r_resizeObserver,
   r_mergeResizeObserver,
   r_onceResizeObserver,
 } from "@rainbow_ljy/jsapi";
@@ -21,12 +23,19 @@ let VirtualListItem = {
         width: 0,
         right: 0,
       },
+      resizeObserver: null,
     };
   },
   methods: {
-    setItemNode() {
-      if (this.itemNode.isCache) return;
-      let offset = this.$el.firstChild.getBoundingClientRect();
+    setItemNode(rect) {
+      if (this.itemNode.isCache) {
+        this.itemNode.height = rect.height;
+        this.itemNode.layout();
+        console.log(this.itemNode);
+        this.$forceUpdate();
+        return;
+      }
+      let offset = rect || this.$el.firstChild.getBoundingClientRect();
       let column = this.$parent.findMinHeightColumn();
       let space = this.index < this.$parent.columnNum ? 0 : this.$parent.space;
 
@@ -43,21 +52,11 @@ let VirtualListItem = {
       let maxColumn = this.$parent.columns.obtainMax((el) => el.height);
       this.$parent.height = maxColumn.height;
     },
-    onParentMounted() {
-      debugger;
-      console.log("onParentMounted");
-      // this.setItemNode();
-    },
   },
   render() {
-    console.log(this.$parent.isMounted);
-    if (!this.$parent.isMounted) return;
-    console.log(this.index);
-    debugger;
-
     let { top, height, width, left, parent } = this.itemNode;
     let column = this.$parent.findMinHeightColumn();
-    if (parent === null) parent = column;
+    if (parent === null) this.itemNode.parent = column;
     if (width === null) width = column.width;
     if (left === null) left = column.left;
     if (top === null) top = column.height;
@@ -78,25 +77,31 @@ let VirtualListItem = {
     );
   },
   created() {
-    this.$parent.mountedEvents.push(this.onParentMounted);
     // console.log("created", this.$parent);
   },
-  beforeDestroy() {
-    this.$parent.mountedEvents.remove(this.onParentMounted);
-    // console.log('beforeDestroy');
-  },
   beforeUpdate() {
-    console.log(this.index, "beforeUpdate  VirtualListItem", this.$el);
-    debugger;
+    // console.log(this.index, "beforeUpdate  VirtualListItem", this.$el);
   },
   updated() {
-    // console.log(this.index, "updated  VirtualListItem", this);
-    // debugger;
+    // console.log(this.index, "updated  VirtualListItem", this.$el);
+  },
+  beforeDestroy() {
+    // console.log('beforeDestroy');
+    this.resizeObserver.disconnect();
+    this.resizeObserver = null;
   },
   mounted() {
-    // console.log("VirtualListItem  mounted", this.$parent);
+    this.resizeObserver = r_resizeObserver(this.$el.firstChild, (event) => {
+      let contentRect = event[0].contentRect;
+      // console.log(contentRect);
+      // console.log(event[0].target);
+      this.setItemNode(contentRect);
+    });
+    // console.log("VirtualListItem  mounted");
   },
 };
+
+let mergeLayoutEvent = mergeEvent(50);
 
 class NodeCache {
   vm = null; //vue
@@ -109,8 +114,7 @@ class NodeCache {
   left = null; //left
   width = null; //width
   right = null; //right
-  parent = null;
-  children = [];
+  parent = null; //parent
 
   constructor(props) {
     Object.assign(this, props);
@@ -124,6 +128,11 @@ class NodeCache {
   set isShow(value) {
     if (this.show !== value) this.onWatchShow(value);
     this.show = value;
+  }
+
+  async layout() {
+    await mergeLayoutEvent;
+    console.log(",,,,,,,,,,,,layout");
   }
 
   onWatchShow() {
@@ -151,6 +160,7 @@ let VirtualListMeasure = {
   mounted() {
     let offset = this.$el.getBoundingClientRect();
     this.$parent.width = offset.width;
+
     let { columnNum, space, columns, isMeasure } = this.$parent;
 
     let width = (offset.width - (columnNum - 1) * space) / columnNum;
@@ -224,8 +234,7 @@ export default {
       columnWidth: 0,
       headerHeight: 0,
 
-      mountedEvents: [],
-      isMounted: false,
+      isMeasure: false,
     };
   },
   watch: {
@@ -322,10 +331,6 @@ export default {
     // console.log("virtual-list  beforeMount");
   },
   mounted() {
-    this.isMounted = true;
-    this.mountedEvents.forEach((event) => {
-      event();
-    });
     // console.log("virtual-list  mounted", this);
   },
   beforeUpdate() {
@@ -335,7 +340,6 @@ export default {
     // console.log("virtual-list updated 更新更新更新更新更新 ");
   },
   render() {
-    debugger;
     return (
       <div
         ref="ref-virtual-list"
@@ -379,8 +383,8 @@ export default {
 
 <style>
 .r-virtual-list {
-  /* width: 400px;
-  height: 500px; */
+  width: 400px;
+  height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
