@@ -378,52 +378,6 @@ export default {
 </script>
 
 <style>
-.r-virtual-list {
-  /* width: 400px;
-  height: 500px; */
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: relative;
-  /* background: rgb(247, 226, 254); */
-  box-sizing: border-box;
-}
-.r-virtual-measure {
-  width: 100%;
-}
 
-.r-virtual-list-header {
-  overflow: hidden;
-}
-
-.r-over-hidden {
-  overflow: hidden;
-}
-
-.r-virtual-frame {
-  overflow: hidden;
-  position: relative;
-  /* background: rgba(144, 0, 255, 0.521); */
-}
-
-.r-virtual-list::-webkit-scrollbar {
-  width: 0px;
-  /* position: absolute;
-  right: 0;
-  top: 0; */
-}
-
-.r-virtual-frame-item {
-  /* background: rgba(226, 25, 25, 0.8); */
-  position: absolute;
-  overflow: hidden;
-}
-
-.r-virtual-list-item {
-  background: rgba(226, 209, 25, 0.8);
-  font-size: 20px;
-  padding: 15px 15px;
-  /* margin-bottom: 15px; */
-  word-break: break-all;
-}
 </style>
 

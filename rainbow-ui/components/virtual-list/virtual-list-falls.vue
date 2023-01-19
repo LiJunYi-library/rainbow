@@ -1,8 +1,8 @@
-<!--  板栗
+<!--  板栗  不要忘记他的高度
    双向绑定  page 
    参数 data数据 scrollType滑倒类型`column`|`auto`
    事件 scrollToEnd当滑倒底部 minColumnScrollToEnd最短一列滑倒最底部
-   
+   slot item  header  footer
   <r-virtual-list-falls
       :page.sync="req.page"
       :data="listData"
@@ -257,7 +257,9 @@ export default {
     this.columnWidth = 0;
     this.headerHeight = 0;
     this.isMount = false;
-    return {};
+    return {
+      resizeObserver: null,
+    };
   },
   watch: {
     page() {
@@ -280,8 +282,8 @@ export default {
     },
   },
   methods: {
-    setColumns() {
-      let offset = this.$el.getBoundingClientRect();
+    setColumns(rect) {
+      let offset = rect || this.$el.getBoundingClientRect();
       this.contentWidth = offset.width;
       let { columnNum, space, columns } = this;
       this.columnWidth = (offset.width - (columnNum - 1) * space) / columnNum;
@@ -389,14 +391,16 @@ export default {
       );
     },
     onScroll(event) {
-      let scrollTop = event.target.scrollTop - this.headerHeight - this.space;
+      // console.log("onScroll", event.target.scrollTop);
+      let target = event.target;
+      let scrollTop = target.scrollTop - this.headerHeight - this.space;
       let scrollBottom = scrollTop + this.windowHeight;
 
       this.listItems.forEach((item) => {
         item.__save__.onScroll(scrollTop, scrollBottom, event);
       });
 
-      // console.log("scrollTop", scrollBottom);
+      // console.log("onScroll", scrollBottom);
       if (
         scrollBottom >=
         this.contentHeight - this.triggerScrollToEndDistance
@@ -433,22 +437,36 @@ export default {
       return this.columns.obtainMin((el) => el.height);
     },
     onClick() {},
+    creatResizeObserver() {
+      this.resizeObserver = r_resizeObserver(this.$el, (event) => {
+        let contentRect = event[0].contentRect;
+        // console.log(contentRect);  todo // 多了一次render
+        this.setColumns(contentRect);
+        this.$forceUpdate();
+      });
+    },
+    destroyResizeObserver() {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    },
   },
   created() {
+    // document.addEventListener("scroll", this.onScroll);
     // console.log("virtual-list  created", this);
   },
-  beforeMount() {
-    // console.log("virtual-list  beforeMount");
+  beforeDestroy() {
+    // document.removeEventListener("scroll", this.onScroll);
+    this.destroyResizeObserver();
   },
+  beforeMount() {},
   mounted() {
     // console.log("virtual-list  mounted", this);
-    this.setColumns();
+    this.creatResizeObserver();
+
     this.isMount = true;
     if (this.listItems.length) this.$forceUpdate();
   },
-  beforeUpdate() {
-    // console.log( "beforeUpdate  ", this);
-  },
+  beforeUpdate() {},
   updated() {},
   render() {
     // console.log("virtual-list-falls          render");
@@ -495,7 +513,6 @@ export default {
 
 <style>
 .r-virtual-list {
-  width: 400px;
   height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -515,17 +532,14 @@ export default {
   overflow: hidden;
 }
 
+/* .r-virtual-list::-webkit-scrollbar {
+  width: 0px;
+} */
+
 .r-virtual-frame {
   overflow: hidden;
   position: relative;
   /* background: rgba(144, 0, 255, 0.521); */
-}
-
-.r-virtual-list::-webkit-scrollbar {
-  width: 0px;
-  /* position: absolute;
-  right: 0;
-  top: 0; */
 }
 
 .r-virtual-frame-item {
