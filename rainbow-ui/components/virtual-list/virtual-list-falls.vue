@@ -53,7 +53,9 @@ let VirtualListItem = {
     setItemNode(rect) {
       if (this.itemNode.isCache) {
         if (this.itemNode.height !== rect.height) {
-          // console.log("高度不同", this.itemNode.height, rect.height);
+          let size = Math.floor(rect.height - this.itemNode.height);
+          if (size <= 0.5) return;
+          // console.log(size, "高度不同", this.itemNode.height, rect.height);
           let celcH = rect.height - this.itemNode.height;
           this.itemNode.height = rect.height;
           this.itemNode.bottom += celcH;
@@ -79,12 +81,15 @@ let VirtualListItem = {
       this.itemNode.parent = minCol;
 
       this.itemNode.isCache = true;
-      this.$parent.$forceUpdate();
+      if (this.$parent.listItems.length - 1 === this.index) {
+        this.$parent.$forceUpdate();
+      }
+
+      //
     },
     creatResizeObserver() {
       this.resizeObserver = r_resizeObserver(this.$el.firstChild, (event) => {
         let contentRect = event[0].contentRect;
-        // console.log(contentRect);
         this.setItemNode(contentRect);
       });
     },
@@ -94,6 +99,7 @@ let VirtualListItem = {
     },
   },
   render() {
+    // console.log(this.index, "render");
     this.itemNode.width = this.$parent.columnWidth;
 
     let { top, height, width, left, parent } = this.itemNode;
@@ -121,12 +127,14 @@ let VirtualListItem = {
     // console.log(this.index, "updated  VirtualListItem", this.$el);
   },
   beforeDestroy() {
-    this.destroyResizeObserver();
     // console.log('VirtualListItem beforeDestroy');
+    this.destroyResizeObserver();
   },
   mounted() {
     // console.log("VirtualListItem  mounted");
     this.creatResizeObserver();
+    let contentRect = this.$el.firstChild.getBoundingClientRect();
+    this.setItemNode(contentRect);
   },
 };
 
@@ -226,7 +234,7 @@ export default {
   },
   props: {
     space: { type: Number, default: 10 },
-    columnNum: { type: Number, default: 3 },
+    columnNum: { type: Number, default: 2 },
     triggerScrollToEndDistance: { type: Number, default: 10 },
     keyExtractor: { type: Function, default: (item, index) => index },
     scrollType: { type: String, default: `column` }, //滑倒类型`column`|`auto`
@@ -289,13 +297,28 @@ export default {
       this.columnWidth = (offset.width - (columnNum - 1) * space) / columnNum;
       let left = 0;
       columns.forEach((column, index) => {
+        column.height = 0;
         column.left = left;
         column.width = this.columnWidth;
         column.right = left + this.columnWidth;
         if (index < columns.length - 1) left = column.right + space;
       });
-
       // console.log(columns);
+    },
+    resetListItems() {
+      this.listItems.forEach((item, index) => {
+        let cacheData = item.__save__;
+        cacheData.show = true;
+        cacheData.isShow = true;
+        cacheData.isCache = false;
+        cacheData.top = null;
+        cacheData.height = null;
+        cacheData.bottom = null;
+        cacheData.left = null;
+        cacheData.width = null;
+        cacheData.right = null;
+        cacheData.parent = null;
+      });
     },
     layout($index) {
       // console.log(",,,,,,,,,,,,layout", $index);
@@ -440,9 +463,12 @@ export default {
     creatResizeObserver() {
       this.resizeObserver = r_resizeObserver(this.$el, (event) => {
         let contentRect = event[0].contentRect;
-        // console.log(contentRect);  todo // 多了一次render
-        this.setColumns(contentRect);
-        this.$forceUpdate();
+        if (this.contentWidth !== contentRect.width) {
+          // console.log("宽度不同", contentRect);
+          this.setColumns(contentRect);
+          this.resetListItems();
+          this.$forceUpdate();
+        }
       });
     },
     destroyResizeObserver() {
@@ -451,10 +477,11 @@ export default {
     },
   },
   created() {
-    // document.addEventListener("scroll", this.onScroll);
     // console.log("virtual-list  created", this);
+    // document.addEventListener("scroll", this.onScroll);
   },
   beforeDestroy() {
+    // console.log("virtual-list  beforeDestroy", this);
     // document.removeEventListener("scroll", this.onScroll);
     this.destroyResizeObserver();
   },
@@ -462,7 +489,8 @@ export default {
   mounted() {
     // console.log("virtual-list  mounted", this);
     this.creatResizeObserver();
-
+    let contentRect = this.$el.getBoundingClientRect();
+    this.setColumns(contentRect);
     this.isMount = true;
     if (this.listItems.length) this.$forceUpdate();
   },
@@ -513,6 +541,7 @@ export default {
 
 <style>
 .r-virtual-list {
+  width: 375px;
   height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
