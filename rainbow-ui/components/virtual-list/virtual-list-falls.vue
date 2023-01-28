@@ -9,7 +9,7 @@
       @scrollToEnd="getList"
     >
       <template slot="item" slot-scope="{ item, index }">
-        <div class="r-virtual-list-item">
+        <div class="r-virtual-list-falls-item">
           <div>
             <img v-if="index !== 1" style="width: 100%" :src="item.p" alt="" />
           </div>
@@ -38,14 +38,6 @@ let VirtualListItem = {
   },
   data() {
     return {
-      offset: {
-        top: 0,
-        height: 0,
-        bottom: 0,
-        left: 0,
-        width: 0,
-        right: 0,
-      },
       resizeObserver: null,
     };
   },
@@ -55,7 +47,7 @@ let VirtualListItem = {
         if (this.itemNode.height !== rect.height) {
           let size = Math.floor(rect.height - this.itemNode.height);
           if (size <= 0.5) return;
-          // console.log(size, "高度不同", this.itemNode.height, rect.height);
+          // console.log(this.index, "高度不", this.itemNode.height, rect.height);
           let celcH = rect.height - this.itemNode.height;
           this.itemNode.height = rect.height;
           this.itemNode.bottom += celcH;
@@ -89,8 +81,10 @@ let VirtualListItem = {
     },
     creatResizeObserver() {
       this.resizeObserver = r_resizeObserver(this.$el.firstChild, (event) => {
-        let contentRect = event[0].contentRect;
-        this.setItemNode(contentRect);
+        // let contentRect = event[0].contentRect;
+        let rect = this.$el.firstChild.getBoundingClientRect();
+        // console.log(this.index, "on高度不同", event);
+        this.setItemNode(rect);
       });
     },
     destroyResizeObserver() {
@@ -99,7 +93,7 @@ let VirtualListItem = {
     },
   },
   render() {
-    // console.log(this.index, "render");
+    // console.log(this.index, "VirtualListItem render");
     this.itemNode.width = this.$parent.columnWidth;
 
     let { top, height, width, left, parent } = this.itemNode;
@@ -112,7 +106,7 @@ let VirtualListItem = {
     };
 
     return (
-      <div class="r-virtual-frame-item" style={style}>
+      <div class="r-virtual-list-falls-frame-item" style={style}>
         <div class="r-over-hidden">{renderSlot.call(this, "default")}</div>
       </div>
     );
@@ -186,36 +180,10 @@ class NodeCache {
   }
 }
 
-let VirtualListMeasure = {
-  render() {
-    return (
-      <div class="r-virtual-measure">{renderSlot.call(this, "default")}</div>
-    );
-  },
-  mounted() {
-    let offset = this.$el.getBoundingClientRect();
-    this.$parent.width = offset.width;
-
-    let { columnNum, space, columns, isMeasure } = this.$parent;
-
-    let width = (offset.width - (columnNum - 1) * space) / columnNum;
-    this.$parent.columnWidth = width;
-    let left = 0;
-    columns.forEach((column, index) => {
-      column.left = left;
-      column.width = width;
-      column.right = left + width;
-      if (index < columns.length - 1) left = column.right + space;
-    });
-
-    // console.log(columns);
-  },
-};
-
 let VirtualListHeader = {
   render() {
     return (
-      <div class="r-virtual-list-header">
+      <div class="r-virtual-list-falls-header">
         {renderSlot.call(this, "default")}
       </div>
     );
@@ -229,7 +197,6 @@ let VirtualListHeader = {
 export default {
   components: {
     VirtualListItem,
-    VirtualListMeasure,
     VirtualListHeader,
   },
   props: {
@@ -326,7 +293,7 @@ export default {
       /** 局部更新 */
       let task = [];
       let nth = $index;
-      while (nth >= 0 && task.length < 3) {
+      while (nth >= 0 && task.length < this.columnNum) {
         let mCatch = this.listItems[nth].__save__;
         let mColumn = mCatch.parent;
         if (!task.some((el) => el.parent === mColumn)) task.push(mCatch);
@@ -378,7 +345,7 @@ export default {
     },
     renderItem(item, index, list) {
       return (
-        <div class="r-virtual-list-item">
+        <div class="r-virtual-list-falls-item">
           <div class="--"> 默认item </div>
           <div class="--"> {item.a}</div>
           <div class="--"> {item.b} </div>
@@ -500,17 +467,12 @@ export default {
     // console.log("virtual-list-falls          render");
 
     return (
-      <div
-        ref="ref-virtual-list"
-        class="r-virtual-list"
-        onScroll={this.onScroll}
-      >
+      <div class="r-virtual-list-falls" onScroll={this.onScroll}>
         <VirtualListHeader>
           {renderSlot.call(this, "header", {}, this.renderHeader)}
         </VirtualListHeader>
         <div
-          ref="ref-virtual-frame"
-          class="r-virtual-frame"
+          class="r-virtual-list-falls-frame"
           style={`height: ${this.contentHeight}px;`}
         >
           {this.isMount &&
@@ -540,7 +502,7 @@ export default {
 </script>
 
 <style>
-.r-virtual-list {
+.r-virtual-list-falls {
   width: 375px;
   height: 500px;
   overflow-x: hidden;
@@ -549,11 +511,20 @@ export default {
   /* background: rgb(247, 226, 254); */
   box-sizing: border-box;
 }
-.r-virtual-measure {
-  width: 100%;
+
+.r-virtual-list-falls-header {
+  overflow: hidden;
 }
 
-.r-virtual-list-header {
+.r-virtual-list-falls-frame {
+  overflow: hidden;
+  position: relative;
+  /* background: rgba(144, 0, 255, 0.521); */
+}
+
+.r-virtual-list-falls-frame-item {
+  /* background: rgba(226, 25, 25, 0.8); */
+  position: absolute;
   overflow: hidden;
 }
 
@@ -561,23 +532,11 @@ export default {
   overflow: hidden;
 }
 
-/* .r-virtual-list::-webkit-scrollbar {
+/* .r-virtual-list-falls::-webkit-scrollbar {
   width: 0px;
 } */
 
-.r-virtual-frame {
-  overflow: hidden;
-  position: relative;
-  /* background: rgba(144, 0, 255, 0.521); */
-}
-
-.r-virtual-frame-item {
-  /* background: rgba(226, 25, 25, 0.8); */
-  position: absolute;
-  overflow: hidden;
-}
-
-.r-virtual-list-item {
+.r-virtual-list-falls-item {
   background: rgba(226, 209, 25, 0.8);
   font-size: 20px;
   padding: 15px 15px;

@@ -41,6 +41,11 @@ let VirtualListItem = {
     },
   },
   render() {
+    console.log(this.$parent.isMounted);
+    if (!this.$parent.isMounted) return;
+    console.log(this.index);
+    debugger;
+
     let { top, height, width, left, parent } = this.itemNode;
     let column = this.$parent.findMinHeightColumn();
     if (parent === null) parent = column;
@@ -58,22 +63,26 @@ let VirtualListItem = {
     // console.log(top, height, width, left);
 
     return (
-      <div class="r-virtual-list-frame-item" style={style}>
+      <div class="r-virtual-frame-item" style={style}>
         <div class="r-over-hidden">{renderSlot.call(this, "default")}</div>
       </div>
     );
   },
   created() {
+    this.$parent.mountedEvents.push(this.onParentMounted);
     // console.log("created", this.$parent);
   },
   beforeDestroy() {
+    this.$parent.mountedEvents.remove(this.onParentMounted);
     // console.log('beforeDestroy');
   },
   beforeUpdate() {
-    // console.log("beforeUpdate  VirtualListItem");
+    console.log(this.index, "beforeUpdate  VirtualListItem", this.$el);
+    debugger;
   },
   updated() {
     // console.log(this.index, "updated  VirtualListItem", this);
+    // debugger;
   },
   mounted() {
     // console.log("VirtualListItem  mounted", this.$parent);
@@ -157,15 +166,31 @@ export default {
     },
   },
   data() {
+    let columns = [];
+    for (let index = 0; index < this.columnNum; index++) {
+      columns.push(
+        new NodeCache({
+          isCache: false,
+          vm: this,
+          height: 0,
+          top: 0,
+          bottom: 0,
+        })
+      );
+    }
+
     return {
       page_: this.page,
 
-      contentWidth: 0,
-      contentHeight: 0,
+      width: 0,
+      height: 0,
       windowHeight: window.innerHeight,
+      columns,
       columnWidth: 0,
       headerHeight: 0,
-      isMount: false,
+
+      mountedEvents: [],
+      isMounted: false,
     };
   },
   watch: {
@@ -241,8 +266,8 @@ export default {
     },
     onScrollToEnd() {
       this.page_++;
-      this.$emit("update:page", this.page_);
       this.$emit("scrollToEnd");
+      this.$emit("update:page", this.page_);
     },
     awaitTime() {
       return new Promise((resolve) => {
@@ -259,26 +284,36 @@ export default {
     // console.log("virtual-list  created", this);
   },
   beforeMount() {
-    // console.log("virtual-list  beforeMount", this);
+    // console.log("virtual-list  beforeMount");
   },
   mounted() {
+    this.isMounted = true;
+    this.mountedEvents.forEach((event) => {
+      event();
+    });
     // console.log("virtual-list  mounted", this);
   },
   beforeUpdate() {
-    // console.log( "virtual-list beforeUpdate  ", this);
+    // console.log( "beforeUpdate  ", this.height);
   },
   updated() {
-    // console.log("virtual-list updated ", this);
+    // console.log("virtual-list updated 更新更新更新更新更新 ");
   },
   render() {
+    debugger;
     return (
-      <div class="r-virtual-list" onScroll={this.onScroll}>
+      <div
+        ref="ref-virtual-list"
+        class="r-virtual-list"
+        onScroll={this.onScroll}
+      >
         <VirtualListHeader>
           {renderSlot.call(this, "header", {}, this.renderHeader)}
         </VirtualListHeader>
         <div
-          class="r-virtual-list-frame"
-          style={`height: ${this.contentHeight}px;`}
+          ref="ref-virtual-frame"
+          class="r-virtual-frame"
+          style={`height: ${this.height}px;`}
         >
           {this.listItems.map((item, index) => {
             if (!item.__save__) return null;
@@ -307,14 +342,5 @@ export default {
 </script>
 
 <style>
-.r-virtual-list {
-  width: 375px;
-  height: 500px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: relative;
-  background: rgb(247, 226, 254);
-  box-sizing: border-box;
-}
 </style>
 

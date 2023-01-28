@@ -114,6 +114,24 @@ export default {
     fetchData: [Function, Object, Promise, Array], // 请求函数
     fetchListener: [Function, Object, Promise, Array], // 监听请求
   },
+  aaa: {
+    fetchData: {
+      onApply() {
+        this.loading = true;
+      },
+      afterApply() {
+        this.loading = false;
+      },
+    },
+    fetchListener: {
+      onApply() {
+        this.loading = true;
+      },
+      afterApply() {
+        this.loading = false;
+      },
+    },
+  },
   data() {
     return {
       loading_: this.loading,
