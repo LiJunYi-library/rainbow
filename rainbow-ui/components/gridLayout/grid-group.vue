@@ -4,16 +4,17 @@ import {
   r_onceResizeObserver,
 } from "@rainbow_ljy/jsapi";
 
-import { renderSlot, getSlotVnode } from "../../utils/index";
+import { renderSlot } from "../../utils/index";
 
 export default {
   props: {
-    space: { type: Number, default: 10 },
+    space: { type: Number, default: 0 },
     columnNum: { type: Number, default: 4 },
     border: { type: Boolean, default: false },
     square: { type: Boolean, default: false },
+    data: { type: Array, default: () => [] },
 
-    minItemWidth: { type: Number, default: 300 },
+    minItemWidth: { type: Number, default: 0 },
   },
   watch: {
     columnNum() {
@@ -22,9 +23,6 @@ export default {
   },
   data() {
     return {
-      listData: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      // listData:[],
-
       gridItems: [],
       column_num: this.columnNum,
       item: {
@@ -81,7 +79,7 @@ export default {
 
       this.item.width = itemW;
       this.column_num = columnNum;
-      console.log(this.column_num);
+      // console.log(this.column_num);
       this.$emit("update:columnNum", this.column_num);
     },
 
@@ -109,9 +107,9 @@ export default {
 
   render() {
     let paddingStr = this.border ? `padding:${this.space}px;` : "";
-    let renderList = this.listData.length ? this.listData : this.gridItems;
+    let renderList = this.data.length ? this.data : this.gridItems;
     let renderItem = (item, index) => {
-      if (this.listData.length)
+      if (this.data.length)
         return renderSlot.call(
           this,
           "item",
@@ -164,18 +162,18 @@ export default {
   align-content: center;
   align-items: center;
   flex-wrap: wrap;
-  background: rgba(3, 247, 247, 0.521);
+  /* background: rgba(3, 247, 247, 0.521); */
 }
 
 .r-grid-item {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
-  background: rgba(153, 205, 50, 0.521);
+  /* background: rgba(153, 205, 50, 0.521); */
 }
 
 .r-grid-item-content {
-  background: rgba(153, 205, 50, 0.521);
   height: 100%;
+  /* background: rgba(153, 205, 50, 0.521); */
 }
 </style>
