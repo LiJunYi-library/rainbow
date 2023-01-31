@@ -2,9 +2,12 @@
 <script>
 import { renderSlot, getSlotVnode } from "../../utils/index";
 import {
+  mergeEvent,
+  r_resizeObserver,
   r_mergeResizeObserver,
   r_onceResizeObserver,
 } from "@rainbow_ljy/jsapi";
+import VirtualListHeader from "./virtual-list-header.vue";
 
 let VirtualListItem = {
   props: {
@@ -12,62 +15,78 @@ let VirtualListItem = {
     itemNode: Object,
   },
   data() {
-    return {};
+    return {
+      resizeObserver: null,
+    };
   },
   methods: {
     setItemNode() {
-      if (this.itemNode.isCache) return;
       let offset = this.$el.firstChild.getBoundingClientRect();
-      let column = this.$parent.findMinHeightColumn();
+      let pOffset = this.$parent.$el.getBoundingClientRect();
+
+      if (this.itemNode.isCache) {
+        let updataH = offset.height - this.itemNode.height;
+        let size = Math.floor(updataH);
+
+        console.log("打补丁", this.index, offset);
+        console.log(
+          "打补丁+++",
+          offset.height,
+          this.itemNode.height,
+          this.itemNode
+        );
+
+        this.itemNode.top = offset.top - pOffset.top;
+        this.itemNode.height = offset.height;
+        this.itemNode.bottom = offset.bottom - pOffset.top;
+        this.$parent.contentHeight += updataH;
+        this.$parent.$forceUpdate();
+        return;
+      }
       let space = this.index < this.$parent.columnNum ? 0 : this.$parent.space;
+      console.log("缓存", this.index, offset);
 
-      this.itemNode.top = column.height + space;
-      column.height += offset.height + space;
+      this.itemNode.top = offset.top - pOffset.top;
       this.itemNode.height = offset.height;
-      this.itemNode.bottom = column.height;
-
-      this.itemNode.left = column.left;
-      this.itemNode.width = column.width;
-      this.itemNode.right = column.right;
+      this.itemNode.bottom = offset.bottom - pOffset.top;
       this.itemNode.isCache = true;
 
-      let maxColumn = this.$parent.columns.obtainMax((el) => el.height);
-      this.$parent.height = maxColumn.height;
+      this.$parent.contentHeight += offset.height;
+      if (this.$parent.listItems.length - 1 === this.index) {
+        this.$parent.$forceUpdate();
+      }
     },
-    onParentMounted() {
-      debugger;
-      console.log("onParentMounted");
-      // this.setItemNode();
+    creatResizeObserver() {
+      this.resizeObserver = r_resizeObserver(this.$el.firstChild, (event) => {
+        this.setItemNode();
+      });
+    },
+    destroyResizeObserver() {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
     },
   },
   render() {
-    let { top, height, width, left, parent } = this.itemNode;
-    let column = this.$parent.findMinHeightColumn();
-    if (parent === null) parent = column;
-    if (width === null) width = column.width;
-    if (left === null) left = column.left;
-    if (top === null) top = column.height;
-
     let style = {
-      width: width + "px",
-      height: height + "px",
-      left: left + "px",
-      top: top + "px",
+      width: "100%",
     };
 
     // console.log(top, height, width, left);
 
     return (
-      <div class="r-virtual-list-frame-item" style={style}>
+      <div
+        class="r-virtual-list-item"
+        style={style}
+        h={this.itemNode.height}
+        t={this.itemNode.top}
+        b={this.itemNode.bottom}
+      >
         <div class="r-over-hidden">{renderSlot.call(this, "default")}</div>
       </div>
     );
   },
   created() {
     // console.log("created", this.$parent);
-  },
-  beforeDestroy() {
-    // console.log('beforeDestroy');
   },
   beforeUpdate() {
     // console.log("beforeUpdate  VirtualListItem");
@@ -76,13 +95,19 @@ let VirtualListItem = {
     // console.log(this.index, "updated  VirtualListItem", this);
   },
   mounted() {
-    // console.log("VirtualListItem  mounted", this.$parent);
+    console.log("VirtualListItem  mounted", this.index, this.itemNode);
+    this.creatResizeObserver();
+  },
+  beforeDestroy() {
+    // console.log('beforeDestroy');
+    this.destroyResizeObserver();
   },
 };
 
 class NodeCache {
   vm = null; //vue
   prveNode = null; //上一个
+  nextNode = null; //下一个
   show = true; //是否render
   isCache = false; //是否缓存
   top = null; //top
@@ -91,8 +116,7 @@ class NodeCache {
   left = null; //left
   width = null; //width
   right = null; //right
-  parent = null;
-  children = [];
+  parent = null; //parent
 
   constructor(props) {
     Object.assign(this, props);
@@ -108,7 +132,14 @@ class NodeCache {
     this.show = value;
   }
 
-  onWatchShow() {
+  async layout(index) {
+    this.vm.layout(index);
+  }
+
+  onWatchShow(bool) {
+    debugger
+    console.log(bool);
+    if (!bool) this.vm.recycleHeight += this.height;
     this.vm.$forceUpdate();
   }
 
@@ -123,20 +154,6 @@ class NodeCache {
     this.isShow = this.getIsShow(top, bottom, event);
   }
 }
-
-let VirtualListHeader = {
-  render() {
-    return (
-      <div class="r-virtual-list-header">
-        {renderSlot.call(this, "default")}
-      </div>
-    );
-  },
-  mounted() {
-    let offset = this.$el.getBoundingClientRect();
-    this.$parent.headerHeight = offset.height;
-  },
-};
 
 export default {
   components: {
@@ -157,15 +174,22 @@ export default {
     },
   },
   data() {
+    this.contentWidth = 0;
+    this.contentHeight = 0;
+    this.windowHeight = window.innerHeight;
+    this.columnWidth = 0;
+    this.headerHeight = 0;
+    this.isMount = false;
+    this.recycleHeight = 0;
     return {
       page_: this.page,
 
-      contentWidth: 0,
-      contentHeight: 0,
-      windowHeight: window.innerHeight,
-      columnWidth: 0,
-      headerHeight: 0,
-      isMount: false,
+      // contentWidth: 0,
+      // contentHeight: 0,
+      // windowHeight: window.innerHeight,
+      // columnWidth: 0,
+      // headerHeight: 0,
+      // isMount: false,
     };
   },
   watch: {
@@ -227,15 +251,17 @@ export default {
       );
     },
     onScroll(event) {
-      let scrollTop = event.target.scrollTop - this.headerHeight - this.space;
+      let target = event.target;
+      let scrollTop = target.scrollTop - this.headerHeight;
       let scrollBottom = scrollTop + this.windowHeight;
 
       this.listItems.forEach((item) => {
         item.__save__.onScroll(scrollTop, scrollBottom, event);
       });
 
-      // console.log("scrollTop", scrollBottom);
-      if (scrollBottom >= this.height - this.triggerScrollToEndDistance) {
+      // console.log("onScroll", scrollBottom);
+      let endDistance = this.triggerScrollToEndDistance;
+      if (scrollBottom >= this.contentHeight - endDistance) {
         this.onScrollToEnd();
       }
     },
@@ -251,9 +277,6 @@ export default {
         }, 2000);
       });
     },
-    findMinHeightColumn() {
-      return this.columns.obtainMin((el) => el.height);
-    },
   },
   created() {
     // console.log("virtual-list  created", this);
@@ -263,6 +286,8 @@ export default {
   },
   mounted() {
     // console.log("virtual-list  mounted", this);
+    this.isMount = true;
+    if (this.listItems.length) this.$forceUpdate();
   },
   beforeUpdate() {
     // console.log( "virtual-list beforeUpdate  ", this);
@@ -280,24 +305,26 @@ export default {
           class="r-virtual-list-frame"
           style={`height: ${this.contentHeight}px;`}
         >
-          {this.listItems.map((item, index) => {
-            if (!item.__save__) return null;
-            if (!item.__save__.isShow) return null;
-            return (
-              <VirtualListItem
-                key={this.keyExtractor(item, index)}
-                itemNode={item.__save__}
-                index={index}
-              >
-                {renderSlot.call(
-                  this,
-                  "item",
-                  { item, index },
-                  this.renderItem
-                )}
-              </VirtualListItem>
-            );
-          })}
+          <div style={`height: ${this.recycleHeight}px;`}></div>
+          {this.isMount &&
+            this.listItems.map((item, index) => {
+              if (!item.__save__) return null;
+              if (!item.__save__.isShow) return null;
+              return (
+                <VirtualListItem
+                  key={this.keyExtractor(item, index)}
+                  itemNode={item.__save__}
+                  index={index}
+                >
+                  {renderSlot.call(
+                    this,
+                    "item",
+                    { item, index },
+                    this.renderItem
+                  )}
+                </VirtualListItem>
+              );
+            })}
         </div>
         {renderSlot.call(this, "footer", {}, this.renderFooter)}
       </div>
@@ -315,6 +342,16 @@ export default {
   position: relative;
   background: rgb(247, 226, 254);
   box-sizing: border-box;
+}
+
+.r-virtual-list-header {
+  overflow: hidden;
+}
+
+.r-virtual-list-frame {
+  overflow: hidden;
+  position: relative;
+  background: rgba(144, 0, 255, 0.521);
 }
 </style>
 
