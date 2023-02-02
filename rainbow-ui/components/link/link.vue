@@ -8,6 +8,7 @@ export default {
     path: String,
     type: String,
     fill: Boolean,
+    underline: { type: Boolean, default: true },
     query: {
       type: [Object, Function],
       default: () => ({}),
@@ -54,7 +55,7 @@ export default {
     let _href = this.href;
     (() => {
       if (!this.path) return;
-      let _query = this.query;                                                        
+      let _query = this.query;
       if (this.query instanceof Function) _query = this.query();
       const task = this.$router.resolve({
         path: this.path,
@@ -87,7 +88,9 @@ export default {
         {this.$createElement(
           "a",
           {
-            class: `${cName}  ${className}`,
+            class: `${cName}  ${className}  ${
+              this.underline ? "" : "underlineNone"
+            } `,
             attrs: {
               href: this.silent ? null : _href,
               target: this.silent ? null : this.target,
@@ -250,5 +253,8 @@ a.r-link-success-plain {
     border: 1px solid var(--success-color-hover);
     background: var(--success-color-hover);
   }
+}
+a.underlineNone {
+  text-decoration: none;
 }
 </style>
