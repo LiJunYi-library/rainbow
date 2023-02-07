@@ -1,4 +1,6 @@
 <script>
+import { renderSlot } from "../../utils/index";
+
 export default {
   type: "grid-item",
   name: "grid-item",
@@ -10,13 +12,13 @@ export default {
     // console.log(this);
   },
   destroyed() {
-    this.$parent.gridItems.remove(this)
+    this.$parent.gridItems.remove(this);
     // console.log('destroyed', this.$parent);
   },
-  mounted() {
-  },
+  mounted() {},
   render(h) {
     return null;
+    // return renderSlot.call(this, "default");
   },
 };
 </script>

@@ -1,6 +1,6 @@
 {
   "name": "@rainbow_ljy/rainbow-ui",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "",
   "private": false,
   "main": "index.js",
@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rainbow_ljy/jsapi": "workspace:^1.0.23",
+    "@rainbow_ljy/jsapi": "workspace:^1.0.32",
     "echarts": "^5.3.3",
     "vue-class-component": "^7.2.6"
   }

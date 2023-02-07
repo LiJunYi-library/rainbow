@@ -103,48 +103,70 @@ export default {
         );
       };
     },
+    renderEmpty() {
+      return renderSlot.call(
+        this,
+        "empty",
+        {},
+        null,
+        <div class="r-grid-group-empty">暂无数据</div>
+      );
+    },
+    renderContent() {
+      let paddingStr = this.border ? `padding:${this.space}px;` : "";
+      let renderList =
+        (this.data.length ? this.data : this.$slots.default) || [];
+      let renderItem = (item, index) => {
+        if (this.data.length)
+          return renderSlot.call(
+            this,
+            "item",
+            {
+              item,
+              index,
+            },
+            this.renderDefaultItem
+          );
+        return item;
+        //  console.log(item.$slots.default);
+        // return item.$slots.default;
+      };
+      // console.log(this.$slots.default);
+      // <div v-show={false}>{renderSlot.call(this, "default")}</div>
+
+      return (
+        <div class="r-grid-group" ref="ref-grid-group" style={paddingStr}>
+          {renderList.map((ele, index) => {
+            let nth = index + 1;
+            let style = {
+              width: this.item.width + "px",
+              marginRight: nth % this.column_num === 0 ? 0 : this.space + "px",
+              marginTop: index < this.column_num ? 0 : this.space + "px",
+            };
+            if (this.square) style.height = this.item.width + "px";
+            return (
+              <div class="r-grid-item 969" style={style}>
+                {renderItem(ele, index)}
+              </div>
+            );
+          })}
+
+          <div
+            class="rgrid-end"
+            style={{
+              marginTop:
+                (this.column_num > renderList.length ? 0 : this.space) + "px",
+            }}
+          >
+            {renderSlot.call(this, "end")}
+          </div>
+        </div>
+      );
+    },
   },
 
   render() {
-    let paddingStr = this.border ? `padding:${this.space}px;` : "";
-    let renderList = this.data.length ? this.data : this.gridItems;
-    let renderItem = (item, index) => {
-      if (this.data.length)
-        return renderSlot.call(
-          this,
-          "item",
-          {
-            item,
-            index,
-          },
-          this.renderDefaultItem
-        );
-
-      return renderSlot.call(item, "default");
-    };
-    return (
-      <div class="r-grid-group" ref="ref-grid-group" style={paddingStr}>
-        <div v-show={false}>{renderSlot.call(this, "default")}</div>
-        {renderList.map((ele, index) => {
-          let nth = index + 1;
-          let style = {
-            width: this.item.width + "px",
-            marginRight: nth % this.column_num === 0 ? 0 : this.space + "px",
-            marginTop: index < this.column_num ? 0 : this.space + "px",
-          };
-          if (this.square) style.height = this.item.width + "px";
-          return (
-            <div class="r-grid-item" style={style}>
-              {renderItem(ele, index)}
-            </div>
-          );
-        })}
-
-        <div class="rgrid-end" style={{ marginTop: this.space + "px" }}>
-          {renderSlot.call(this, "end")}
-        </div>
-      </div>
-    );
+    return <div>{this.renderContent()}</div>;
   },
 
   mounted() {
@@ -163,6 +185,11 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   /* background: rgba(3, 247, 247, 0.521); */
+}
+
+.r-grid-group-empty{
+  text-align:  center;
+  line-height: 200px;
 }
 
 .r-grid-item {

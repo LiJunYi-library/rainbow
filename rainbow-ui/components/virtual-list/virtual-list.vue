@@ -69,6 +69,7 @@ let VirtualListItem = {
   render() {
     let style = {
       width: "100%",
+      height: `${this.$parent.itemHeight}px`,
     };
 
     // console.log(top, height, width, left);
@@ -95,12 +96,12 @@ let VirtualListItem = {
     // console.log(this.index, "updated  VirtualListItem", this);
   },
   mounted() {
-    console.log("VirtualListItem  mounted", this.index, this.itemNode);
-    this.creatResizeObserver();
+    // console.log("VirtualListItem  mounted", this.index, this.itemNode);
+    // this.creatResizeObserver();
   },
   beforeDestroy() {
     // console.log('beforeDestroy');
-    this.destroyResizeObserver();
+    // this.destroyResizeObserver();
   },
 };
 
@@ -137,7 +138,7 @@ class NodeCache {
   }
 
   onWatchShow(bool) {
-    debugger
+    debugger;
     console.log(bool);
     if (!bool) this.vm.recycleHeight += this.height;
     this.vm.$forceUpdate();
@@ -171,6 +172,10 @@ export default {
       default(item, index) {
         return index;
       },
+    },
+    itemHeight: {
+      type: Number,
+      default: 300,
     },
   },
   data() {
@@ -296,6 +301,7 @@ export default {
     // console.log("virtual-list updated ", this);
   },
   render() {
+    this.contentHeight = this.listItems.length * this.itemHeight;
     return (
       <div class="r-virtual-list" onScroll={this.onScroll}>
         <VirtualListHeader>
