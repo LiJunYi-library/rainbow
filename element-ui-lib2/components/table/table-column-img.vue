@@ -2,6 +2,9 @@
 import tableColumn from "./table-column.vue";
 import { objectFilter } from "@rainbow_ljy/jsapi";
 export default {
+  props: {
+    imgStyle: Object,
+  },
   extends: tableColumn,
   methods: {
     bindDefaultAttrs() {
@@ -20,7 +23,10 @@ export default {
         width: "50px",
         height: "50px",
       };
-      return this.$createElement("el-image", { attrs, style });
+      return this.$createElement("el-image", {
+        attrs,
+        style: this.imgStyle || style,
+      });
     },
   },
 };

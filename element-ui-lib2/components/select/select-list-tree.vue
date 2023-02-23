@@ -124,7 +124,7 @@ export default {
       let isCanSetData = (() => {
         if (this.layer === 0 && this.selectIndex >= 0) return true;
         if (!this.parent) return false;
-        if (this.parent.currentData) return true;
+        if (this.parent.value) return true;
         return false;
       })();
 

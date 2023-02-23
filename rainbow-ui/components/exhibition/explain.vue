@@ -28,21 +28,21 @@ export default {
   display: inline-flex;
   align-items: flex-start;
 
-  &.primary {
-    color: $--color-primary;
-  }
-  &.success {
-   color: $--color-success;
-  }
-  &.info {
-   color: $--color-info;
-  }
-  &.warning {
-   color: $--color-warning;
-  }
-  &.danger {
-    color: $--color-danger;
-  }
+  // &.primary {
+  //   color: $--color-primary;
+  // }
+  // &.success {
+  //  color: $--color-success;
+  // }
+  // &.info {
+  //  color: $--color-info;
+  // }
+  // &.warning {
+  //  color: $--color-warning;
+  // }
+  // &.danger {
+  //   color: $--color-danger;
+  // }
 
   .symbol {
     margin: 0 3px;

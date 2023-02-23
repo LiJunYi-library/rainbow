@@ -25,15 +25,22 @@ export default {
     return {
       gridItems: [],
       column_num: this.columnNum,
+      row_num: 0,
       item: {
         width: 0,
       },
+      residueWidth: 0,
       onceResizeObserver: new ResizeObserver(() => 0),
       resizeObserver: new ResizeObserver(() => 0),
       width: 0,
+      renderList: [],
     };
   },
-  created() {},
+  created() {
+    this.renderList =
+      (this.data.length ? this.data : this.$slots.default) || [];
+    // console.log(" this.renderList ", this.renderList);
+  },
   methods: {
     bindResizeObserver() {
       this.onceResizeObserver = r_onceResizeObserver(
@@ -56,7 +63,8 @@ export default {
       let contentRect = entrie.contentRect || {};
       if (this.width === contentRect.width) return;
       this.width = contentRect.width || 0;
-      // console.log("监听到了尺寸变化了...", this.width);
+      let gridEndOffset = this.$refs["rgrid-end"].getBoundingClientRect();
+      // console.log("监听到了尺寸变化了...", gridEndOffset);
       this.setItemWidth();
     },
     setItemWidth() {
@@ -79,7 +87,8 @@ export default {
 
       this.item.width = itemW;
       this.column_num = columnNum;
-      // console.log(this.column_num);
+      // console.log("this.item.width", this.item.width);
+      // console.log("this.column_num", this.column_num);
       this.$emit("update:columnNum", this.column_num);
     },
 
@@ -114,8 +123,9 @@ export default {
     },
     renderContent() {
       let paddingStr = this.border ? `padding:${this.space}px;` : "";
-      let renderList =
+      this.renderList =
         (this.data.length ? this.data : this.$slots.default) || [];
+
       let renderItem = (item, index) => {
         if (this.data.length)
           return renderSlot.call(
@@ -136,7 +146,7 @@ export default {
 
       return (
         <div class="r-grid-group" ref="ref-grid-group" style={paddingStr}>
-          {renderList.map((ele, index) => {
+          {this.renderList.map((ele, index) => {
             let nth = index + 1;
             let style = {
               width: this.item.width + "px",
@@ -150,16 +160,21 @@ export default {
               </div>
             );
           })}
-
-          <div
-            class="rgrid-end"
-            style={{
-              marginTop:
-                (this.column_num > renderList.length ? 0 : this.space) + "px",
-            }}
-          >
-            {renderSlot.call(this, "end")}
-          </div>
+          {this.renderEnd()}
+        </div>
+      );
+    },
+    renderEnd() {
+      let top = this.column_num > this.renderList.length ? 0 : this.space;
+      return (
+        <div
+          ref="rgrid-end"
+          class="rgrid-end"
+          style={{
+            marginTop: top + "px",
+          }}
+        >
+          {renderSlot.call(this, "end")}
         </div>
       );
     },
@@ -187,8 +202,8 @@ export default {
   /* background: rgba(3, 247, 247, 0.521); */
 }
 
-.r-grid-group-empty{
-  text-align:  center;
+.r-grid-group-empty {
+  text-align: center;
   line-height: 200px;
 }
 

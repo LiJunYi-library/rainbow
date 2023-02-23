@@ -354,9 +354,6 @@ export default {
   margin-right: 5px; */
 }
 
-::-webkit-scrollbar {
-  width: 0px;
-}
 
 .r-virtual-frame-item {
   width: 100%;

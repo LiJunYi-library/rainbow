@@ -219,7 +219,7 @@ class FetchListener {
         );
         vm.$emit('update:loading', vm.loading_);
         if (!props.isSetResponseData) return;
-        vm.responseData_ = data;
+        vm.responseData_ = res;
         vm.$emit('update:responseData', vm.responseData_);
         return;
       }

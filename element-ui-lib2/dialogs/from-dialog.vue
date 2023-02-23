@@ -16,6 +16,7 @@ export default {
       rules: null,
       fromItems: {},
       className: "",
+      width: "500px",
     };
   },
   watch: {},
@@ -154,7 +155,7 @@ export default {
       };
       if (this.rules) attrs.rules = this.rules;
       return (
-        <div class={"fromContent " + this.className } v-loading={this.loading}>
+        <div class={"fromContent " + this.className} v-loading={this.loading}>
           {this.$createElement(
             "el-form",
             {
@@ -207,7 +208,7 @@ export default {
           "append-to-body": true,
           title: this.title,
           visible: this.visible,
-          width: "500px",
+          width: this.width,
           top: "0px",
           "custom-class": "mmb-log",
           ...this.bindElDialogAttrs(),

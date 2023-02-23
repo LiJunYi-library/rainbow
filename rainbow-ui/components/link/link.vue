@@ -107,6 +107,28 @@ export default {
 };
 </script>
 <style  lang="scss">
+body {
+  --primary-color: #3bd5d2;
+  --primary-color-hover: #6beeec;
+  --primary-color-visited: #31aaa8;
+  --primary-color-plain: #caf8f7;
+
+  --success-color: #7ddd18;
+  --success-color-hover: #93ff20;
+  --success-color-visited: #67b217;
+  --success-color-plain: #f3f9e7;
+
+  --warning-color: #e6a23c;
+  --warning-color-hover: #fc9700;
+  --warning-color-visited: #ce9339;
+  --warning-color-plain: #f4e2c7;
+
+  --danger-color: #f85615;
+  --danger-color-hover: #ff4900;
+  --danger-color-visited: #e34304;
+  --danger-color-plain: #ffe7dc;
+}
+
 a.r-link-primary {
   &:link {
     color: var(--primary-color);
@@ -159,6 +181,61 @@ a.r-link-primary-plain {
     color: white;
     border: 1px solid var(--primary-color-hover);
     background: var(--primary-color-hover);
+  }
+}
+
+a.r-link-danger {
+  &:link {
+    color: var(--danger-color);
+  }
+
+  color: var(--danger-color);
+
+  &:visited {
+    color: var(--danger-color-visited);
+  }
+
+  &:hover {
+    color: var(--danger-color-hover);
+  }
+}
+
+a.r-link-danger-fill {
+  background-color: var(--danger-color);
+  &:link {
+    background-color: var(--danger-color);
+  }
+
+  &:visited {
+    background-color: var(--danger-color-visited);
+  }
+
+  &:hover {
+    background-color: var(--danger-color-hover);
+  }
+}
+
+a.r-link-danger-plain {
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+  background: var(--danger-color-plain);
+
+  &:link {
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    background: var(--danger-color-plain);
+  }
+
+  &:visited {
+    color: white;
+    border: 1px solid var(--danger-color);
+    background: var(--danger-color);
+  }
+
+  &:hover {
+    color: white;
+    border: 1px solid var(--danger-color-hover);
+    background: var(--danger-color-hover);
   }
 }
 
@@ -254,6 +331,64 @@ a.r-link-success-plain {
     background: var(--success-color-hover);
   }
 }
+
+
+
+a.r-link-warning {
+  &:link {
+    color: var(--warning-color);
+  }
+
+  color: var(--warning-color);
+
+  &:visited {
+    color: var(--warning-color-visited);
+  }
+
+  &:hover {
+    color: var(--warning-color-hover);
+  }
+}
+
+a.r-link-warning-fill {
+  background-color: var(--warning-color);
+  &:link {
+    background-color: var(--warning-color);
+  }
+
+  &:visited {
+    background-color: var(--warning-color-visited);
+  }
+
+  &:hover {
+    background-color: var(--warning-color-hover);
+  }
+}
+
+a.r-link-warning-plain {
+  color: var(--warning-color);
+  border: 1px solid var(--warning-color);
+  background: var(--warning-color-plain);
+
+  &:link {
+    color: var(--warning-color);
+    border: 1px solid var(--warning-color);
+    background: var(--warning-color-plain);
+  }
+
+  &:visited {
+    color: white;
+    border: 1px solid var(--warning-color);
+    background: var(--warning-color);
+  }
+
+  &:hover {
+    color: white;
+    border: 1px solid var(--warning-color-hover);
+    background: var(--warning-color-hover);
+  }
+}
+
 a.underlineNone {
   text-decoration: none;
 }

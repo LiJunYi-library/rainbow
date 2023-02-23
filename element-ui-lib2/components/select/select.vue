@@ -4,6 +4,7 @@ export default {
     value: [String, Number, Object, Array, Boolean],
     trigger: Boolean,
     label: String,
+    className:String
   },
   data() {
     return {};
@@ -110,7 +111,7 @@ export default {
   },
   render() {
     return (
-      <div class="el-lib-select">
+      <div class={"el-lib-select" + this.className}>
         {this.label && <div class="label">{this.label}</div>}
         {this.renderStrat()}
         {this.renderElement()}
