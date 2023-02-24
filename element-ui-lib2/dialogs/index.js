@@ -140,6 +140,66 @@ export function transformDialog(props = {}) {
   }
 }
 
+
+export function resolverObjTem(options, vm = {}, app = App) {
+  return new Promise((resolve, reject) => {
+    if (options instanceof Function) options = options(resolve, reject)
+    let data = {};
+    let methods = {};
+    for (const key in options) {
+      if (Object.hasOwnProperty.call(options, key)) {
+        const element = options[key];
+        if (element instanceof Function) methods[key] = element;
+        else data[key] = element;
+      }
+    }
+    delete methods.content;
+    let opt = {
+      // data() {
+      //   return { ...data };
+      // },
+      // methods: { ...methods },
+      render() {
+        return null;
+      },
+    };
+    let Constructor = app.extend(opt);
+    let instance = new Constructor({
+      el: document.createElement("div"),
+      router: vm.router || config.router,
+      store: vm.store || config.store,
+      data() {
+        return { ...data };
+      },
+      methods: { ...methods },
+      render() {
+        return options.content.call(this);
+      },
+    });
+  });
+}
+
+export function resolverTem(com, vm = {}, app = App) {
+  let compunt = com;
+  return new Promise((resolve, reject) => {
+    if (com instanceof Function) compunt = com(resolve, reject);
+    let option = compunt;
+    if (compunt.constructor.name === "VNode")
+      option = {
+        render() {
+          return compunt;
+        },
+      };
+    let Constructor = app.extend(option);
+    let instance = new Constructor({
+      el: document.createElement("div"),
+      router: vm.router || config.router,
+      store: vm.store || config.store,
+    });
+  });
+}
+
+
 export { FromDialog, Dialog };
 
 

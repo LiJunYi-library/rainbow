@@ -25,7 +25,7 @@ export default {
 </script>
 <style lang="scss">
 .el-lib-explain {
-  display: inline-flex;
+  display: flex;
   align-items: flex-start;
 
   // &.primary {
