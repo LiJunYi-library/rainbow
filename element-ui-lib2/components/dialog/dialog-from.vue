@@ -1,5 +1,5 @@
 <script>
-import DIALOG from "./my-dialog.vue";
+import DIALOG from "./dialog.vue";
 export default {
   extends: DIALOG,
   props: {

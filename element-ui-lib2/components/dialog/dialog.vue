@@ -121,10 +121,10 @@ export default {
 </script>
 
 <style >
-.el-lib-dialog {
+.el-dialog.el-lib-dialog {
   max-height: 100vh;
   margin: 0 auto;
-}
+} 
 .el-lib-dialog-wrapper {
   display: flex;
   justify-content: center;
