@@ -111,7 +111,7 @@ export default {
   },
   render() {
     return (
-      <div class={"el-lib-select" + this.className}>
+      <div class={"el-lib-select " + this.className}>
         {this.label && <div class="label">{this.label}</div>}
         {this.renderStrat()}
         {this.renderElement()}

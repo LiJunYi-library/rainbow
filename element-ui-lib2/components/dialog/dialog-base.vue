@@ -98,7 +98,7 @@ export default {
       {
         ref: "elDialog",
         class: "el-lib-dialog-wrapper",
-        props: this.bindProps(),
+        attrs: this.bindProps(),
         on: this.bindOn(),
         scopedSlots: {
           default: () => (

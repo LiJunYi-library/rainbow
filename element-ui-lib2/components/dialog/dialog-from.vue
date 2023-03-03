@@ -1,5 +1,5 @@
 <script>
-import DIALOG from "./dialog.vue";
+import DIALOG from "./dialog-base.vue";
 export default {
   extends: DIALOG,
   props: {
@@ -53,7 +53,7 @@ export default {
         style:{
          padding: '10px 15px',
         },
-        props: {
+        attrs: {
           ...this.$attrs,
           model: this.fromData,
         },

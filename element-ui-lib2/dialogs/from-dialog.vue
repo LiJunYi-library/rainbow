@@ -146,6 +146,10 @@ export default {
       return {};
     },
 
+    renderTitleSlot() {
+      return null;
+    },
+
     renderDefaultSlot() {
       // console.log(this.$data);
       let attrs = {
@@ -222,6 +226,9 @@ export default {
         scopedSlots: {
           default: (...arg) => {
             return [this.renderDefaultSlot()];
+          },
+          title: (...arg) => {
+            return [this.renderTitleSlot()];
           },
         },
       },

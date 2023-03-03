@@ -1,8 +1,8 @@
-import dialog from './dialog.vue';
+import dialog from './dialog-base.vue';
 import dialogFrom from './dialog-from.vue';
 
 
 export default {
-  dialog,
+  'dialog-base': dialog,
   'dialog-from': dialogFrom
 }

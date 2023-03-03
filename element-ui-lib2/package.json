@@ -1,6 +1,6 @@
 {
   "name": "@rainbow_ljy/element-ui-lib2",
-  "version": "1.0.76",
+  "version": "1.0.80",
   "description": "",
   "private": false,
   "main": "index.js",
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rainbow_ljy/element-ui-lib2": "^1.0.79",
     "@rainbow_ljy/jsapi": "workspace:^1.0.24",
     "@rainbow_ljy/rainbow-ui": "workspace:^1.0.17",
     "element-ui": "2.15.7"
