@@ -17,7 +17,7 @@ export default {
   methods: {
     async submitForm() {
       // console.log("submitForm", this.$refs["ruleForm"]);
-      // await this.$refs["ruleForm"].validate();
+      await this.$refs["ruleForm"].validate();
       // console.log("validate");
       this.loading = true;
       if (this.submit) await this.submit(this);
@@ -34,14 +34,16 @@ export default {
               {this.cancelText}
             </el-button>
           )}
-          <el-button
-            type="primary"
-            size="mini"
-            loading={this.loading}
-            onClick={this.submitForm}
-          >
-            {this.confirmText}
-          </el-button>
+          {this.confirmText && (
+            <el-button
+              type="primary"
+              size="mini"
+              loading={this.loading}
+              onClick={this.submitForm}
+            >
+              {this.confirmText}
+            </el-button>
+          )}
         </div>
       );
     },
@@ -50,8 +52,8 @@ export default {
       // console.log("bindScopedSlotsDefault", this);
       return this.$createElement("m-form", {
         ref: "ruleForm",
-        style:{
-         padding: '10px 15px',
+        style: {
+          padding: "10px 15px",
         },
         attrs: {
           ...this.$attrs,

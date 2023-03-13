@@ -21,6 +21,10 @@ export type transformDialogAlert = {
 
 
 
+export declare function resolverObjTem(app: any): any;
+
+export declare function resolverTem(app: any): any;
+
 export declare function useDialog(app: any): void;
 
 export declare function extend(config: ExtendConfig);

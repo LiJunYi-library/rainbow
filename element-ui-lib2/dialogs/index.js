@@ -183,9 +183,10 @@ export function resolverTem(com, vm = {}, app = App) {
   let compunt = com;
   return new Promise((resolve, reject) => {
     if (com instanceof Function) compunt = com(resolve, reject);
-    let option = compunt;
-    if (compunt.constructor.name === "VNode")
-      option = {
+    // let option = compunt;
+    // console.log(compunt.constructor.name);
+    // if (compunt.constructor.name === "VNode")
+    let option = {
         render() {
           return compunt;
         },

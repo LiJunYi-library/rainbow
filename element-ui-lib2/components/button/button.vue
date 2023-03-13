@@ -9,6 +9,16 @@ export default {
     bindDefaultEvents() {
       return {};
     },
+    keyCodeEvene(event) {
+      if (event.code === "NumpadEnter" || event.code === "Enter")
+        this.$emit("enter");
+    },
+  },
+  created() {
+    window.addEventListener("keyup", this.keyCodeEvene);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keyup", this.keyCodeEvene);
   },
   render() {
     return this.$createElement(

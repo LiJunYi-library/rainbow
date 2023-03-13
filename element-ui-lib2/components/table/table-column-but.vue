@@ -33,6 +33,7 @@ export default {
         "white-space": "pre-wrap",
         "text-align": "left",
         "line-height": "18px",
+        "font-size": "inherit",
       };
       let buttonAttrs = objectFilter(this.$attrs, /_button/g);
       let buttonEvent = this.$listeners;

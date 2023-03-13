@@ -37,6 +37,7 @@ export default {
   watch: {
     sortProp() {
       if (this.defaultSort.prop === this.sortProp) return;
+      if (!this.sortProp) return this.$refs.elTable.clearSort();
       this.defaultSort.prop = this.sortProp;
       this.emitSortChange = false;
       this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
@@ -44,6 +45,7 @@ export default {
     },
     sortOrder() {
       if (this.defaultSort.order === this.sortOrder) return;
+      if (!this.sortOrder) return this.$refs.elTable.clearSort();
       this.defaultSort.order = this.sortOrder;
       this.emitSortChange = false;
       this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
@@ -87,13 +89,13 @@ export default {
         props: {},
         scopedSlots: {
           default: (...arg) => this.renderTableDefault(...arg),
-          empty: renderScopedSlots.call(this,'empty',this.renderDefaultEmpty),       
+          empty: renderScopedSlots.call(this, "empty", this.renderDefaultEmpty),
         },
       });
     },
 
-    renderDefaultEmpty(){
-      return null
+    renderDefaultEmpty() {
+      return null;
     },
 
     cell_class_name(props) {
