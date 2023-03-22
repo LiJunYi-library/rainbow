@@ -31,10 +31,22 @@ export default {
       emitSortChange: true,
       isSelectAll: this.selectAll,
       checkList_: this.checkList,
+      currentPage_: this.currentPage,
+      pageSize_: this.pageSize,
+      data_: this.data,
     };
   },
   computed: {},
   watch: {
+    data() {
+      this.data_ = this.data;
+    },
+    pageSize() {
+      this.pageSize_ = this.pageSize;
+    },
+    currentPage() {
+      this.currentPage_ = this.currentPage;
+    },
     sortProp() {
       if (this.defaultSort.prop === this.sortProp) return;
       if (!this.sortProp) return this.$refs.elTable.clearSort();
@@ -60,6 +72,16 @@ export default {
     bindLoading() {
       return false;
     },
+    resolverTableData(ARR) {
+      if (!this.showPagination) return ARR;
+      let e = this.pageSize_ * this.currentPage_;
+      let b = (this.currentPage_ - 1) * this.pageSize_;
+      let d = (ARR || []).slice(b, e);
+      // console.log("b", b);
+      // console.log("e", e);
+      // console.log("d", d);
+      return d;
+    },
     renderTable() {
       let tableAttrs = objectFilter(this.$attrs, /_table/);
       let tableEvent = objectFilter(this.$listeners, /_table/);
@@ -75,7 +97,7 @@ export default {
         ref: "elTable",
         attrs: {
           ...attrs,
-          data: this.data,
+          data: this.resolverTableData(this.data_),
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
@@ -115,21 +137,21 @@ export default {
 
     onSelect(list, ...arg) {
       this.checkList_ = list;
-      this.isSelectAll = list.length === this.data.length;
+      this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
       this.$emit("select", list, ...arg);
     },
 
     onSelectAll(list, ...arg) {
       this.checkList_ = list;
-      this.isSelectAll = list.length === this.data.length;
+      this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
       this.$emit("selectAll", list, ...arg);
     },
 
     onSelectionChange(list, ...arg) {
       this.checkList_ = list;
-      this.isSelectAll = list.length === this.data.length;
+      this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
       this.$emit("update:selectAll", this.isSelectAll);
       this.$emit("selection-change", list, this.isSelectAll);
@@ -166,8 +188,8 @@ export default {
         attrs: {
           total: 0,
           class: "el-lib-pagination",
-          "current-page": this.currentPage,
-          "page-size": this.pageSize,
+          "current-page": this.currentPage_,
+          "page-size": this.pageSize_,
           "page-sizes": [10, 20, 30, 40, 50, 100, 200, 300, 400, 500],
           layout: "total, sizes, prev, pager, next, jumper",
           ...this.bindPaginationDefaultAttrs(),
@@ -177,10 +199,12 @@ export default {
           "size-change": this.onSizeChange,
           "current-change": this.onCurrentChange,
           "update:currentPage": (a) => {
+            this.currentPage_ = a;
             this.$emit("update:currentPage", a);
             this.updateCurrentPage(a);
           },
           "update:pageSize": (a) => {
+            this.pageSize_ = a;
             this.$emit("update:pageSize", a);
             this.updatePageSize(a);
           },
@@ -200,10 +224,10 @@ export default {
       return {};
     },
     onSizeChange() {
-      this.$emit("pageChange", this.currentPage, this.pageSize);
+      this.$emit("pageChange", this.currentPage_, this.pageSize_);
     },
     onCurrentChange() {
-      this.$emit("pageChange", this.currentPage, this.pageSize);
+      this.$emit("pageChange", this.currentPage_, this.pageSize_);
     },
   },
   render() {

@@ -11,9 +11,11 @@ import tableColumnTable from './table-column-table.vue';
 import tableColumnSelectList from './table-column-select-list.vue';
 import tableColumnFixed from './table-column-fixed.vue';
 import tableColumnLink from './table-column-link.vue';
+import fetchListTable from './fetch-list-table'
 
 export default {
   table,
+  'fetch-list-table': fetchListTable,
   'fetch-table': fetchTable,
   'table-column': tableColumn,
   'table-column-but': tableColumnBut,

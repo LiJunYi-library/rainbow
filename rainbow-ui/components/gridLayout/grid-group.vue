@@ -123,11 +123,11 @@ export default {
     },
     renderContent() {
       let paddingStr = this.border ? `padding:${this.space}px;` : "";
-      this.renderList =
+     let renderList =
         (this.data.length ? this.data : this.$slots.default) || [];
 
       let renderItem = (item, index) => {
-        if (this.data.length)
+        if (this.data.length) {
           return renderSlot.call(
             this,
             "item",
@@ -137,6 +137,8 @@ export default {
             },
             this.renderDefaultItem
           );
+        }
+
         return item;
         //  console.log(item.$slots.default);
         // return item.$slots.default;
@@ -146,7 +148,7 @@ export default {
 
       return (
         <div class="r-grid-group" ref="ref-grid-group" style={paddingStr}>
-          {this.renderList.map((ele, index) => {
+          {renderList.map((ele, index) => {
             let nth = index + 1;
             let style = {
               width: this.item.width + "px",
@@ -160,12 +162,12 @@ export default {
               </div>
             );
           })}
-          {this.renderEnd()}
+          {this.renderEnd(renderList)}
         </div>
       );
     },
-    renderEnd() {
-      let top = this.column_num > this.renderList.length ? 0 : this.space;
+    renderEnd(renderList) {
+      let top = this.column_num > renderList.length ? 0 : this.space;
       return (
         <div
           ref="rgrid-end"

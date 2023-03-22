@@ -127,9 +127,9 @@ export default {
         if (this.parent.value) return true;
         return false;
       })();
-
+      //  console.log('initCurrentTree',isCanSetData);
       if (isCanSetData) await this.setData();
-      else this.data_ = [];
+      if(!isCanSetData && this.layer !== 0) this.data_ = [];
 
       let isReset = (() => {
         if (!this.data_) return true;
@@ -181,11 +181,12 @@ export default {
 
     async setData() {
       if (!this.parent) return;
-      console.log(".... setData ****** " + this.layer);
+      // console.log(".... setData ****** " + this.layer);
       this.data_ = this.parent.formatterChild(this.parent.currentData);
     },
 
     async setTreeData() {
+      // console.log('setTreeData' ,this.value);
       if (this.value) {
         await this.setData();
         await this.onValueChange(this.value);

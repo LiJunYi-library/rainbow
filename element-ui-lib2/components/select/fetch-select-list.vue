@@ -13,6 +13,7 @@ export default {
     },
     afterFetch() {
       this.data_ = this.responseData_;
+      this.emitInput(this.value);
     },
   },
 };
