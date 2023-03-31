@@ -1,5 +1,6 @@
 <script>
 import DIALOG from "./dialog-base.vue";
+import form from '../from/form.vue'
 export default {
   extends: DIALOG,
   props: {
@@ -50,7 +51,7 @@ export default {
     bindScopedSlotsDefault() {
       let _SS = this.$scopedSlots;
       // console.log("bindScopedSlotsDefault", this);
-      return this.$createElement("m-form", {
+      return this.$createElement(form, {
         ref: "ruleForm",
         style: {
           padding: "10px 15px",

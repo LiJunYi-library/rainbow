@@ -26,6 +26,7 @@ export default {
     dataExtra: Object,
     bodyHeight: { type: String, default: "" },
     bodyStyle: Object,
+    destroyOnClose: Boolean,
   },
   inheritAttrs: false,
   data() {
@@ -51,7 +52,7 @@ export default {
     },
     bindProps() {
       return {
-        "destroy-on-close": true,
+        "destroy-on-close": this.destroyOnClose,
         "custom-class": "el-lib-dialog",
         size: "mini",
         width: "50%",
@@ -66,13 +67,15 @@ export default {
       return {
         "update:visible": (a) => (this.visible = a),
         ...this.$listeners,
-        onClosed: () => {
+        closed: () => {
+          // console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
           this.$el.remove();
           this.$emit("closed", this);
         },
       };
     },
     bindScopedSlotsDefault() {
+      if (this.visible === false) return null;
       let _SS = this.$scopedSlots;
       if (this.renderDefault) return this.renderDefault(this);
       if (_SS.default) return _SS.default(this);
@@ -101,16 +104,18 @@ export default {
         attrs: this.bindProps(),
         on: this.bindOn(),
         scopedSlots: {
-          default: () => (
-            <div
-              style={{ height: this.bodyHeight, ...this.bodyStyle }}
-              ref="el-lib-dialog-body"
-              class="el-lib-dialog-body"
-              v-loading={this.loading}
-            >
-              {this.bindScopedSlotsDefault()}
-            </div>
-          ),
+          default: () => {
+            return (
+              <div
+                style={{ height: this.bodyHeight, ...this.bodyStyle }}
+                ref="el-lib-dialog-body"
+                class="el-lib-dialog-body"
+                v-loading={this.loading}
+              >
+                {this.bindScopedSlotsDefault()}
+              </div>
+            );
+          },
           title: this.bindScopedSlotsTitle,
         },
       },
@@ -124,7 +129,7 @@ export default {
 .el-dialog.el-lib-dialog {
   max-height: 100vh;
   margin: 0 auto;
-} 
+}
 .el-lib-dialog-wrapper {
   display: flex;
   justify-content: center;
