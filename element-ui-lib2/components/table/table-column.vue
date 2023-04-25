@@ -13,6 +13,7 @@ export default {
     tableColumn: { default: null },
   },
   props: {
+    prop: String,
     label: String,
     showOverflowTooltip: Boolean,
   },
@@ -59,7 +60,7 @@ export default {
 
     getValue(group) {
       let { row, column, $index } = group;
-      let val = row[this.$attrs.prop];
+      let val = row[this.$props.prop];
       if (column.formatter) val = column.formatter(row, column, val, $index);
       return val;
     },
@@ -128,6 +129,7 @@ export default {
         showOverflowTooltip: this.showOverflowTooltip,
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
+        prop: this.prop,
       },
       scopedSlots: {
         default: this.renderDefaultSlot(),

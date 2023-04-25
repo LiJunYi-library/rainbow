@@ -20,6 +20,8 @@ export default {
     calcHeight: Number,
     sortProp: String,
     sortOrder: String,
+    orderDescending: { type: String, default: "descending" },
+    orderAscending: { type: String, default: "ascending" },
     data: { type: Array, default: () => [] },
     selectAll: { type: Boolean, default: false },
   },
@@ -27,7 +29,10 @@ export default {
     return {
       columnChildren: [],
       winHeight: window.innerHeight,
-      defaultSort: { order: this.sortOrder, prop: this.sortProp },
+      defaultSort: {
+        order: this.transOrder(this.sortOrder),
+        prop: this.sortProp,
+      },
       emitSortChange: true,
       isSelectAll: this.selectAll,
       checkList_: this.checkList,
@@ -60,7 +65,8 @@ export default {
       if (!this.sortOrder) return this.$refs.elTable.clearSort();
       this.defaultSort.order = this.sortOrder;
       this.emitSortChange = false;
-      this.$refs.elTable.sort(this.defaultSort.prop, this.defaultSort.order);
+      let order = this.transOrder(this.defaultSort.order);
+      this.$refs.elTable.sort(this.defaultSort.prop, order);
       this.emitSortChange = true;
     },
   },
@@ -89,7 +95,10 @@ export default {
       let calcHeight = this.winHeight - this.calcHeight;
       let attrs = {
         border: true,
-        defaultSort: this.defaultSort,
+        defaultSort: {
+          ...this.defaultSort,
+          order: this.transOrder(this.defaultSort.order),
+        },
         "cell-class-name": (...arg) => this.cell_class_name(...arg),
       };
       if (this.calcHeight) attrs["max-height"] = `${calcHeight || 0}px`;
@@ -124,9 +133,22 @@ export default {
       return `el-column-${props.column.property}  el-column-${props.columnIndex}`;
     },
 
+    parseOrder(order) {
+      if (order === "descending") order = this.orderDescending;
+      if (order === "ascending") order = this.orderAscending;
+      return order;
+    },
+
+    transOrder(order) {
+      if ((order === this.orderDescending)) order = "descending";
+      if ((order === this.orderAscending)) order = "ascending";
+      return order;
+    },
+
     onSortChange(props) {
       if (!this.emitSortChange) return;
       let { prop, order } = props;
+      order = this.parseOrder(order);
       this.defaultSort.prop = prop;
       this.defaultSort.order = order;
       this.$emit("update:sortProp", this.defaultSort.prop);

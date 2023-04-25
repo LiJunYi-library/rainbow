@@ -4,6 +4,10 @@ import { objectFilter } from "@rainbow_ljy/jsapi";
 export default {
   props: {
     imgStyle: Object,
+    size: {
+      type: [String, Number],
+      default: 50,
+    },
   },
   extends: tableColumn,
   methods: {
@@ -20,8 +24,8 @@ export default {
         ...imageAttrs,
       };
       let style = {
-        width: "50px",
-        height: "50px",
+        width: `${this.size}px`,
+        height: `${this.size}px`,
       };
       return this.$createElement("el-image", {
         attrs,
