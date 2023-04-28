@@ -4,7 +4,9 @@ export default {
     value: [String, Number, Object, Array, Boolean],
     trigger: Boolean,
     label: String,
-    className:String
+    className: String,
+    multiple: Boolean,
+    popoverTitle: String,
   },
   data() {
     return {};
@@ -68,10 +70,12 @@ export default {
 
     renderElement() {
       return this.$createElement("el-select", {
+        ref: "el-select",
         attrs: {
           clearable: true,
           ...this.bindDefaultAttrs(),
           ...this.$attrs,
+          multiple: this.multiple,
           value: this.value,
         },
         on: {
@@ -110,14 +114,43 @@ export default {
     },
   },
   render() {
+    const disabled = (() => {
+      if (!this.multiple) return true
+      if (this.value && this.value.length) return false
+      return true
+    })()
+
+    const selected = (() => {
+      if (!this.multiple) return []
+      if (!this.$refs['el-select']) return []
+      let vms = this.$refs['el-select'].selected
+      if (!vms) return []
+      if (!(vms instanceof Array)) return []
+      return vms
+    })()
+    // console.log(this.$refs);
     return (
-      <div class={"el-lib-select " + this.className}>
-        {this.label && <div class="label">{this.label}</div>}
-        {this.renderStrat()}
-        {this.renderElement()}
-        {this.renderEnd()}
-      </div>
-    );
+      <el-popover
+        disabled={disabled}
+        placement='top-start'
+        title={this.popoverTitle || this.label}
+        width='200'
+        trigger='hover'
+      >
+        <div>
+          {selected.map((el) => (
+            <div>{el.label}</div>
+          ))}
+        </div>
+
+        <div slot='reference' class={'el-lib-select ' + this.className}>
+          {this.label && <div class='label'>{this.label}</div>}
+          {this.renderStrat()}
+          {this.renderElement()}
+          {this.renderEnd()}
+        </div>
+      </el-popover>
+    )
   },
 };
 </script>
@@ -130,6 +163,7 @@ export default {
 .el-lib-select .label {
   white-space: nowrap;
 }
+
 .el-lib-select {
   min-width: 100px;
 }
