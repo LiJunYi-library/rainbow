@@ -22,6 +22,10 @@ export default {
       return this.loading_;
     },
     bindPaginationDefaultAttrs() {
+
+      if (!this.responseData_) {
+        return { total: this.data_ ? this.data_.length : 0 };
+      }
       let arr = this.setList(this.responseData_) || [];
       let total = arr.length;
       return { total };

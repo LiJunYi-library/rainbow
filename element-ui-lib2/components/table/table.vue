@@ -13,8 +13,8 @@ export default {
     showPagination: { type: Boolean, default: true },
     showSelection: Boolean,
     currentPage: { type: Number, default: 1 },
-    updateCurrentPage: { type: Function, default: () => {} },
-    updatePageSize: { type: Function, default: () => {} },
+    updateCurrentPage: { type: Function, default: () => { } },
+    updatePageSize: { type: Function, default: () => { } },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
     calcHeight: Number,
@@ -70,7 +70,7 @@ export default {
       this.emitSortChange = true;
     },
   },
-  created() {},
+  created() { },
   mounted() {
     // console.log("table", this);
   },
@@ -208,7 +208,7 @@ export default {
       // console.log("paginationAttrs", paginationAttrs);
       return this.$createElement("el-pagination", {
         attrs: {
-          total: 0,
+          total: this.data_.length,
           class: "el-lib-pagination",
           "current-page": this.currentPage_,
           "page-size": this.pageSize_,
@@ -263,8 +263,8 @@ export default {
 };
 </script>
 <style lang="scss">
-.el-lib-table {
-}
+.el-lib-table {}
+
 .el-lib-pagination {
   text-align: center;
   padding: 10px 0;

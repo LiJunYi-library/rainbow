@@ -38,7 +38,9 @@ export default {
     };
   },
   mounted() {
-    this.initmounted();
+    this.$nextTick(()=>{
+       this.initmounted();
+    })
   },
   methods: {
     async initmounted() {

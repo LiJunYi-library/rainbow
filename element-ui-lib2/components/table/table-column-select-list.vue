@@ -39,7 +39,7 @@ export default {
         },
         on: {
           input: (value) => {
-            this.$set(row, this.$attrs.prop, value);
+            this.$set(row, this.prop, value);
           },
           "update:currentItem": (val) => {
             if (this.selectItemProp) this.$set(row, this.selectItemProp, val);

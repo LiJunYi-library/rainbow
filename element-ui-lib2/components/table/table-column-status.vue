@@ -9,7 +9,7 @@ export default {
     bindDefaultAttrs() {
       return {
         formatter: (row) => {
-          let index = row[this.$attrs.prop] * 1;
+          let index = row[this.prop] * 1;
           return this.status[index];
         },
       };
