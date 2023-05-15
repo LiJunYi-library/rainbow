@@ -24,6 +24,7 @@ export default {
     orderAscending: { type: String, default: "ascending" },
     data: { type: Array, default: () => [] },
     selectAll: { type: Boolean, default: false },
+    isRowClickExpansion: Boolean,
   },
   data() {
     return {
@@ -39,7 +40,6 @@ export default {
       currentPage_: this.currentPage,
       pageSize_: this.pageSize,
       data_: this.data,
-
       expandList:[],
     };
   },
@@ -102,7 +102,7 @@ export default {
     renderTable() {
       let tableAttrs = objectFilter(this.$attrs, /_table/);
       let tableEvent = objectFilter(this.$listeners, /_table/);
-      // console.log("tableAttrs", tableAttrs);
+      // console.log("tableEvent", tableEvent);
       let calcHeight = this.winHeight - this.calcHeight;
       // console.log(this.expandList,tableAttrs);
       let attrs = {
@@ -128,6 +128,21 @@ export default {
           "selection-change": (...arg) => this.onSelectionChange(...arg),
           "sort-change": (...arg) => this.onSortChange(...arg),
           ...tableEvent,
+          //todo 初始化掌开会有问题
+          'cell-click':(...arg)=>{
+            let [ row,column ] = [...arg];
+            if(this.isRowClickExpansion){
+              if(!row._isExpanded){
+                 this.addExpand(row)
+                 row._isExpanded = true
+              }else {
+                this.removeExpand(row)
+                row._isExpanded = false
+              }
+              // console.log(...arg);
+            }
+            this.$emit('row-click',...arg)
+          },
         },
         props: {},
         scopedSlots: {
