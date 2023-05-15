@@ -13,8 +13,8 @@ export default {
     showPagination: { type: Boolean, default: true },
     showSelection: Boolean,
     currentPage: { type: Number, default: 1 },
-    updateCurrentPage: { type: Function, default: () => { } },
-    updatePageSize: { type: Function, default: () => { } },
+    updateCurrentPage: { type: Function, default: () => {} },
+    updatePageSize: { type: Function, default: () => {} },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
     calcHeight: Number,
@@ -39,6 +39,8 @@ export default {
       currentPage_: this.currentPage,
       pageSize_: this.pageSize,
       data_: this.data,
+
+      expandList:[],
     };
   },
   computed: {},
@@ -70,11 +72,20 @@ export default {
       this.emitSortChange = true;
     },
   },
-  created() { },
+  created() {},
   mounted() {
     // console.log("table", this);
   },
   methods: {
+    addExpand(row,key){ 
+      this.$refs['elTable'].toggleRowExpansion(row, true)
+      if(this.expandList.includes( key) ) return
+      this.expandList.push(key);
+    },
+    removeExpand(row,key){
+      this.$refs['elTable'].toggleRowExpansion(row, false)
+      this.expandList = this.expandList.filter(el=>el!==key);
+    },
     bindLoading() {
       return false;
     },
@@ -93,6 +104,7 @@ export default {
       let tableEvent = objectFilter(this.$listeners, /_table/);
       // console.log("tableAttrs", tableAttrs);
       let calcHeight = this.winHeight - this.calcHeight;
+      // console.log(this.expandList,tableAttrs);
       let attrs = {
         border: true,
         defaultSort: {
@@ -263,8 +275,8 @@ export default {
 };
 </script>
 <style lang="scss">
-.el-lib-table {}
-
+.el-lib-table {
+}
 .el-lib-pagination {
   text-align: center;
   padding: 10px 0;
