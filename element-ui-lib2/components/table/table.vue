@@ -40,13 +40,17 @@ export default {
       currentPage_: this.currentPage,
       pageSize_: this.pageSize,
       data_: this.data,
-      expandList:[],
+      expandList: [],
+      tableData: [],
     };
   },
   computed: {},
   watch: {
     data() {
       this.data_ = this.data;
+    },
+    data_() {
+      this.paging();
     },
     pageSize() {
       this.pageSize_ = this.pageSize;
@@ -77,14 +81,14 @@ export default {
     // console.log("table", this);
   },
   methods: {
-    addExpand(row,key){ 
-      this.$refs['elTable'].toggleRowExpansion(row, true)
-      if(this.expandList.includes( key) ) return
+    addExpand(row, key) {
+      this.$refs["elTable"].toggleRowExpansion(row, true);
+      if (this.expandList.includes(key)) return;
       this.expandList.push(key);
     },
-    removeExpand(row,key){
-      this.$refs['elTable'].toggleRowExpansion(row, false)
-      this.expandList = this.expandList.filter(el=>el!==key);
+    removeExpand(row, key) {
+      this.$refs["elTable"].toggleRowExpansion(row, false);
+      this.expandList = this.expandList.filter((el) => el !== key);
     },
     bindLoading() {
       return false;
@@ -118,7 +122,7 @@ export default {
         ref: "elTable",
         attrs: {
           ...attrs,
-          data: this.resolverTableData(this.data_),
+          data: this.tableData,
           ...this.bindTableDefaultAttrs(),
           ...tableAttrs,
         },
@@ -129,19 +133,19 @@ export default {
           "sort-change": (...arg) => this.onSortChange(...arg),
           ...tableEvent,
           //todo 初始化掌开会有问题
-          'cell-click':(...arg)=>{
-            let [ row,column ] = [...arg];
-            if(this.isRowClickExpansion){
-              if(!row._isExpanded){
-                 this.addExpand(row)
-                 row._isExpanded = true
-              }else {
-                this.removeExpand(row)
-                row._isExpanded = false
+          "cell-click": (...arg) => {
+            let [row, column] = [...arg];
+            if (this.isRowClickExpansion) {
+              if (!row._isExpanded) {
+                this.addExpand(row);
+                row._isExpanded = true;
+              } else {
+                this.removeExpand(row);
+                row._isExpanded = false;
               }
               // console.log(...arg);
             }
-            this.$emit('row-click',...arg)
+            this.$emit("row-click", ...arg);
           },
         },
         props: {},
@@ -167,8 +171,8 @@ export default {
     },
 
     transOrder(order) {
-      if ((order === this.orderDescending)) order = "descending";
-      if ((order === this.orderAscending)) order = "ascending";
+      if (order === this.orderDescending) order = "descending";
+      if (order === this.orderAscending) order = "ascending";
       return order;
     },
 
@@ -185,6 +189,7 @@ export default {
     },
 
     onSelect(list, ...arg) {
+      console.log("onSelect", list);
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
@@ -192,6 +197,7 @@ export default {
     },
 
     onSelectAll(list, ...arg) {
+      console.log("onSelectAll", list);
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
@@ -199,6 +205,7 @@ export default {
     },
 
     onSelectionChange(list, ...arg) {
+      console.log("onSelectionChange", list);
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
@@ -274,9 +281,20 @@ export default {
     },
     onSizeChange() {
       this.$emit("pageChange", this.currentPage_, this.pageSize_);
+      this.paging();
     },
     onCurrentChange() {
       this.$emit("pageChange", this.currentPage_, this.pageSize_);
+      this.paging();
+    },
+    paging() {
+      if (!this.showPagination) {
+        this.tableData = this.data_;
+        return;
+      }
+      let e = this.pageSize_ * this.currentPage_;
+      let b = (this.currentPage_ - 1) * this.pageSize_;
+      this.tableData = (this.data_ || []).slice(b, e);
     },
   },
   render() {
@@ -292,9 +310,9 @@ export default {
 <style lang="scss">
 .el-lib-table {
 }
+
 .el-lib-pagination {
   text-align: center;
   padding: 10px 0;
 }
 </style>
-

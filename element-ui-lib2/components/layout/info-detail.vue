@@ -24,12 +24,12 @@ export default {
         </div>
         <el-row type="flex">
           <div class="l">
-            {renderSlot.call(
-              this,
-              "start",
-              null,
-              null,
+            <el-popover width={500}
+              placement='right'
+              trigger='hover'  >
+              <img src={this.img} style={`width: ${500}px; height: ${500}px`}></img>
               <el-image
+                slot='reference'
                 class="img"
                 style={`width: ${this.size}px; height: ${this.size}px`}
                 src={this.img}
@@ -40,7 +40,7 @@ export default {
                   <i class="el-icon-picture-outline"></i>
                 </div>
               </el-image>
-            )}
+            </el-popover>
           </div>
           <div class="c">{renderSlot.call(this)}</div>
           <div class="r">{renderSlot.call(this, "end")}</div>
@@ -60,13 +60,16 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
   .title {
     padding: 5px 0;
     text-align: left;
     font-size: 18px;
     font-weight: 500;
   }
+
   .l {
+
     // background: red;
     .img {
       width: 120px;
@@ -74,6 +77,7 @@ export default {
       vertical-align: bottom;
     }
   }
+
   .c {
     flex: 1;
     // background: yellow;
@@ -83,6 +87,7 @@ export default {
     align-items: flex-start;
     padding: 0 15px;
   }
+
   .r {
     padding: 0 15px;
     // background: blue;

@@ -36,10 +36,7 @@ export default {
       await this.cancel(this);
       this.loading = false;
     },
-    bindScopedSlotsFooter() {
-      let _SS = this.$scopedSlots;
-      if (this.renderFooter) return this.renderFooter(this);
-      if (_SS.footer) return _SS.footer(this);
+    renderDefaultFooter(){
       return (
         <div v-loading={this.loading} style={`text-align: ${this.align};`}>
           {this.cancelText && (
@@ -59,6 +56,12 @@ export default {
           )}
         </div>
       );
+    },
+    bindScopedSlotsFooter() {
+      let _SS = this.$scopedSlots;
+      if (this.renderFooter) return this.renderFooter(this);
+      if (_SS.footer) return _SS.footer(this);
+      return this.renderDefaultFooter()
     },
     bindScopedSlotsDefault() {
       let _SS = this.$scopedSlots;
