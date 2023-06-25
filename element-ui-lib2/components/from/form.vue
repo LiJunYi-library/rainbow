@@ -22,12 +22,13 @@ export default {
         ...this.$attrs,
       },
       scopedSlots: {
-        default: renderScopedSlots.call(this, "default", this.renderDefault),
+        default:()=> this._t('default', ()=> this.renderDefault, this)
+        
       },
     });
   },
   mounted() {
-    //
+   console.log(this);
   },
   created() {
     this.setSubmit();

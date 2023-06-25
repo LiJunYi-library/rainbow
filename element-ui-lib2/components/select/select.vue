@@ -135,6 +135,7 @@ export default {
         placement='top-start'
         title={this.popoverTitle || this.label}
         width='200'
+        class="el-lib-select-popover"
         trigger='hover'
       >
         <div>
@@ -167,4 +168,10 @@ export default {
 .el-lib-select {
   min-width: 100px;
 }
+
+.el-lib-select-popover{
+  display: inline-block;
+}
+
+
 </style>

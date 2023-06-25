@@ -8,6 +8,7 @@ export default {
   methods: {
     bindDefaultAttrs() {
       return {
+        'class-name':"el-table-column-operation",
         width: "100",
         fixed: "right",
       };
@@ -15,3 +16,9 @@ export default {
   },
 };
 </script> 
+<style>
+  .el-table-column-operation  .cell{
+      visibility: unset;
+  }
+
+</style>
