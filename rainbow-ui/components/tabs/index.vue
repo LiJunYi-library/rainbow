@@ -3,12 +3,12 @@ let props = {
   value: [String, Number],
   reverse: Boolean,
   center: Boolean,
-  cache: {type: Boolean, default: true},
+  cache: { type: Boolean, default: true },
   titleJustify: [String, Number],
   contentHeight: [String, Number],
-  isMountedUpdated: {type: Boolean, default: true},
-  immerse: {type: Boolean, default: false},
-  activeType: {type: String, default: 'shadow'}, // 'shadow' ,'none', 'underline'
+  isMountedUpdated: { type: Boolean, default: true },
+  immerse: { type: Boolean, default: false },
+  activeType: { type: String, default: "shadow" }, // 'shadow' ,'none', 'underline'
 };
 
 let Content = {
@@ -28,12 +28,12 @@ let Content = {
   },
   render() {
     if (this.renderName) return this.source[this.renderName]();
-    return this._t('default');
+    return this._t("default");
   },
 };
 
 let Context = {
-  inject: ['RTabs'],
+  inject: ["RTabs"],
   components: {
     Content,
   },
@@ -53,7 +53,7 @@ let Context = {
   },
   render() {
     let titleStyle = {
-      'justify-content': this.titleJustify,
+      "justify-content": this.titleJustify,
     };
 
     let children = this.RTabs.children;
@@ -63,20 +63,21 @@ let Context = {
       <div class="r-tabs-context">
         <div
           class={[
-            'r-tabs-header',
-            this.immerse && 'r-tabs-header-immerse',
-            this.reverse && 'r-tabs-header-reverse',
-          ]}>
+            "r-tabs-header",
+            this.immerse && "r-tabs-header-immerse",
+            this.reverse && "r-tabs-header-reverse",
+          ]}
+        >
           <div ref="r-tabs-labels" class="r-tabs-labels">
             {children.map((el, index) => {
               let labelClass = [
-                'r-tabs-label',
-                this.immerse && 'r-tabs-label-immerse',
-                this_child === el && 'r-tabs-label-active',
+                "r-tabs-label",
+                this.immerse && "r-tabs-label-immerse",
+                this_child === el && "r-tabs-label-active",
                 children[index + 1] === this_child &&
-                  'r-tabs-label-active-prve',
+                  "r-tabs-label-active-prve",
                 children[index - 1] === this_child &&
-                  'r-tabs-label-active-next',
+                  "r-tabs-label-active-next",
               ];
               if (this_child === el) {
                 return (
@@ -95,7 +96,8 @@ let Context = {
               return (
                 <div
                   class={labelClass}
-                  onClick={() => this.tabsLableClick(el, index)}>
+                  onClick={() => this.tabsLableClick(el, index)}
+                >
                   <div class="r-tabs-label-t r-tabs-label-t-active"></div>
                   <Content
                     source={el}
@@ -116,27 +118,30 @@ let Context = {
 
           <div
             class={[
-              'r-tabs-labels-no',
-              this.reverse && 'r-tabs-labels-no-reverse',
-              this.immerse && 'r-tabs-labels-no-immerse',
-            ]}>
+              "r-tabs-labels-no",
+              this.reverse && "r-tabs-labels-no-reverse",
+              this.immerse && "r-tabs-labels-no-immerse",
+            ]}
+          >
             <div
               style={titleStyle}
               class={[
-                'r-tabs-header-title',
-                this.center ? 'r-tabs-header-center' : '',
-              ].join(' ')}>
+                "r-tabs-header-title",
+                this.center ? "r-tabs-header-center" : "",
+              ].join(" ")}
+            >
               <div class="r-tabs-titles">
-                {children.map(el => {
+                {children.map((el) => {
                   let c = (() => {
-                    if (el !== this_child) return '';
-                    if (this.changeType < 0) return 'fadeIn';
-                    return 'fadeIn';
+                    if (el !== this_child) return "";
+                    if (this.changeType < 0) return "fadeIn";
+                    return "fadeIn";
                   })();
                   return (
                     <div
                       v-show={el === this_child}
-                      class={'r-tabs-title animated ' + c}>
+                      class={"r-tabs-title animated " + c}
+                    >
                       <Content
                         source={el}
                         eventName="updataTitle"
@@ -148,7 +153,7 @@ let Context = {
               </div>
             </div>
 
-            <div class="tit">{this._t('title')}</div>
+            <div class="tit">{this._t("title")}</div>
           </div>
         </div>
         <div class="r-tabs-space" v-show={!this.immerse}></div>
@@ -156,12 +161,13 @@ let Context = {
           class="r-tabs-contents"
           style={{
             height: this.contentHeight,
-          }}>
-          {children.map(el => {
+          }}
+        >
+          {children.map((el) => {
             let Ac = (() => {
-              if (el !== this_child) return '';
-              if (this.changeType < 0) return 'fadeInRight';
-              return 'fadeInLeft';
+              if (el !== this_child) return "";
+              if (this.changeType < 0) return "fadeInRight";
+              return "fadeInLeft";
             })();
 
             let Cc = (() => {
@@ -170,7 +176,7 @@ let Context = {
                 !el.$vnode.data ||
                 !el.$vnode.data.staticClass
               ) {
-                return '';
+                return "";
               }
               return el.$vnode.data.staticClass;
             })();
@@ -178,8 +184,9 @@ let Context = {
             if (this.cache) {
               return (
                 <div
-                  class={['animated r-tabs-content ', Cc, Ac]}
-                  v-show={el === this_child}>
+                  class={["animated r-tabs-content ", Cc, Ac]}
+                  v-show={el === this_child}
+                >
                   <Content
                     source={el}
                     eventName="updataContent"
@@ -192,7 +199,8 @@ let Context = {
             return el === this_child ? (
               <div
                 key={this_child.value}
-                class={['animated r-tabs-content ', Cc, Ac]}>
+                class={["animated r-tabs-content ", Cc, Ac]}
+              >
                 <Content
                   source={el}
                   eventName="updataContent"
@@ -211,15 +219,15 @@ let Context = {
   },
   methods: {
     renderActive() {
-      if (this.activeType === 'none') return null;
+      if (this.activeType === "none") return null;
       if (!this.child) return null;
       if (!this.child.$refs) return null;
       if (!this.child.$refs.lable) return null;
-      if (!this.$refs['r-tabs-labels']) return null;
+      if (!this.$refs["r-tabs-labels"]) return null;
 
       let activeOffset = {};
 
-      let pOffset = this.$refs['r-tabs-labels'].getBoundingClientRect();
+      let pOffset = this.$refs["r-tabs-labels"].getBoundingClientRect();
       activeOffset = this.child.$refs.lable.getBoundingClientRect();
       activeOffset.left_ = activeOffset.left - pOffset.left;
       activeOffset.top_ = activeOffset.top - pOffset.top;
@@ -231,30 +239,30 @@ let Context = {
         top: `${activeOffset.top_}px`,
       };
 
-      let activeClass = 'r-tabs-labels-active-' + this.activeType;
+      let activeClass = "r-tabs-labels-active-" + this.activeType;
 
       return (
         <div style={style} class="r-tabs-labels-active">
-          <div class={activeClass}>{this._t('active')}</div>
+          <div class={activeClass}>{this._t("active")}</div>
         </div>
       );
     },
 
     findChild() {
       let children = this.RTabs.children;
-      this.pitchOnIndex = children.findIndex(el => el.value === this.value);
-      return children.find(el => el.value === this.value) || {};
+      this.pitchOnIndex = children.findIndex((el) => el.value === this.value);
+      return children.find((el) => el.value === this.value) || {};
     },
 
     tabsLableClick(item, index) {
       this.changeType = index - this.pitchOnIndex;
       this.child = item;
       this.pitchOnIndex = index;
-      this.$emit('input', this.child.value);
-      if (this.cache) this.$emit('change', item, index);
+      this.$emit("input", this.child.value);
+      if (this.cache) this.$emit("change", item, index);
       else {
         this.$nextTick(() => {
-          this.$emit('change', item, index);
+          this.$emit("change", item, index);
         });
       }
       this.child.show();
@@ -263,8 +271,8 @@ let Context = {
 };
 
 export default {
-  name: 'r-tabs',
-  componentName: 'r-tabs',
+  name: "r-tabs",
+  componentName: "r-tabs",
   provide() {
     return {
       RTabs: this,
@@ -283,8 +291,8 @@ export default {
   render() {
     return (
       <div class="r-tabs">
-        {this._t('default')}
-        <Context {...{props: this.$props, on: this.$listeners}} />
+        {this._t("default")}
+        <Context {...{ props: this.$props, on: this.$listeners }} />
       </div>
     );
   },

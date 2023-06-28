@@ -1,6 +1,6 @@
 <script>
 export default {
-  inject: ['RTabs'],
+  inject: ["RTabs"],
   render() {
     return null;
   },
@@ -10,7 +10,7 @@ export default {
     return {};
   },
   props: {
-    value: {required: true, type: [Number, String]},
+    value: { required: true, type: [Number, String] },
     lable: [String, Number],
   },
   beforeCreate() {},
@@ -19,7 +19,7 @@ export default {
     this.RTabs.children.push(this);
   },
   updated() {
-    this.RTabs.$emit('tabs-page-update');
+    this.RTabs.$emit("tabs-page-update");
     if (this.updataTitle) this.updataTitle();
     if (this.updataLabel) this.updataLabel();
     if (this.updataContent) this.updataContent();
@@ -29,26 +29,26 @@ export default {
   },
   beforeDestroy() {
     if (!this.RTabs) return;
-    this.RTabs.children = this.RTabs.children.filter(el => el !== this);
+    this.RTabs.children = this.RTabs.children.filter((el) => el !== this);
   },
   methods: {
     show() {
       this.$nextTick(() => {
-        this.$emit('show');
+        this.$emit("show");
       });
     },
     renderTitle() {
-      return this._t('title');
+      return this._t("title");
     },
     renderLabel() {
       return (
         <div ref="lable" class="r-tabs-page-label">
-          {this._t('lable', this.lable)}
+          {this._t("lable", this.lable)}
         </div>
       );
     },
     renderContent() {
-      return this._t('default');
+      return this._t("default");
     },
   },
 };
