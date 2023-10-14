@@ -20,6 +20,10 @@ export default {
       type: Number,
       default: () => 0,
     },
+    zIndex: {
+      type: Number,
+      default: () => 998,
+    },
   },
   data() {
     return {
@@ -35,6 +39,14 @@ export default {
     };
   },
   methods: {
+    addEventListenerResize() {
+      this.resizeObserver = new ResizeObserver((...arg) => {
+        let offset =  this.$refs.box.getBoundingClientRect();
+        this.initData.offsetWidth = offset.width
+        this.$refs.sticky.style.width = `${this.initData.offsetWidth}px`;
+      });
+      this.resizeObserver.observe( this.$refs.box);
+    },
     onScroll(event) {
       const { target } = event;
       if (!this.path.includes(target)) return;
@@ -45,10 +57,9 @@ export default {
       if (stickyTop <= this.top && !this.isSticky) {
         this.isSticky = true;
         this.$refs.sticky.style.position = "fixed";
-        this.$refs.sticky.style.zIndex = 98;
+        this.$refs.sticky.style.zIndex =  this.zIndex;
         this.$refs.sticky.style.top = `${this.top + this.layoutTop}px`;
         this.$refs.sticky.style.width = `${this.initData.offsetWidth}px`;
-        this.$refs.box.style.width = `${this.initData.offsetWidth}px`;
         this.$refs.box.style.height = `${this.initData.offsetHeight}px`;
         this.handleCollapse();
         this.$emit("onChange", this.isSticky);
@@ -98,17 +109,20 @@ export default {
   mounted() {
     this.getPath(this.$el);
     this.init();
+    this.addEventListenerResize()
   },
   created() {
     this.scrollContainer.addEventListener("scroll", this.onScroll, true);
   },
   beforeUnmount() {
     this.scrollContainer.removeEventListener("scroll", this.onScroll, true);
+    if (this.resizeObserver) this.resizeObserver.disconnect();
   },
   unmounted() {
     this.scrollContainer.removeEventListener("scroll", this.onScroll, true);
   },
   beforeDestroy() {
+    if (this.resizeObserver) this.resizeObserver.disconnect();
     this.scrollContainer.removeEventListener("scroll", this.onScroll, true);
   },
   destroyed() {

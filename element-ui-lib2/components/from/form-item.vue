@@ -39,6 +39,7 @@ export default {
     validator: Function,
     regExp: RegExp,
     "margin-bottom": String,
+    unit: String,
   },
   render() {
     return this.$createElement("el-form-item", {
@@ -49,9 +50,16 @@ export default {
         ...this.bindRules(),
         ...this.bindDefaultAttrs(),
         ...this.$attrs,
+        label: this.$attrs.label,
       },
       scopedSlots: {
         default: renderScopedSlots.call(this, "default", this.renderDefault),
+        label: renderScopedSlots.call(this, "label", () => (
+          <span>
+            {" "}
+            {[this.$attrs.label, this.unit].filter(Boolean).join("")}
+          </span>
+        )),
       },
     });
   },
@@ -71,7 +79,8 @@ export default {
         trigger: this.regExpTrigger,
         validator: (rule, value, callback) => {
           let message = this.message(this.regExpMessage);
-          if (this.regExp.test(value)) callback(new Error(message));
+          if (this.regExp.test(value)) return callback(new Error(message));
+          callback();
         },
       };
 

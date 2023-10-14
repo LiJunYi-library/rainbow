@@ -42,6 +42,7 @@ export default {
     };
   },
   props: {
+    notMerge: { type: Boolean, default: true },
     cursor: Boolean,
     nativeTitle: String,
     showEmptyIcon: { type: Boolean, default: true },
@@ -131,7 +132,7 @@ export default {
         if (!this.config) return;
         if (!this.echart) return;
         if (!this.echart.setOption) return;
-        this.echart.setOption(this.config);
+        this.echart.setOption(this.config, this.notMerge);
       });
     },
     // eslint-disable-next-line

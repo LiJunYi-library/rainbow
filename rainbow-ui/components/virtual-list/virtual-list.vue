@@ -1,4 +1,3 @@
-
 <script>
 import { renderSlot, getSlotVnode } from "../../utils/index";
 import {
@@ -360,4 +359,3 @@ export default {
   background: rgba(144, 0, 255, 0.521);
 }
 </style>
-
