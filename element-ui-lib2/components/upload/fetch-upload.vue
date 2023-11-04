@@ -1,4 +1,3 @@
-
 <script>
 import fetchOptions from "../../mixins/fetchOptions";
 
@@ -37,6 +36,7 @@ export default {
         this.$emit("update:file", this.file_);
         this.afterTransitionFile();
         this.$emit("choose", this.file_, this.base64_);
+        this.$refs.uploadInput.value = "";
       };
     },
 
@@ -102,6 +102,7 @@ export default {
           <input
             class="r-upload-input"
             type="file"
+            ref="uploadInput"
             accept={this.accept}
             onChange={(e) => this.handleChange(e)}
           />
@@ -127,7 +128,7 @@ export default {
   },
 };
 </script>
-<style >
+<style>
 .r-upload {
   display: inline-block;
 }

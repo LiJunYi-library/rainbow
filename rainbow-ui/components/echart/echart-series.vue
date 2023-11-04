@@ -24,7 +24,7 @@ export default {
     data: { type: [Array], default: () => [] },
     itemStyle: { type: Object, default: () => ({}) },
     label: { type: Object, default: () => ({}) },
-    barWidth: { type: String, default: "30" },
+    barMaxWidth: { type: String, default: "30" },
     barGap: { type: String, default: "100%" },
   },
   methods: {
