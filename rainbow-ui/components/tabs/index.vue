@@ -153,7 +153,13 @@ let Context = {
               </div>
             </div>
 
-            <div class="tit">{this._t("title")}</div>
+            <div class="tit">
+              <Content
+              source={this.RTabs}
+              eventName="updataTitle"
+              renderName="renderTitle"
+            />
+            </div>
           </div>
         </div>
         <div class="r-tabs-space" v-show={!this.immerse}></div>
@@ -296,9 +302,16 @@ export default {
       </div>
     );
   },
+  updated() {
+    if (this.updataTitle) this.updataTitle();
+  },
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    renderTitle() {
+      return this._t("title");
+    },
+  },
   components: {
     Context,
     Content,
