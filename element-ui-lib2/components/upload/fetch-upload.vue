@@ -10,6 +10,8 @@ export default {
       type: String,
       default: "",
     },
+    size: Number,
+    placeholder: String,
     buttonText: {
       type: String,
       default: "上传",
@@ -17,7 +19,7 @@ export default {
     showLink: Boolean,
   },
   data() {
-    return { file_: this.file, base64_: this.base64 };
+    return { file_: this.file, base64_: this.base64, error: false };
   },
   watch: {
     base64() {},
@@ -25,9 +27,14 @@ export default {
   },
   methods: {
     handleChange(e) {
+      this.error = false;
       this.file_ = e.target.files[0];
-      console.log("handleChange", e.target.files);
+      console.log("handleChange", this.file_);
       if (!this.file_) return;
+      if (this.size && this.size < this.file_.size) {
+        this.error = true;
+        return;
+      }
       var reader = new FileReader();
       reader.readAsDataURL(this.file_);
       reader.onload = async (e) => {
@@ -93,6 +100,18 @@ export default {
       }
       this.$emit("update:responseData", "");
     },
+    renderPlaceholder() {
+      if (this.error) return null;
+      if (this.responseData_) return null;
+      if (!this.placeholder) return null;
+      return <div class="placeholder">{this.placeholder}</div>;
+    },
+    renderError() {
+      if (!this.error) return null;
+      return (
+        <div class="r-upload-error-text">文件最大{this.size / 1024}kb</div>
+      );
+    },
   },
   render() {
     return (
@@ -102,11 +121,14 @@ export default {
           <input
             class="r-upload-input"
             type="file"
+            placeholder={this.placeholder}
             ref="uploadInput"
             accept={this.accept}
             onChange={(e) => this.handleChange(e)}
           />
           {this.renderDefaultSlot()}
+          {this.renderPlaceholder()}
+          {this.renderError()}
         </div>
 
         {this.responseData_ && this.showLink && (
@@ -129,6 +151,9 @@ export default {
 };
 </script>
 <style>
+.r-upload-error-text {
+  color: red;
+}
 .r-upload {
   display: inline-block;
 }
