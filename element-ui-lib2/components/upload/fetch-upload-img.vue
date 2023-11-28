@@ -1,10 +1,10 @@
-
 <script>
 import FetchUpload from "./fetch-upload.vue";
 
 export default {
   extends: FetchUpload,
   props: {
+    shape: String,
     accept: {
       type: String,
       default: "image/png,image/jpg,image/jpeg,image/gif",
@@ -12,11 +12,25 @@ export default {
   },
   methods: {
     renderDefault(props) {
-      
+      let style = {
+        width: this.shape + "px",
+        height: this.shape + "px",
+      };
       return (
-        <div class="fetch-upload-img" v-loading={this.loading_}>
-          {this.loading_ && <img src={this.base64_} class="chooseImg" />}
-          {this.responseData_ && <img src={this.responseData_} />}
+        <div
+          class={["fetch-upload-img"]}
+          style={style}
+          v-loading={this.loading_}
+        >
+          {this.loading_ && (
+            <img src={this.base64_} class="chooseImg" style={style} />
+          )}
+          {this.responseData_ && (
+            <div class="img-con" style={style}>
+              <img style={style} src={this.responseData_} />
+              <i class="el-icon-circle-close close" onClick={this.remove}></i>
+            </div>
+          )}
           {!this.responseData_ && <i class="icon el-icon-plus"></i>}
         </div>
       );
@@ -31,7 +45,17 @@ export default {
   background: rgb(237, 238, 238);
   position: relative;
 }
-.fetch-upload-img img {
+
+.fetch-upload-img .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 101;
+  color: red;
+}
+
+.fetch-upload-img img,
+.fetch-upload-img .img-con {
   width: 120px;
   height: 120px;
   vertical-align: bottom;
@@ -58,4 +82,3 @@ export default {
   transform: translateX(-50%) translateY(-50%);
 }
 </style>
-

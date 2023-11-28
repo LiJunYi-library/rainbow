@@ -29,7 +29,6 @@ export default {
     handleChange(e) {
       this.error = false;
       this.file_ = e.target.files[0];
-      console.log("handleChange", this.file_);
       if (!this.file_) return;
       if (this.size && this.size < this.file_.size) {
         this.error = true;
@@ -93,12 +92,18 @@ export default {
       return null;
     },
 
-    remove() {
+    remove(event) {
+      event.stopPropagation()
       if (this.$listeners.remove) {
-        this.$listeners.remove(this.responseData_);
+        this.$listeners.remove(this);
         return;
       }
-      this.$emit("update:responseData", "");
+      this.base64_ = null,
+      this.file_ = null,
+      this.responseData_=''
+      this.$emit("update:base64", this.base64_);
+      this.$emit("update:file", this.file_);
+      this.$emit("update:responseData", undefined);
     },
     renderPlaceholder() {
       if (this.error) return null;
@@ -133,13 +138,13 @@ export default {
 
         {this.responseData_ && this.showLink && (
           <div class="r-upload-link-item">
-            <el-link type="primary" onClick={() => open(this.responseData_)}>
+            <el-link type="primary" href={this.responseData_}>
               {this.responseData_}
             </el-link>
             <i
               class="el-icon-circle-close"
               style={"color:red"}
-              onClick={() => this.remove()}
+              onClick={this.remove}
             ></i>
           </div>
         )}
