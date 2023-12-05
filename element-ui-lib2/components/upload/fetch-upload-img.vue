@@ -10,7 +10,18 @@ export default {
       default: "image/png,image/jpg,image/jpeg,image/gif",
     },
   },
+  data() {
+    return {
+      optionsVisible: false,
+    };
+  },
   methods: {
+    onmouseenter() {
+      this.optionsVisible = true;
+    },
+    onmouseleave() {
+      this.optionsVisible = false;
+    },
     renderDefault(props) {
       let style = {
         width: this.shape + "px",
@@ -28,7 +39,11 @@ export default {
           {this.responseData_ && (
             <div class="img-con" style={style}>
               <img style={style} src={this.responseData_} />
-              <i class="el-icon-circle-close close" onClick={this.remove}></i>
+              {this.optionsVisible && (
+                <div class="img-options">
+                  <i class="el-icon-delete" onClick={this.remove}></i>
+                </div>
+              )}
             </div>
           )}
           {!this.responseData_ && <i class="icon el-icon-plus"></i>}
@@ -62,6 +77,25 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+}
+
+.img-options {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 101;
+}
+
+.img-options i {
+  color: white;
+  z-index: 101;
+  font-size: 18px;
 }
 
 .fetch-upload-img .chooseImg {

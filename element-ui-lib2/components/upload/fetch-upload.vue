@@ -26,6 +26,8 @@ export default {
     file() {},
   },
   methods: {
+    onmouseenter() {},
+    onmouseleave() {},
     handleChange(e) {
       this.error = false;
       this.file_ = e.target.files[0];
@@ -93,14 +95,14 @@ export default {
     },
 
     remove(event) {
-      event.stopPropagation()
+      event.stopPropagation();
       if (this.$listeners.remove) {
         this.$listeners.remove(this);
         return;
       }
-      this.base64_ = null,
-      this.file_ = null,
-      this.responseData_=''
+      this.base64_ = null;
+      this.file_ = null;
+      this.responseData_ = '';
       this.$emit("update:base64", this.base64_);
       this.$emit("update:file", this.file_);
       this.$emit("update:responseData", undefined);
@@ -122,7 +124,11 @@ export default {
     return (
       <div class="r-upload" v-loading={this.loading_}>
         {this.renderStartSlot()}
-        <div class="r-upload-content">
+        <div
+          class="r-upload-content"
+          onMouseleave={this.onmouseleave}
+          onMouseenter={this.onmouseenter}
+        >
           <input
             class="r-upload-input"
             type="file"
