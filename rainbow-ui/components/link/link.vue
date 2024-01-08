@@ -8,6 +8,8 @@ export default {
     path: String,
     type: String,
     fill: Boolean,
+    preventDefault: Boolean,
+    stopPropagation: Boolean,
     underline: { type: Boolean, default: true },
     query: {
       type: [Object, Function],
@@ -69,7 +71,9 @@ export default {
 
     let attrs = {};
 
-    let click = () => {
+    let click = (event) => {
+      if (this.preventDefault) event.preventDefault();
+      if (this.stopPropagation) event.stopPropagation();
       if (!this.silent) return;
       if (this.target === "_self") {
         let _query = this.query;
@@ -106,7 +110,7 @@ export default {
   },
 };
 </script>
-<style  lang="scss">
+<style lang="scss">
 body {
   --primary-color: #3bd5d2;
   --primary-color-hover: #6beeec;
@@ -331,8 +335,6 @@ a.r-link-success-plain {
     background: var(--success-color-hover);
   }
 }
-
-
 
 a.r-link-warning {
   &:link {

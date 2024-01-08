@@ -27,16 +27,26 @@ export default {
       // console.log("submitForm", this.$refs["ruleForm"]);
       await this.$refs["ruleForm"].validate();
       // console.log("validate");
-      this.loading = true;
-      if (this.submit) await this.submit(this);
-      this.loading = false;
+      if (this.submit && this.submit instanceof Promise) {
+        this.loading = true;
+        this.submit(this).finally(() => {
+          this.loading = false;
+        });
+      }else{
+        this.submit(this)
+      }
     },
     async cancelForm() {
-      this.loading = true;
-      await this.cancel(this);
-      this.loading = false;
+      if (this.cancel && this.cancel instanceof Promise) {
+        this.loading = true;
+        this.cancel(this).finally(() => {
+          this.loading = false;
+        });
+      }else{
+        this.cancel(this)
+      }
     },
-    renderDefaultFooter(){
+    renderDefaultFooter() {
       return (
         <div v-loading={this.loading} style={`text-align: ${this.align};`}>
           {this.cancelText && (
@@ -61,7 +71,7 @@ export default {
       let _SS = this.$scopedSlots;
       if (this.renderFooter) return this.renderFooter(this);
       if (_SS.footer) return _SS.footer(this);
-      return this.renderDefaultFooter()
+      return this.renderDefaultFooter();
     },
     bindScopedSlotsDefault() {
       let _SS = this.$scopedSlots;
