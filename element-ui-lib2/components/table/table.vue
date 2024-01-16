@@ -14,10 +14,11 @@ export default {
     showPagination: { type: Boolean, default: true },
     showSelection: Boolean,
     currentPage: { type: Number, default: 1 },
-    updateCurrentPage: { type: Function, default: () => { } },
-    updatePageSize: { type: Function, default: () => { } },
+    updateCurrentPage: { type: Function, default: () => {} },
+    updatePageSize: { type: Function, default: () => {} },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
+    updateCheckList: { type: Function, default: () => {} },
     calcHeight: Number,
     sortProp: String,
     sortOrder: String,
@@ -26,6 +27,7 @@ export default {
     data: { type: Array, default: () => [] },
     selectAll: { type: Boolean, default: false },
     isRowClickExpansion: Boolean,
+    radio: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -77,19 +79,19 @@ export default {
       this.emitSortChange = true;
     },
   },
-  created() { },
+  created() {},
   mounted() {
     // console.log("table", this);
   },
   methods: {
     addExpand(row, key) {
-      this.$refs['elTable'].toggleRowExpansion(row, true)
-      if (this.expandList.includes(key)) return
+      this.$refs["elTable"].toggleRowExpansion(row, true);
+      if (this.expandList.includes(key)) return;
       this.expandList.push(key);
     },
     removeExpand(row, key) {
-      this.$refs['elTable'].toggleRowExpansion(row, false)
-      this.expandList = this.expandList.filter(el => el !== key);
+      this.$refs["elTable"].toggleRowExpansion(row, false);
+      this.expandList = this.expandList.filter((el) => el !== key);
     },
     bindLoading() {
       return false;
@@ -116,13 +118,16 @@ export default {
           ...this.defaultSort,
           order: this.transOrder(this.defaultSort.order),
         },
-        'row-style': ({row, rowIndex}) =>{ 
-          if(this.rowStyle) return this.rowStyle({row, rowIndex} )
-          if(this.sticky)  return ({  position: 'sticky',
+        "row-style": ({ row, rowIndex }) => {
+          if (this.rowStyle) return this.rowStyle({ row, rowIndex });
+          if (this.sticky)
+            return {
+              position: "sticky",
               top: 0,
               left: 0,
-              'z-index': rowIndex + 4, })
-          return ({});
+              "z-index": rowIndex + 4,
+            };
+          return {};
         },
         "cell-class-name": (...arg) => this.cell_class_name(...arg),
       };
@@ -142,19 +147,19 @@ export default {
           "sort-change": (...arg) => this.onSortChange(...arg),
           ...tableEvent,
           //todo 初始化掌开会有问题
-          'cell-click': (...arg) => {
+          "cell-click": (...arg) => {
             let [row, column] = [...arg];
             if (this.isRowClickExpansion) {
               if (!row._isExpanded) {
-                this.addExpand(row)
-                row._isExpanded = true
+                this.addExpand(row);
+                row._isExpanded = true;
               } else {
-                this.removeExpand(row)
-                row._isExpanded = false
+                this.removeExpand(row);
+                row._isExpanded = false;
               }
               // console.log(...arg);
             }
-            this.$emit('row-click', ...arg)
+            this.$emit("row-click", ...arg);
           },
         },
         props: {},
@@ -180,8 +185,8 @@ export default {
     },
 
     transOrder(order) {
-      if ((order === this.orderDescending)) order = "descending";
-      if ((order === this.orderAscending)) order = "ascending";
+      if (order === this.orderDescending) order = "descending";
+      if (order === this.orderAscending) order = "ascending";
       return order;
     },
 
@@ -197,27 +202,35 @@ export default {
       this.emitSortChange = true;
     },
 
-    onSelect(list, ...arg) {
-      console.log('onSelect', list);
+    onSelect(list, item) {
+      if (this.radio) {
+        list.forEach((el) => {
+          if (el !== item) this.$refs.elTable.toggleRowSelection(el, false);
+        });
+        list = [item];
+      }
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
-      this.$emit("select", list, ...arg);
+      this.updateCheckList(list);
+      this.$emit("select", list, item);
     },
 
     onSelectAll(list, ...arg) {
-      console.log('onSelectAll', list);
+      if (this.radio) return;
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
+      this.updateCheckList(list);
       this.$emit("selectAll", list, ...arg);
     },
 
     onSelectionChange(list, ...arg) {
-      console.log('onSelectionChange', list);
+      if (this.radio) return;
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
+      this.updateCheckList(list);
       this.$emit("update:selectAll", this.isSelectAll);
       this.$emit("selection-change", list, this.isSelectAll);
     },
@@ -236,6 +249,15 @@ export default {
 
     renderSelection(...arg) {
       if (!this.showSelection) return null;
+      if (this.radio)
+        return (
+          <el-table-column
+            label-class-name="table-column-radio"
+            type="selection"
+            width="55"
+            fixed="left"
+          />
+        );
       return <el-table-column type="selection" width="55" fixed="left" />;
     },
 
@@ -297,14 +319,14 @@ export default {
       this.paging();
     },
     paging() {
-      if (!this.showPagination) { 
-        this.tableData = this.data_; 
-        return
+      if (!this.showPagination) {
+        this.tableData = this.data_;
+        return;
       }
       let e = this.pageSize_ * this.currentPage_;
       let b = (this.currentPage_ - 1) * this.pageSize_;
       this.tableData = (this.data_ || []).slice(b, e);
-    }
+    },
   },
   render() {
     return (
@@ -312,9 +334,7 @@ export default {
         {this.renderTable()}
         {this.renderPagination()}
 
-        <div class="el-lib-table-absolute">
-           {this._t('absolute')}
-        </div>
+        <div class="el-lib-table-absolute">{this._t("absolute")}</div>
       </div>
     );
   },
@@ -325,16 +345,18 @@ export default {
   position: relative;
 }
 
-.el-lib-table-absolute{
+.el-lib-table-absolute {
   position: absolute;
   right: 0;
   bottom: 5px;
- z-index: 5;
+  z-index: 5;
 }
 
 .el-lib-pagination {
   text-align: center;
   padding: 10px 0;
 }
+.table-column-radio {
+  visibility: hidden;
+}
 </style>
-
