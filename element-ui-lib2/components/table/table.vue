@@ -16,6 +16,7 @@ export default {
     currentPage: { type: Number, default: 1 },
     updateCurrentPage: { type: Function, default: () => {} },
     updatePageSize: { type: Function, default: () => {} },
+    formatterSelectable: { type: Function, default: () => true },
     pageSize: { type: Number, default: 10 },
     checkList: { type: Array, default: () => [] },
     updateCheckList: { type: Function, default: () => {} },
@@ -28,6 +29,7 @@ export default {
     selectAll: { type: Boolean, default: false },
     isRowClickExpansion: Boolean,
     radio: { type: Boolean, default: false },
+    isCellClickTOSelect: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -159,6 +161,7 @@ export default {
               }
               // console.log(...arg);
             }
+            this.cellClickTOSelect(...arg);
             this.$emit("row-click", ...arg);
           },
         },
@@ -168,6 +171,23 @@ export default {
           empty: renderScopedSlots.call(this, "empty", this.renderDefaultEmpty),
         },
       });
+    },
+
+    cellClickTOSelect(item) {
+      if (!this.isCellClickTOSelect) return;
+      if (!this.formatterSelectable(item)) return;
+      if (!this.radio) this.$refs.elTable.toggleRowSelection(item);
+      this.onRadioClick(item);
+    },
+    onRadioClick(item) {
+      if (!this.radio) return;
+      if (!this.formatterSelectable(item)) return;
+      let list = [item];
+      this.checkList_ = list;
+      this.isSelectAll = list.length === this.data_.length;
+      this.$emit("update:checkList", list);
+      this.updateCheckList(list);
+      this.$emit("select", list, item);
     },
 
     renderDefaultEmpty() {
@@ -203,12 +223,7 @@ export default {
     },
 
     onSelect(list, item) {
-      if (this.radio) {
-        list.forEach((el) => {
-          if (el !== item) this.$refs.elTable.toggleRowSelection(el, false);
-        });
-        list = [item];
-      }
+      if (this.radio) return;
       this.checkList_ = list;
       this.isSelectAll = list.length === this.data_.length;
       this.$emit("update:checkList", list);
@@ -252,13 +267,32 @@ export default {
       if (this.radio)
         return (
           <el-table-column
+            selectable={this.formatterSelectable}
             label-class-name="table-column-radio"
-            type="selection"
             width="55"
             fixed="left"
-          />
+          >
+            {({ row }) => (
+              <div
+                class={[
+                  "table-column-radio-con",
+
+                  this.checkList_.some((el) => el === row) &&
+                    "table-column-radio-con-act",
+                ]}
+                onClick={this.onRadioClick}
+              ></div>
+            )}
+          </el-table-column>
         );
-      return <el-table-column type="selection" width="55" fixed="left" />;
+      return (
+        <el-table-column
+          type="selection"
+          selectable={this.formatterSelectable}
+          width="55"
+          fixed="left"
+        />
+      );
     },
 
     bindTableDefaultAttrs() {
@@ -358,5 +392,18 @@ export default {
 }
 .table-column-radio {
   visibility: hidden;
+}
+.table-column-radio-con {
+  box-sizing: border-box;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid gray;
+  background: white;
+}
+.table-column-radio-con-act {
+  background: #409eff;
+  color: #409eff;
 }
 </style>
