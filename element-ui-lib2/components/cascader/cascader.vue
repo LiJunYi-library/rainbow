@@ -92,7 +92,7 @@ export default {
     getCurrent(value) {
       let CheckedNodes = this.$refs.elCascader.getCheckedNodes();
       // console.log(' getCurrent ==========  CheckedNodes  ', CheckedNodes);
-      let currentTreeData = CheckedNodes || [];
+      let currentTreeData = (CheckedNodes || []).filter(Boolean);
       let currentItemData = currentTreeData.map(el => el.data);
       // console.log('>>>>currentTreeData>>>>>', currentTreeData);
       // console.log('>>>>>currentItemData>>>>', currentItemData);

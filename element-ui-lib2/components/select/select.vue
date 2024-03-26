@@ -83,6 +83,7 @@ export default {
           ...this.$listeners,
           input: (value) => this.emitInput(value),
           change: (value) => this.onChange(value),
+          "visible-change": (value) => this.onVisibleChange(value),
         },
         scopedSlots: {
           default: this.renderDefaultSlot(),
@@ -91,6 +92,12 @@ export default {
         },
         ...this.bindDefaultProperty(),
       });
+    },
+
+    onVisibleChange(bool) {
+      this.$emit("visible-change");
+      if (bool) this.$emit("visible-show");
+      else this.$emit("visible-hide");
     },
 
     bindDefaultProperty() {
@@ -115,28 +122,28 @@ export default {
   },
   render() {
     const disabled = (() => {
-      if (!this.multiple) return true
-      if (this.value && this.value.length) return false
-      return true
-    })()
+      if (!this.multiple) return true;
+      if (this.value && this.value.length) return false;
+      return true;
+    })();
 
     const selected = (() => {
-      if (!this.multiple) return []
-      if (!this.$refs['el-select']) return []
-      let vms = this.$refs['el-select'].selected
-      if (!vms) return []
-      if (!(vms instanceof Array)) return []
-      return vms
-    })()
+      if (!this.multiple) return [];
+      if (!this.$refs["el-select"]) return [];
+      let vms = this.$refs["el-select"].selected;
+      if (!vms) return [];
+      if (!(vms instanceof Array)) return [];
+      return vms;
+    })();
     // console.log(this.$refs);
     return (
       <el-popover
         disabled={disabled}
-        placement='top-start'
+        placement="top-start"
         title={this.popoverTitle || this.label}
-        width='200'
+        width="200"
         class="el-lib-select-popover"
-        trigger='hover'
+        trigger="hover"
       >
         <div>
           {selected.map((el) => (
@@ -144,14 +151,14 @@ export default {
           ))}
         </div>
 
-        <div slot='reference' class={'el-lib-select ' + this.className}>
-          {this.label && <div class='label'>{this.label}</div>}
+        <div slot="reference" class={"el-lib-select " + this.className}>
+          {this.label && <div class="label">{this.label}</div>}
           {this.renderStrat()}
           {this.renderElement()}
           {this.renderEnd()}
         </div>
       </el-popover>
-    )
+    );
   },
 };
 </script>
@@ -169,9 +176,7 @@ export default {
   min-width: 100px;
 }
 
-.el-lib-select-popover{
+.el-lib-select-popover {
   display: inline-block;
 }
-
-
 </style>
